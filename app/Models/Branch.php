@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Branch extends Model
 {
@@ -143,6 +145,24 @@ class Branch extends Model
                 ->orWhere('address', 'like', "%{$search}%")
                 ->orWhere('manager', 'like', "%{$search}%");
         });
+    }
+
+    /**
+     * Get the products that are available in this branch.
+     */
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_branches')
+            ->withPivot('available', 'special_price', 'assignment_date')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the product branches (pivot table records).
+     */
+    public function productBranches(): HasMany
+    {
+        return $this->hasMany(ProductBranch::class);
     }
 
     /**

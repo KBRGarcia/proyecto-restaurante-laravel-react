@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, Tag, Package, ShoppingCart, Settings, Store, Receipt, FileText, Star, CreditCard, Building2 } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Users, Tag, Package, ShoppingCart, Settings, Store, Receipt, FileText, Star, CreditCard, Building2, MapPin } from 'lucide-react';
 import AppLogo from './app-logo';
 import users from '@/routes/users';
 import categories from '@/routes/categories';
@@ -24,6 +24,7 @@ import evaluations from '@/routes/evaluations';
 import paymentMethods from '@/routes/payment-methods';
 import venezuelaBanks from '@/routes/venezuela-banks';
 import physicalPaymentOrders from '@/routes/physical-payment-orders';
+import branches from '@/routes/branches';
 
 const mainNavItems: NavItem[] = [
     {
@@ -101,6 +102,18 @@ const mainNavItems: NavItem[] = [
                 title: 'Órdenes de Pago Físico',
                 href: physicalPaymentOrders.index(),
                 icon: Receipt,
+            },
+        ],
+    },
+    {
+        title: 'Sucursales',
+        href: branches.index(), // Href por defecto (no se usa cuando hay subitems)
+        icon: MapPin,
+        items: [
+            {
+                title: 'Sucursales',
+                href: branches.index(),
+                icon: MapPin,
             },
         ],
     },

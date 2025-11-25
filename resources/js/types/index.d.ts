@@ -291,3 +291,45 @@ export interface PhysicalPaymentOrder {
     updated_at_formatted: string | null;
     [key: string]: unknown;
 }
+
+export interface Branch {
+    id: number;
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    postal_code: string | null;
+    phone: string;
+    email: string | null;
+    opening_time: string;
+    opening_time_formatted: string | null;
+    closing_time: string;
+    closing_time_formatted: string | null;
+    operation_days: string;
+    latitude: string | number | null;
+    longitude: string | number | null;
+    is_main: boolean;
+    is_main_label: string;
+    has_delivery: boolean;
+    has_delivery_label: string;
+    has_parking: boolean;
+    has_parking_label: string;
+    capacity_people: number | null;
+    image: string | null;
+    description: string | null;
+    active: boolean;
+    active_label: string;
+    opening_date: string | null;
+    opening_date_formatted: string | null;
+    manager: string | null;
+    full_address: string;
+    creation_date: string;
+    creation_date_formatted: string | null;
+    update_date: string;
+    update_date_formatted: string | null;
+    created_at: string;
+    created_at_formatted: string | null;
+    updated_at: string;
+    updated_at_formatted: string | null;
+    [key: string]: unknown;
+}

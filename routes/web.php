@@ -41,6 +41,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Rutas de recursos para órdenes de pago físico
     Route::resource('physical-payment-orders', \App\Http\Controllers\PhysicalPaymentOrdersController::class);
+
+    // Rutas de recursos para sucursales
+    Route::resource('branches', \App\Http\Controllers\BranchController::class);
 });
 
 require __DIR__.'/settings.php';

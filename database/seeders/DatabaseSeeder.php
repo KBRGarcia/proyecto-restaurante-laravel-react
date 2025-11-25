@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             OrderDetailSeeder::class,
             PaymentMethodSeeder::class,
             VenezuelaBankSeeder::class,
+            BranchSeeder::class,
         ]);
     }
 }

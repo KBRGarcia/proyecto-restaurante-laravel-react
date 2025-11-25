@@ -12,9 +12,10 @@ import evaluations from '@/routes/evaluations';
 import paymentMethods from '@/routes/payment-methods';
 import venezuelaBanks from '@/routes/venezuela-banks';
 import physicalPaymentOrders from '@/routes/physical-payment-orders';
+import branches from '@/routes/branches';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { Users, ArrowRight, Tag, Package, ShoppingCart, FileText, Star, CreditCard, Building2, Receipt } from 'lucide-react';
+import { Users, ArrowRight, Tag, Package, ShoppingCart, FileText, Star, CreditCard, Building2, Receipt, MapPin } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,74 +27,74 @@ const breadcrumbs: BreadcrumbItem[] = [
 function DashboardContent() {
     return (
         <>
-            {/* Card de Usuarios */}
-            <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
-                            <Users className="size-6 text-primary" />
-                        </div>
-                    </div>
-                    <CardTitle className="mt-4">Gestión de Usuarios</CardTitle>
-                    <CardDescription>
-                        Administra los usuarios del sistema
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Link href={users.index().url}>
-                        <Button className="w-full">
-                            Ver Usuarios
-                            <ArrowRight className="ml-2 size-4" />
-                        </Button>
-                    </Link>
-                </CardContent>
-            </Card>
+                    {/* Card de Usuarios */}
+                    <Card className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
+                                    <Users className="size-6 text-primary" />
+                                </div>
+                            </div>
+                            <CardTitle className="mt-4">Gestión de Usuarios</CardTitle>
+                            <CardDescription>
+                                Administra los usuarios del sistema
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link href={users.index().url}>
+                                <Button className="w-full">
+                                    Ver Usuarios
+                                    <ArrowRight className="ml-2 size-4" />
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
 
-            {/* Card de Categorías */}
-            <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <div className="flex size-12 items-center justify-center rounded-lg bg-orange-500/10">
-                            <Tag className="size-6 text-orange-500" />
-                        </div>
-                    </div>
-                    <CardTitle className="mt-4">Gestión de Categorías</CardTitle>
-                    <CardDescription>
-                        Administra las categorías de productos
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Link href={categories.index().url}>
-                        <Button className="w-full">
-                            Ver Categorías
-                            <ArrowRight className="ml-2 size-4" />
-                        </Button>
-                    </Link>
-                </CardContent>
-            </Card>
+                    {/* Card de Categorías */}
+                    <Card className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <div className="flex size-12 items-center justify-center rounded-lg bg-orange-500/10">
+                                    <Tag className="size-6 text-orange-500" />
+                                </div>
+                            </div>
+                            <CardTitle className="mt-4">Gestión de Categorías</CardTitle>
+                            <CardDescription>
+                                Administra las categorías de productos
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link href={categories.index().url}>
+                                <Button className="w-full">
+                                    Ver Categorías
+                                    <ArrowRight className="ml-2 size-4" />
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
 
-            {/* Card de Productos */}
-            <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <div className="flex size-12 items-center justify-center rounded-lg bg-green-500/10">
-                            <Package className="size-6 text-green-500" />
-                        </div>
-                    </div>
-                    <CardTitle className="mt-4">Gestión de Productos</CardTitle>
-                    <CardDescription>
-                        Administra los productos del restaurante
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Link href={products.index().url}>
-                        <Button className="w-full">
-                            Ver Productos
-                            <ArrowRight className="ml-2 size-4" />
-                        </Button>
-                    </Link>
-                </CardContent>
-            </Card>
+                    {/* Card de Productos */}
+                    <Card className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <div className="flex size-12 items-center justify-center rounded-lg bg-green-500/10">
+                                    <Package className="size-6 text-green-500" />
+                                </div>
+                            </div>
+                            <CardTitle className="mt-4">Gestión de Productos</CardTitle>
+                            <CardDescription>
+                                Administra los productos del restaurante
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link href={products.index().url}>
+                                <Button className="w-full">
+                                    Ver Productos
+                                    <ArrowRight className="ml-2 size-4" />
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
 
             {/* Card de Órdenes */}
             <Card className="hover:shadow-lg transition-shadow">
@@ -227,6 +228,29 @@ function DashboardContent() {
                     <Link href={physicalPaymentOrders.index().url}>
                         <Button className="w-full">
                             Ver Órdenes
+                            <ArrowRight className="ml-2 size-4" />
+                        </Button>
+                    </Link>
+                </CardContent>
+            </Card>
+
+            {/* Card de Sucursales */}
+            <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <div className="flex size-12 items-center justify-center rounded-lg bg-rose-500/10">
+                            <MapPin className="size-6 text-rose-500" />
+                        </div>
+                    </div>
+                    <CardTitle className="mt-4">Sucursales</CardTitle>
+                    <CardDescription>
+                        Gestiona las sucursales del restaurante
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Link href={branches.index().url}>
+                        <Button className="w-full">
+                            Ver Sucursales
                             <ArrowRight className="ml-2 size-4" />
                         </Button>
                     </Link>

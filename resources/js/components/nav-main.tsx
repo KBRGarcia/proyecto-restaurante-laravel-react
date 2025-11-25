@@ -67,20 +67,20 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                     
                     // Si no tiene subitems, renderizar un item normal
                     return (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton
-                                asChild
-                                isActive={page.url.startsWith(
-                                    resolveUrl(item.href),
-                                )}
-                                tooltip={{ children: item.title }}
-                            >
-                                <Link href={item.href} prefetch>
-                                    {item.icon && <item.icon />}
-                                    <span>{item.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
+                    <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton
+                            asChild
+                            isActive={page.url.startsWith(
+                                resolveUrl(item.href),
+                            )}
+                            tooltip={{ children: item.title }}
+                        >
+                            <Link href={item.href} prefetch>
+                                {item.icon && <item.icon />}
+                                <span>{item.title}</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
                     );
                 })}
             </SidebarMenu>

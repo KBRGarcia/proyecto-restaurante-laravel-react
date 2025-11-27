@@ -1,6 +1,7 @@
 import { home, login } from '@/routes';
 import { store } from '@/routes/register';
 import { Form, Head, Link } from '@inertiajs/react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import InputError from '@/components/input-error';
@@ -20,6 +21,10 @@ export default function Register() {
         }
         return 'light';
     });
+
+    // Estados para mostrar/ocultar contraseñas
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
     useEffect(() => {
         // Aplicar el tema al documento
@@ -232,15 +237,31 @@ export default function Register() {
                                                         <Label htmlFor="password">
                                                             Contraseña
                                                         </Label>
-                                                        <Input
-                                                            id="password"
-                                                            type="password"
-                                                            required
-                                                            tabIndex={5}
-                                                            autoComplete="new-password"
-                                                            name="password"
-                                                            placeholder="Contraseña"
-                                                        />
+                                                        <div className="relative">
+                                                            <Input
+                                                                id="password"
+                                                                type={showPassword ? 'text' : 'password'}
+                                                                required
+                                                                tabIndex={5}
+                                                                autoComplete="new-password"
+                                                                name="password"
+                                                                placeholder="Contraseña"
+                                                                className="pr-10"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setShowPassword(!showPassword)}
+                                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                                                tabIndex={-1}
+                                                                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                                                            >
+                                                                {showPassword ? (
+                                                                    <EyeOff className="h-4 w-4" />
+                                                                ) : (
+                                                                    <Eye className="h-4 w-4" />
+                                                                )}
+                                                            </button>
+                                                        </div>
                                                         <InputError message={errors.password} />
                                                     </div>
 
@@ -248,15 +269,31 @@ export default function Register() {
                                                         <Label htmlFor="password_confirmation">
                                                             Confirmar contraseña
                                                         </Label>
-                                                        <Input
-                                                            id="password_confirmation"
-                                                            type="password"
-                                                            required
-                                                            tabIndex={6}
-                                                            autoComplete="new-password"
-                                                            name="password_confirmation"
-                                                            placeholder="Confirmar contraseña"
-                                                        />
+                                                        <div className="relative">
+                                                            <Input
+                                                                id="password_confirmation"
+                                                                type={showPasswordConfirmation ? 'text' : 'password'}
+                                                                required
+                                                                tabIndex={6}
+                                                                autoComplete="new-password"
+                                                                name="password_confirmation"
+                                                                placeholder="Confirmar contraseña"
+                                                                className="pr-10"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                                                tabIndex={-1}
+                                                                aria-label={showPasswordConfirmation ? 'Ocultar confirmación de contraseña' : 'Mostrar confirmación de contraseña'}
+                                                            >
+                                                                {showPasswordConfirmation ? (
+                                                                    <EyeOff className="h-4 w-4" />
+                                                                ) : (
+                                                                    <Eye className="h-4 w-4" />
+                                                                )}
+                                                            </button>
+                                                        </div>
                                                         <InputError
                                                             message={errors.password_confirmation}
                                                         />

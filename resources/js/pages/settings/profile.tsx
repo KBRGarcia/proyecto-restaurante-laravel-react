@@ -93,24 +93,20 @@ export default function Profile({
                                     auth.user.email_verified_at === null && (
                                         <div>
                                             <p className="-mt-4 text-sm text-muted-foreground">
-                                                Your email address is
-                                                unverified.{' '}
+                                                Tu dirección de correo electrónico no está verificada.{' '}
                                                 <Link
                                                     href={send()}
                                                     as="button"
                                                     className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                                                 >
-                                                    Click here to resend the
-                                                    verification email.
+                                                    Haz clic aquí para reenviar el correo de verificación.
                                                 </Link>
                                             </p>
 
                                             {status ===
                                                 'verification-link-sent' && (
-                                                <div className="mt-2 text-sm font-medium text-green-600">
-                                                    A new verification link has
-                                                    been sent to your email
-                                                    address.
+                                                <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
+                                                    Se ha enviado un nuevo enlace de verificación a tu dirección de correo electrónico.
                                                 </div>
                                             )}
                                         </div>

@@ -9,6 +9,7 @@ import { home, register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 import { Form, Head, Link } from '@inertiajs/react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface LoginProps {
@@ -31,6 +32,9 @@ export default function Login({
         }
         return 'light';
     });
+
+    // Estado para mostrar/ocultar contraseña
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         // Aplicar el tema al documento
@@ -208,15 +212,31 @@ export default function Login({
                                                                 </TextLink>
                                                             )}
                                                         </div>
-                                                        <Input
-                                                            id="password"
-                                                            type="password"
-                                                            name="password"
-                                                            required
-                                                            tabIndex={2}
-                                                            autoComplete="current-password"
-                                                            placeholder="Contraseña"
-                                                        />
+                                                        <div className="relative">
+                                                            <Input
+                                                                id="password"
+                                                                type={showPassword ? 'text' : 'password'}
+                                                                name="password"
+                                                                required
+                                                                tabIndex={2}
+                                                                autoComplete="current-password"
+                                                                placeholder="Contraseña"
+                                                                className="pr-10"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setShowPassword(!showPassword)}
+                                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                                                tabIndex={-1}
+                                                                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                                                            >
+                                                                {showPassword ? (
+                                                                    <EyeOff className="h-4 w-4" />
+                                                                ) : (
+                                                                    <Eye className="h-4 w-4" />
+                                                                )}
+                                                            </button>
+                                                        </div>
                                                         <InputError message={errors.password} />
                                                     </div>
 

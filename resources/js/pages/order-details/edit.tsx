@@ -31,22 +31,34 @@ interface OrderDetailEditProps {
     fields: FormField[];
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
-    {
-        title: 'Detalles de Órdenes',
-        href: orderDetails.index().url,
-    },
-    {
-        title: 'Editar Detalle',
-        href: '#',
-    },
-];
-
 export default function OrderDetailEdit({ orderDetail, fields }: OrderDetailEditProps) {
+    // Verificar que orderDetail existe y tiene id
+    if (!orderDetail || !orderDetail.id) {
+        return (
+            <AppLayout breadcrumbs={[]}>
+                <Head title="Error" />
+                <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
+                    <p className="text-lg text-muted-foreground">Detalle de orden no encontrado</p>
+                </div>
+            </AppLayout>
+        );
+    }
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard().url,
+        },
+        {
+            title: 'Detalles de Órdenes',
+            href: orderDetails.index().url,
+        },
+        {
+            title: 'Editar Detalle',
+            href: orderDetails.edit(orderDetail.id).url,
+        },
+    ];
+
     const { data, setData, put, processing, errors } = useForm({
         order_id: orderDetail.order_id.toString(),
         product_id: orderDetail.product_id.toString(),

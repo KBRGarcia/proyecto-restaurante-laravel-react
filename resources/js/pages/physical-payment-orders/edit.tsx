@@ -29,22 +29,34 @@ interface PhysicalPaymentOrderEditProps {
     orders: { value: number; label: string }[];
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
-    {
-        title: 'Órdenes de Pago Físico',
-        href: physicalPaymentOrders.index().url,
-    },
-    {
-        title: 'Editar Orden de Pago Físico',
-        href: '#',
-    },
-];
-
 export default function PhysicalPaymentOrderEdit({ physicalPaymentOrder, formFields, orders }: PhysicalPaymentOrderEditProps) {
+    // Verificar que physicalPaymentOrder existe y tiene id
+    if (!physicalPaymentOrder || !physicalPaymentOrder.id) {
+        return (
+            <AppLayout breadcrumbs={[]}>
+                <Head title="Error" />
+                <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
+                    <p className="text-lg text-muted-foreground">Orden de pago físico no encontrada</p>
+                </div>
+            </AppLayout>
+        );
+    }
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard().url,
+        },
+        {
+            title: 'Órdenes de Pago Físico',
+            href: physicalPaymentOrders.index().url,
+        },
+        {
+            title: 'Editar Orden de Pago Físico',
+            href: physicalPaymentOrders.edit(physicalPaymentOrder.id).url,
+        },
+    ];
+
     const { data, setData, put, processing, errors } = useForm({
         order_id: physicalPaymentOrder.order_id.toString(),
         limit_date: physicalPaymentOrder.limit_date ? new Date(physicalPaymentOrder.limit_date).toISOString().slice(0, 16) : '',

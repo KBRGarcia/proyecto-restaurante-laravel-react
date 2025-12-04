@@ -29,20 +29,38 @@ interface FormField {
 }
 
 interface OrderEditProps {
-    order: Order;
+    order: Order | null;
     fields: FormField[];
     users: { value: number; label: string }[];
     employees: { value: number; label: string }[];
 }
 
 export default function OrderEdit({ order, fields, users, employees }: OrderEditProps) {
-    // Verificar que order existe
-    if (!order) {
+    // Extraer los datos del objeto order (puede venir como {data: {...}} o directamente)
+    // TypeScript: manejar ambos casos de estructura
+    const orderData: Order = (order && typeof order === 'object' && 'data' in order && order.data) 
+        ? (order.data as Order) 
+        : (order as Order);
+    
+    // Verificar que orderData existe
+    if (!orderData) {
         return (
             <AppLayout breadcrumbs={[]}>
                 <Head title="Error" />
                 <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
                     <p className="text-lg text-muted-foreground">Orden no encontrada</p>
+                </div>
+            </AppLayout>
+        );
+    }
+    
+    // Verificar que orderData tiene id
+    if (orderData.id === undefined || orderData.id === null) {
+        return (
+            <AppLayout breadcrumbs={[]}>
+                <Head title="Error" />
+                <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
+                    <p className="text-lg text-muted-foreground">Orden no encontrada: ID no válido</p>
                 </div>
             </AppLayout>
         );
@@ -59,25 +77,25 @@ export default function OrderEdit({ order, fields, users, employees }: OrderEdit
         },
         {
             title: 'Editar Orden',
-            href: orders.edit(order.id).url,
+            href: orderData.id ? orders.edit(orderData.id).url : '#',
         },
     ];
 
     const { data, setData, put, processing, errors } = useForm({
-        user_id: order.user_id?.toString() || '',
-        assigned_employee_id: order.assigned_employee_id?.toString() || '',
-        status: order.status || 'pending',
-        service_type: order.service_type || 'delivery',
-        currency: order.currency || 'internacional',
-        subtotal: order.subtotal?.toString() || '',
-        taxes: order.taxes?.toString() || '0',
-        total: order.total?.toString() || '',
-        delivery_address: order.delivery_address || '',
-        contact_phone: order.contact_phone || '',
-        special_notes: order.special_notes || '',
-        payment_method: order.payment_method || '',
-        estimated_delivery_date: order.estimated_delivery_date 
-            ? new Date(order.estimated_delivery_date).toISOString().slice(0, 16)
+        user_id: orderData.user_id?.toString() || '',
+        assigned_employee_id: orderData.assigned_employee_id?.toString() || '',
+        status: orderData.status || 'pending',
+        service_type: orderData.service_type || 'delivery',
+        currency: orderData.currency || 'internacional',
+        subtotal: orderData.subtotal?.toString() || '',
+        taxes: orderData.taxes?.toString() || '0',
+        total: orderData.total?.toString() || '',
+        delivery_address: orderData.delivery_address || '',
+        contact_phone: orderData.contact_phone || '',
+        special_notes: orderData.special_notes || '',
+        payment_method: orderData.payment_method || '',
+        estimated_delivery_date: orderData.estimated_delivery_date 
+            ? new Date(orderData.estimated_delivery_date).toISOString().slice(0, 16)
             : '',
     });
 
@@ -91,7 +109,10 @@ export default function OrderEdit({ order, fields, users, employees }: OrderEdit
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(orders.update(order.id).url);
+        if (!orderData.id) {
+            return;
+        }
+        put(orders.update(orderData.id).url);
     };
 
     const renderField = (field: FormField) => {
@@ -267,7 +288,7 @@ export default function OrderEdit({ order, fields, users, employees }: OrderEdit
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Editar Orden #${order.id}`} />
+            <Head title={`Editar Orden #${orderData.id}`} />
             
             <div className="flex h-full flex-1 flex-col gap-4 p-4">
                 <Card>
@@ -276,7 +297,7 @@ export default function OrderEdit({ order, fields, users, employees }: OrderEdit
                             <div>
                                 <CardTitle className="flex items-center gap-2">
                                     <ShoppingCart className="size-5" />
-                                    Editar Orden #{order.id}
+                                    Editar Orden #{orderData.id}
                                 </CardTitle>
                                 <CardDescription>
                                     Modifique los datos de la orden en el formulario

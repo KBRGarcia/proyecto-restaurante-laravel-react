@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         // Importante: CategorySeeder debe ejecutarse antes que ProductSeeder
         // UserSeeder debe ejecutarse antes que OrderSeeder
         // OrderSeeder y ProductSeeder deben ejecutarse antes que OrderDetailSeeder
+        // ProductSeeder y BranchSeeder deben ejecutarse antes que ProductBranchSeeder
         // debido a las relaciones de foreign key
         $this->call([
             UserSeeder::class,
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             PaymentMethodSeeder::class,
             VenezuelaBankSeeder::class,
             BranchSeeder::class,
+            ProductBranchSeeder::class,
         ]);
     }
 }

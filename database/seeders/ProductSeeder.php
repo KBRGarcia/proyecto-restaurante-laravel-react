@@ -21,8 +21,10 @@ class ProductSeeder extends Seeder
         // Limpiar la tabla antes de insertar
         Product::query()->delete();
 
-        // Resetear el auto-increment
-        DB::statement('ALTER TABLE products AUTO_INCREMENT = 1');
+        // Resetear el auto-increment (solo para MySQL/MariaDB)
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE products AUTO_INCREMENT = 1');
+        }
 
         // Crear los productos usando el modelo Eloquent
         $products = [

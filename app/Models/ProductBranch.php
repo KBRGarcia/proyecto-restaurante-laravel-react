@@ -141,22 +141,26 @@ class ProductBranch extends Model
      * @param int|null $id The ID of the current record (for update operations)
      * @return array<string, string|array>
      */
-    public static function rules(bool $isUpdate = false, ?int $id = null): array
+    public static function rules(bool $isUpdate = false, ?int $id = null, ?int $branchId = null): array
     {
         $rules = [
             'product_id' => ['required', 'exists:products,id'],
             'branch_id' => ['required', 'exists:branches,id'],
             'available' => ['nullable', 'boolean'],
             'special_price' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'assignment_date' => ['nullable', 'date'],
         ];
 
+        // Obtener branch_id del request si no se proporciona como parámetro
+        $branchId = $branchId ?? request()->input('branch_id');
+
         // En creación, validar que la combinación product_id + branch_id sea única
-        if (!$isUpdate) {
-            $rules['product_id'][] = 'unique:product_branches,product_id,NULL,id,branch_id,' . request()->input('branch_id');
+        if (!$isUpdate && $branchId) {
+            $rules['product_id'][] = "unique:product_branches,product_id,NULL,id,branch_id,{$branchId}";
         } else {
             // En actualización, excluir el registro actual de la validación unique
-            if ($id) {
-                $rules['product_id'][] = "unique:product_branches,product_id,{$id},id,branch_id," . request()->input('branch_id');
+            if ($id && $branchId) {
+                $rules['product_id'][] = "unique:product_branches,product_id,{$id},id,branch_id,{$branchId}";
             }
         }
 

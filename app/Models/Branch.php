@@ -62,8 +62,8 @@ class Branch extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'opening_time' => 'string',
-        'closing_time' => 'string',
+        'opening_time' => 'string', // Se mantiene como string para compatibilidad con formato H:i:s
+        'closing_time' => 'string', // Se mantiene como string para compatibilidad con formato H:i:s
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
         'is_main' => 'boolean',

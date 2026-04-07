@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, Tag, Package, ShoppingCart, Settings, Store, Receipt, FileText, Star, CreditCard, Building2, MapPin } from 'lucide-react';
+import { LayoutGrid, Users, Tag, Package, ShoppingCart, Settings, Store, Receipt, FileText, Star, CreditCard, Building2, MapPin } from 'lucide-react';
 import AppLogo from './app-logo';
 import users from '@/routes/users';
 import categories from '@/routes/categories';

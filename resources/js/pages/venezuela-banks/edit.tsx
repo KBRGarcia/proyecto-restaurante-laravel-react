@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type VenezuelaBank } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import venezuelaBanks from '@/routes/venezuela-banks';
 import { Button } from '@/components/ui/button';
@@ -30,6 +30,13 @@ interface VenezuelaBankEditProps {
 }
 
 export default function VenezuelaBankEdit({ bank, formFields }: VenezuelaBankEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        code: bank?.code || '',
+        name: bank?.name || '',
+        active: bank?.active ? '1' : '0',
+        creation_date: bank?.creation_date ? new Date(bank.creation_date).toISOString().slice(0, 16) : '',
+    });
+
     if (!bank) {
         return (
             <AppLayout breadcrumbs={[]}>
@@ -55,13 +62,6 @@ export default function VenezuelaBankEdit({ bank, formFields }: VenezuelaBankEdi
             href: venezuelaBanks.edit(bank.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        code: bank.code || '',
-        name: bank.name || '',
-        active: bank.active ? '1' : '0',
-        creation_date: bank.creation_date ? new Date(bank.creation_date).toISOString().slice(0, 16) : '',
-    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

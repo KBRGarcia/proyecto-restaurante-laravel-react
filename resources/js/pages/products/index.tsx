@@ -49,7 +49,7 @@ export default function ProductsIndex({
     const [search, setSearch] = useState(queryParams.search || '');
     const [categoryFilter, setCategoryFilter] = useState(queryParams.category_id || '');
     const [statusFilter, setStatusFilter] = useState(queryParams.status || '');
-    const [specialFilter, setSpecialFilter] = useState(queryParams.is_special || '');
+    const [specialFilter] = useState(queryParams.is_special || '');
 
     const handleSearch = () => {
         router.get(products.index().url, {

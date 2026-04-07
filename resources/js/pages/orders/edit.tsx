@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Order } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import orders from '@/routes/orders';
 import { Button } from '@/components/ui/button';
@@ -38,10 +38,37 @@ interface OrderEditProps {
 export default function OrderEdit({ order, fields, users, employees }: OrderEditProps) {
     // Extraer los datos del objeto order (puede venir como {data: {...}} o directamente)
     // TypeScript: manejar ambos casos de estructura
-    const orderData: Order = (order && typeof order === 'object' && 'data' in order && order.data) 
-        ? (order.data as Order) 
+    const orderData: Order = (order && typeof order === 'object' && 'data' in order && order.data)
+        ? (order.data as Order)
         : (order as Order);
-    
+
+    const { data, setData, put, processing, errors } = useForm({
+        user_id: orderData?.user_id?.toString() || '',
+        assigned_employee_id: orderData?.assigned_employee_id?.toString() || '',
+        status: orderData?.status || 'pending',
+        service_type: orderData?.service_type || 'delivery',
+        currency: orderData?.currency || 'internacional',
+        subtotal: orderData?.subtotal?.toString() || '',
+        taxes: orderData?.taxes?.toString() || '0',
+        total: orderData?.total?.toString() || '',
+        delivery_address: orderData?.delivery_address || '',
+        contact_phone: orderData?.contact_phone || '',
+        special_notes: orderData?.special_notes || '',
+        payment_method: orderData?.payment_method || '',
+        estimated_delivery_date: orderData?.estimated_delivery_date
+            ? new Date(orderData.estimated_delivery_date).toISOString().slice(0, 16)
+            : '',
+    });
+
+    // Auto-calcular el total cuando cambian subtotal o taxes
+    useEffect(() => {
+        const subtotal = parseFloat(data.subtotal) || 0;
+        const taxes = parseFloat(data.taxes) || 0;
+        const total = (subtotal + taxes).toFixed(2);
+        setData('total', total);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data.subtotal, data.taxes]);
+
     // Verificar que orderData existe
     if (!orderData) {
         return (
@@ -53,7 +80,7 @@ export default function OrderEdit({ order, fields, users, employees }: OrderEdit
             </AppLayout>
         );
     }
-    
+
     // Verificar que orderData tiene id
     if (orderData.id === undefined || orderData.id === null) {
         return (
@@ -80,32 +107,6 @@ export default function OrderEdit({ order, fields, users, employees }: OrderEdit
             href: orderData.id ? orders.edit(orderData.id).url : '#',
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        user_id: orderData.user_id?.toString() || '',
-        assigned_employee_id: orderData.assigned_employee_id?.toString() || '',
-        status: orderData.status || 'pending',
-        service_type: orderData.service_type || 'delivery',
-        currency: orderData.currency || 'internacional',
-        subtotal: orderData.subtotal?.toString() || '',
-        taxes: orderData.taxes?.toString() || '0',
-        total: orderData.total?.toString() || '',
-        delivery_address: orderData.delivery_address || '',
-        contact_phone: orderData.contact_phone || '',
-        special_notes: orderData.special_notes || '',
-        payment_method: orderData.payment_method || '',
-        estimated_delivery_date: orderData.estimated_delivery_date 
-            ? new Date(orderData.estimated_delivery_date).toISOString().slice(0, 16)
-            : '',
-    });
-
-    // Auto-calcular el total cuando cambian subtotal o taxes
-    useEffect(() => {
-        const subtotal = parseFloat(data.subtotal) || 0;
-        const taxes = parseFloat(data.taxes) || 0;
-        const total = (subtotal + taxes).toFixed(2);
-        setData('total', total);
-    }, [data.subtotal, data.taxes]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

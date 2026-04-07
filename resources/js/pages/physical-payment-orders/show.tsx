@@ -7,7 +7,7 @@ import orders from '@/routes/orders';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Edit, Receipt, ShoppingCart, Calendar, Clock, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Edit, Receipt, ShoppingCart, Clock, AlertTriangle } from 'lucide-react';
 
 interface PhysicalPaymentOrderShowProps {
     physicalPaymentOrder: PhysicalPaymentOrder;

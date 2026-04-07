@@ -42,7 +42,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function OrdersIndex({ 
     orders: ordersData, 
     columns, 
-    filters, 
     queryParams = {}, 
     pagination 
 }: OrdersIndexProps) {

@@ -31,6 +31,14 @@ interface EvaluationEditProps {
 }
 
 export default function EvaluationEdit({ evaluation, fields }: EvaluationEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        user_id: evaluation?.user_id?.toString() || '',
+        product_id: evaluation?.product_id?.toString() || '',
+        order_id: evaluation?.order_id?.toString() || '',
+        rating: evaluation?.rating?.toString() || '5',
+        comment: evaluation?.comment || '',
+    });
+
     if (!evaluation) {
         return (
             <AppLayout breadcrumbs={[]}>
@@ -56,14 +64,6 @@ export default function EvaluationEdit({ evaluation, fields }: EvaluationEditPro
             href: evaluations.edit(evaluation.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        user_id: evaluation.user_id?.toString() || '',
-        product_id: evaluation.product_id?.toString() || '',
-        order_id: evaluation.order_id?.toString() || '',
-        rating: evaluation.rating?.toString() || '5',
-        comment: evaluation.comment || '',
-    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

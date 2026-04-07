@@ -33,6 +33,19 @@ interface UserEditProps {
 }
 
 export default function UserEdit({ user, fields }: UserEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        name: user?.name || '',
+        last_name: user?.last_name || '',
+        email: user?.email || '',
+        phone_number: user?.phone_number || '',
+        password: '',
+        password_confirmation: '',
+        address: user?.address || '',
+        role: user?.role || 'client',
+        status: user?.status || 'active',
+        profile_picture: null as File | null,
+    });
+
     // Verificar que user existe
     if (!user) {
         return (
@@ -59,19 +72,6 @@ export default function UserEdit({ user, fields }: UserEditProps) {
             href: users.edit(user.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        name: user.name || '',
-        last_name: user.last_name || '',
-        email: user.email || '',
-        phone_number: user.phone_number || '',
-        password: '',
-        password_confirmation: '',
-        address: user.address || '',
-        role: user.role || 'client',
-        status: user.status || 'active',
-        profile_picture: null as File | null,
-    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

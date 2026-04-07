@@ -40,7 +40,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function CategoriesIndex({ 
     categories: categoriesData, 
     columns, 
-    filters, 
     queryParams = {}, 
     pagination 
 }: CategoriesIndexProps) {

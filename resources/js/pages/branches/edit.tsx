@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Branch } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import branches from '@/routes/branches';
 import { Button } from '@/components/ui/button';
@@ -33,32 +33,6 @@ interface BranchEditProps {
 }
 
 export default function BranchEdit({ branch, formFields }: BranchEditProps) {
-    if (!branch) {
-        return (
-            <AppLayout breadcrumbs={[]}>
-                <Head title="Error" />
-                <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
-                    <p className="text-lg text-muted-foreground">Sucursal no encontrada</p>
-                </div>
-            </AppLayout>
-        );
-    }
-
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: dashboard().url,
-        },
-        {
-            title: 'Sucursales',
-            href: branches.index().url,
-        },
-        {
-            title: 'Editar Sucursal',
-            href: branches.edit(branch.id).url,
-        },
-    ];
-
     // Formatear hora para input time (HH:mm)
     const formatTimeForInput = (time: string | null | undefined): string => {
         if (!time) return '';
@@ -93,6 +67,32 @@ export default function BranchEdit({ branch, formFields }: BranchEditProps) {
         image: branch?.image || '',
         description: branch?.description || '',
     });
+
+    if (!branch) {
+        return (
+            <AppLayout breadcrumbs={[]}>
+                <Head title="Error" />
+                <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
+                    <p className="text-lg text-muted-foreground">Sucursal no encontrada</p>
+                </div>
+            </AppLayout>
+        );
+    }
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard().url,
+        },
+        {
+            title: 'Sucursales',
+            href: branches.index().url,
+        },
+        {
+            title: 'Editar Sucursal',
+            href: branches.edit(branch.id).url,
+        },
+    ];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

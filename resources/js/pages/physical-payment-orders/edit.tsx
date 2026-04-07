@@ -30,6 +30,12 @@ interface PhysicalPaymentOrderEditProps {
 }
 
 export default function PhysicalPaymentOrderEdit({ physicalPaymentOrder, formFields, orders }: PhysicalPaymentOrderEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        order_id: physicalPaymentOrder?.order_id?.toString() || '',
+        limit_date: physicalPaymentOrder?.limit_date ? new Date(physicalPaymentOrder.limit_date).toISOString().slice(0, 16) : '',
+        status: physicalPaymentOrder?.status || '',
+    });
+
     // Verificar que physicalPaymentOrder existe y tiene id
     if (!physicalPaymentOrder || !physicalPaymentOrder.id) {
         return (
@@ -56,12 +62,6 @@ export default function PhysicalPaymentOrderEdit({ physicalPaymentOrder, formFie
             href: physicalPaymentOrders.edit(physicalPaymentOrder.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        order_id: physicalPaymentOrder.order_id.toString(),
-        limit_date: physicalPaymentOrder.limit_date ? new Date(physicalPaymentOrder.limit_date).toISOString().slice(0, 16) : '',
-        status: physicalPaymentOrder.status,
-    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

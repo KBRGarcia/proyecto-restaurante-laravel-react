@@ -45,7 +45,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function BranchesIndex({ 
     branches: branchesData, 
     columns, 
-    filters, 
     queryParams = {}, 
     pagination 
 }: BranchesIndexProps) {

@@ -222,7 +222,7 @@ store.form = storeForm
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-export const show = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -237,7 +237,7 @@ show.definition = {
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-show.url = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+show.url = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { physical_payment_order: args }
     }
@@ -270,7 +270,7 @@ show.url = (args: { physical_payment_order: string | number | { id: string | num
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-show.get = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -280,7 +280,7 @@ show.get = (args: { physical_payment_order: string | number | { id: string | num
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-show.head = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -290,7 +290,7 @@ show.head = (args: { physical_payment_order: string | number | { id: string | nu
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-const showForm = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -300,7 +300,7 @@ const showForm = (args: { physical_payment_order: string | number | { id: string
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-showForm.get = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -310,7 +310,7 @@ showForm.get = (args: { physical_payment_order: string | number | { id: string |
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-showForm.head = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -327,7 +327,7 @@ show.form = showForm
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:130
 * @route '/physical-payment-orders/{physical_payment_order}/edit'
 */
-export const edit = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -342,7 +342,7 @@ edit.definition = {
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:130
 * @route '/physical-payment-orders/{physical_payment_order}/edit'
 */
-edit.url = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+edit.url = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { physical_payment_order: args }
     }
@@ -375,7 +375,7 @@ edit.url = (args: { physical_payment_order: string | number | { id: string | num
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:130
 * @route '/physical-payment-orders/{physical_payment_order}/edit'
 */
-edit.get = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -385,7 +385,7 @@ edit.get = (args: { physical_payment_order: string | number | { id: string | num
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:130
 * @route '/physical-payment-orders/{physical_payment_order}/edit'
 */
-edit.head = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -395,7 +395,7 @@ edit.head = (args: { physical_payment_order: string | number | { id: string | nu
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:130
 * @route '/physical-payment-orders/{physical_payment_order}/edit'
 */
-const editForm = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const editForm = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -405,7 +405,7 @@ const editForm = (args: { physical_payment_order: string | number | { id: string
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:130
 * @route '/physical-payment-orders/{physical_payment_order}/edit'
 */
-editForm.get = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.get = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -415,7 +415,7 @@ editForm.get = (args: { physical_payment_order: string | number | { id: string |
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:130
 * @route '/physical-payment-orders/{physical_payment_order}/edit'
 */
-editForm.head = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.head = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -432,7 +432,7 @@ edit.form = editForm
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:156
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-export const update = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -447,7 +447,7 @@ update.definition = {
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:156
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-update.url = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { physical_payment_order: args }
     }
@@ -480,7 +480,7 @@ update.url = (args: { physical_payment_order: string | number | { id: string | n
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:156
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-update.put = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -490,7 +490,7 @@ update.put = (args: { physical_payment_order: string | number | { id: string | n
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:156
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-update.patch = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -500,7 +500,7 @@ update.patch = (args: { physical_payment_order: string | number | { id: string |
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:156
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-const updateForm = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -515,7 +515,7 @@ const updateForm = (args: { physical_payment_order: string | number | { id: stri
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:156
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-updateForm.put = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -530,7 +530,7 @@ updateForm.put = (args: { physical_payment_order: string | number | { id: string
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:156
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-updateForm.patch = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -547,7 +547,7 @@ update.form = updateForm
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:173
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-export const destroy = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -562,7 +562,7 @@ destroy.definition = {
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:173
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-destroy.url = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { physical_payment_order: args }
     }
@@ -595,7 +595,7 @@ destroy.url = (args: { physical_payment_order: string | number | { id: string | 
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:173
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-destroy.delete = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -605,7 +605,7 @@ destroy.delete = (args: { physical_payment_order: string | number | { id: string
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:173
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-const destroyForm = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -620,7 +620,7 @@ const destroyForm = (args: { physical_payment_order: string | number | { id: str
 * @see app/Http/Controllers/PhysicalPaymentOrdersController.php:173
 * @route '/physical-payment-orders/{physical_payment_order}'
 */
-destroyForm.delete = (args: { physical_payment_order: string | number | { id: string | number } } | [physical_payment_order: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

@@ -34,6 +34,18 @@ interface ProductEditProps {
 }
 
 export default function ProductEdit({ product, fields }: ProductEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        name: product?.name || '',
+        description: product?.description || '',
+        price: product?.price || '',
+        category_id: product?.category_id || '',
+        image: null as File | null,
+        status: product?.status || 'active',
+        preparation_time: product?.preparation_time || 15,
+        ingredients: product?.ingredients || '',
+        is_special: product?.is_special || false,
+    });
+
     // Verificar que product existe
     if (!product) {
         return (
@@ -60,18 +72,6 @@ export default function ProductEdit({ product, fields }: ProductEditProps) {
             href: products.edit(product.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        name: product.name || '',
-        description: product.description || '',
-        price: product.price || '',
-        category_id: product.category_id || '',
-        image: null as File | null,
-        status: product.status || 'active',
-        preparation_time: product.preparation_time || 15,
-        ingredients: product.ingredients || '',
-        is_special: product.is_special || false,
-    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

@@ -35,6 +35,14 @@ interface CategoryEditProps {
 }
 
 export default function CategoryEdit({ category, fields }: CategoryEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        name: category?.name || '',
+        description: category?.description || '',
+        image: null as File | null,
+        status: category?.status || 'active',
+        order_show: category?.order_show || 0,
+    });
+
     // Verificar que category existe
     if (!category) {
         return (
@@ -61,14 +69,6 @@ export default function CategoryEdit({ category, fields }: CategoryEditProps) {
             href: categories.edit(category.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        name: category.name || '',
-        description: category.description || '',
-        image: null as File | null,
-        status: category.status || 'active',
-        order_show: category.order_show || 0,
-    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

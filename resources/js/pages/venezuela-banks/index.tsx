@@ -40,7 +40,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function VenezuelaBanksIndex({ 
     banks: banksData, 
     columns, 
-    filters, 
     queryParams = {}, 
     pagination 
 }: VenezuelaBanksIndexProps) {

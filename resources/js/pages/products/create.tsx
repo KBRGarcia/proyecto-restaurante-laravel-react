@@ -139,7 +139,6 @@ export default function ProductCreate({ fields }: ProductCreateProps) {
                             placeholder={field.placeholder}
                             value={value}
                             onChange={(e) => {
-                                const val = field.step === '0.01' ? parseFloat(e.target.value) : parseInt(e.target.value);
                                 setData(field.name as any, e.target.value);
                             }}
                             className={errors[field.name as keyof typeof errors] ? 'border-destructive' : ''}

@@ -47,7 +47,7 @@ export default function PhysicalPaymentOrdersIndex({
 }: PhysicalPaymentOrdersIndexProps) {
     const [search, setSearch] = useState(queryParams.search || '');
     const [statusFilter, setStatusFilter] = useState(queryParams.status || '');
-    const [orderFilter, setOrderFilter] = useState(queryParams.order_id?.toString() || '');
+    const [orderFilter] = useState(queryParams.order_id?.toString() || '');
 
     const handleSearch = () => {
         router.get(physicalPaymentOrders.index().url, {

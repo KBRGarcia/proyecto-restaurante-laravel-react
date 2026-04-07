@@ -32,6 +32,38 @@ interface OrderDetailEditProps {
 }
 
 export default function OrderDetailEdit({ orderDetail, fields }: OrderDetailEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        order_id: orderDetail?.order_id?.toString() || '',
+        product_id: orderDetail?.product_id?.toString() || '',
+        quantity: orderDetail?.quantity?.toString() || '',
+        unit_price: orderDetail?.unit_price?.toString() || '',
+        subtotal: orderDetail?.subtotal?.toString() || '',
+        product_notes: orderDetail?.product_notes || '',
+    });
+
+    // Auto-calcular el subtotal cuando cambian cantidad o precio unitario
+    useEffect(() => {
+        const quantity = parseFloat(data.quantity) || 0;
+        const unitPrice = parseFloat(data.unit_price) || 0;
+        const subtotal = (quantity * unitPrice).toFixed(2);
+        setData('subtotal', subtotal);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data.quantity, data.unit_price]);
+
+    // Auto-llenar el precio unitario cuando se selecciona un producto
+    useEffect(() => {
+        if (data.product_id) {
+            const productField = fields.find(f => f.name === 'product_id');
+            const selectedProduct = productField?.options?.find(
+                opt => opt.value.toString() === data.product_id
+            );
+            if (selectedProduct && 'price' in selectedProduct && selectedProduct.price) {
+                setData('unit_price', selectedProduct.price.toString());
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data.product_id]);
+
     // Verificar que orderDetail existe y tiene id
     if (!orderDetail || !orderDetail.id) {
         return (
@@ -58,36 +90,6 @@ export default function OrderDetailEdit({ orderDetail, fields }: OrderDetailEdit
             href: orderDetails.edit(orderDetail.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        order_id: orderDetail.order_id.toString(),
-        product_id: orderDetail.product_id.toString(),
-        quantity: orderDetail.quantity.toString(),
-        unit_price: orderDetail.unit_price.toString(),
-        subtotal: orderDetail.subtotal.toString(),
-        product_notes: orderDetail.product_notes || '',
-    });
-
-    // Auto-calcular el subtotal cuando cambian cantidad o precio unitario
-    useEffect(() => {
-        const quantity = parseFloat(data.quantity) || 0;
-        const unitPrice = parseFloat(data.unit_price) || 0;
-        const subtotal = (quantity * unitPrice).toFixed(2);
-        setData('subtotal', subtotal);
-    }, [data.quantity, data.unit_price]);
-
-    // Auto-llenar el precio unitario cuando se selecciona un producto
-    useEffect(() => {
-        if (data.product_id) {
-            const productField = fields.find(f => f.name === 'product_id');
-            const selectedProduct = productField?.options?.find(
-                opt => opt.value.toString() === data.product_id
-            );
-            if (selectedProduct && 'price' in selectedProduct && selectedProduct.price) {
-                setData('unit_price', selectedProduct.price.toString());
-            }
-        }
-    }, [data.product_id]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

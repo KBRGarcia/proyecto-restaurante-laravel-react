@@ -41,7 +41,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function PaymentMethodsIndex({ 
     payment_methods: paymentMethodsData, 
     columns, 
-    filters, 
     queryParams = {}, 
     pagination 
 }: PaymentMethodsIndexProps) {

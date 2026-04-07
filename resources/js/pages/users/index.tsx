@@ -5,7 +5,6 @@ import { dashboard } from '@/routes';
 import users from '@/routes/users';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Edit, Eye, Plus, Search, Trash2, Users as UsersIcon } from 'lucide-react';
@@ -42,7 +41,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function UsersIndex({ 
     users: usersData, 
     columns, 
-    filters, 
     queryParams = {}, 
     pagination 
 }: UsersIndexProps) {

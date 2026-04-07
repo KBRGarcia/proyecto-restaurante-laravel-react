@@ -5,7 +5,6 @@ import { dashboard } from '@/routes';
 import evaluations from '@/routes/evaluations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Edit, Eye, Plus, Search, Trash2, Star } from 'lucide-react';
 import { useState } from 'react';
@@ -40,7 +39,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function EvaluationsIndex({ 
     evaluations: evaluationsData, 
     columns, 
-    filters, 
     queryParams = {}, 
     pagination 
 }: EvaluationsIndexProps) {

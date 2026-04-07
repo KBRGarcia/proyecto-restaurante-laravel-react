@@ -222,7 +222,7 @@ store.form = storeForm
 * @see app/Http/Controllers/OrderDetailController.php:110
 * @route '/order-details/{order_detail}'
 */
-export const show = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -237,7 +237,7 @@ show.definition = {
 * @see app/Http/Controllers/OrderDetailController.php:110
 * @route '/order-details/{order_detail}'
 */
-show.url = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+show.url = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { order_detail: args }
     }
@@ -270,7 +270,7 @@ show.url = (args: { order_detail: string | number | { id: string | number } } | 
 * @see app/Http/Controllers/OrderDetailController.php:110
 * @route '/order-details/{order_detail}'
 */
-show.get = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -280,7 +280,7 @@ show.get = (args: { order_detail: string | number | { id: string | number } } | 
 * @see app/Http/Controllers/OrderDetailController.php:110
 * @route '/order-details/{order_detail}'
 */
-show.head = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -290,7 +290,7 @@ show.head = (args: { order_detail: string | number | { id: string | number } } |
 * @see app/Http/Controllers/OrderDetailController.php:110
 * @route '/order-details/{order_detail}'
 */
-const showForm = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -300,7 +300,7 @@ const showForm = (args: { order_detail: string | number | { id: string | number 
 * @see app/Http/Controllers/OrderDetailController.php:110
 * @route '/order-details/{order_detail}'
 */
-showForm.get = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -310,7 +310,7 @@ showForm.get = (args: { order_detail: string | number | { id: string | number } 
 * @see app/Http/Controllers/OrderDetailController.php:110
 * @route '/order-details/{order_detail}'
 */
-showForm.head = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -327,7 +327,7 @@ show.form = showForm
 * @see app/Http/Controllers/OrderDetailController.php:122
 * @route '/order-details/{order_detail}/edit'
 */
-export const edit = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -342,7 +342,7 @@ edit.definition = {
 * @see app/Http/Controllers/OrderDetailController.php:122
 * @route '/order-details/{order_detail}/edit'
 */
-edit.url = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+edit.url = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { order_detail: args }
     }
@@ -375,7 +375,7 @@ edit.url = (args: { order_detail: string | number | { id: string | number } } | 
 * @see app/Http/Controllers/OrderDetailController.php:122
 * @route '/order-details/{order_detail}/edit'
 */
-edit.get = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -385,7 +385,7 @@ edit.get = (args: { order_detail: string | number | { id: string | number } } | 
 * @see app/Http/Controllers/OrderDetailController.php:122
 * @route '/order-details/{order_detail}/edit'
 */
-edit.head = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -395,7 +395,7 @@ edit.head = (args: { order_detail: string | number | { id: string | number } } |
 * @see app/Http/Controllers/OrderDetailController.php:122
 * @route '/order-details/{order_detail}/edit'
 */
-const editForm = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const editForm = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -405,7 +405,7 @@ const editForm = (args: { order_detail: string | number | { id: string | number 
 * @see app/Http/Controllers/OrderDetailController.php:122
 * @route '/order-details/{order_detail}/edit'
 */
-editForm.get = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.get = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -415,7 +415,7 @@ editForm.get = (args: { order_detail: string | number | { id: string | number } 
 * @see app/Http/Controllers/OrderDetailController.php:122
 * @route '/order-details/{order_detail}/edit'
 */
-editForm.head = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.head = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -432,7 +432,7 @@ edit.form = editForm
 * @see app/Http/Controllers/OrderDetailController.php:135
 * @route '/order-details/{order_detail}'
 */
-export const update = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -447,7 +447,7 @@ update.definition = {
 * @see app/Http/Controllers/OrderDetailController.php:135
 * @route '/order-details/{order_detail}'
 */
-update.url = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { order_detail: args }
     }
@@ -480,7 +480,7 @@ update.url = (args: { order_detail: string | number | { id: string | number } } 
 * @see app/Http/Controllers/OrderDetailController.php:135
 * @route '/order-details/{order_detail}'
 */
-update.put = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -490,7 +490,7 @@ update.put = (args: { order_detail: string | number | { id: string | number } } 
 * @see app/Http/Controllers/OrderDetailController.php:135
 * @route '/order-details/{order_detail}'
 */
-update.patch = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -500,7 +500,7 @@ update.patch = (args: { order_detail: string | number | { id: string | number } 
 * @see app/Http/Controllers/OrderDetailController.php:135
 * @route '/order-details/{order_detail}'
 */
-const updateForm = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -515,7 +515,7 @@ const updateForm = (args: { order_detail: string | number | { id: string | numbe
 * @see app/Http/Controllers/OrderDetailController.php:135
 * @route '/order-details/{order_detail}'
 */
-updateForm.put = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -530,7 +530,7 @@ updateForm.put = (args: { order_detail: string | number | { id: string | number 
 * @see app/Http/Controllers/OrderDetailController.php:135
 * @route '/order-details/{order_detail}'
 */
-updateForm.patch = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -547,7 +547,7 @@ update.form = updateForm
 * @see app/Http/Controllers/OrderDetailController.php:171
 * @route '/order-details/{order_detail}'
 */
-export const destroy = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -562,7 +562,7 @@ destroy.definition = {
 * @see app/Http/Controllers/OrderDetailController.php:171
 * @route '/order-details/{order_detail}'
 */
-destroy.url = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { order_detail: args }
     }
@@ -595,7 +595,7 @@ destroy.url = (args: { order_detail: string | number | { id: string | number } }
 * @see app/Http/Controllers/OrderDetailController.php:171
 * @route '/order-details/{order_detail}'
 */
-destroy.delete = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -605,7 +605,7 @@ destroy.delete = (args: { order_detail: string | number | { id: string | number 
 * @see app/Http/Controllers/OrderDetailController.php:171
 * @route '/order-details/{order_detail}'
 */
-const destroyForm = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -620,7 +620,7 @@ const destroyForm = (args: { order_detail: string | number | { id: string | numb
 * @see app/Http/Controllers/OrderDetailController.php:171
 * @route '/order-details/{order_detail}'
 */
-destroyForm.delete = (args: { order_detail: string | number | { id: string | number } } | [order_detail: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { order_detail: number | { id: number } } | [order_detail: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

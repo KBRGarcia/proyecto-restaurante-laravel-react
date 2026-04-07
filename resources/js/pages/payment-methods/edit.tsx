@@ -31,6 +31,14 @@ interface PaymentMethodEditProps {
 }
 
 export default function PaymentMethodEdit({ payment_method, fields }: PaymentMethodEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        code: payment_method?.code || '',
+        name: payment_method?.name || '',
+        currency_type: payment_method?.currency_type || 'nacional',
+        active: payment_method?.active ? '1' : '0',
+        configuration: payment_method?.configuration ? JSON.stringify(payment_method.configuration, null, 2) : '',
+    });
+
     if (!payment_method) {
         return (
             <AppLayout breadcrumbs={[]}>
@@ -56,14 +64,6 @@ export default function PaymentMethodEdit({ payment_method, fields }: PaymentMet
             href: paymentMethods.edit(payment_method.id).url,
         },
     ];
-
-    const { data, setData, put, processing, errors } = useForm({
-        code: payment_method.code || '',
-        name: payment_method.name || '',
-        currency_type: payment_method.currency_type || 'nacional',
-        active: payment_method.active ? '1' : '0',
-        configuration: payment_method.configuration ? JSON.stringify(payment_method.configuration, null, 2) : '',
-    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

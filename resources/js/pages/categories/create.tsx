@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import categories from '@/routes/categories';
 import { Button } from '@/components/ui/button';
@@ -60,14 +60,9 @@ export default function CategoryCreate({ fields }: CategoryCreateProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Si hay una imagen, usar POST con FormData
-        if (data.image) {
-            router.post(categories.store().url, data as any, {
-                forceFormData: true,
-            });
-        } else {
-            post(categories.store().url);
-        }
+        post(categories.store().url, {
+            forceFormData: !!data.image,
+        });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

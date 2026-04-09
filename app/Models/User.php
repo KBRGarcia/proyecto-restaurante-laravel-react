@@ -95,7 +95,7 @@ class User extends Authenticatable
             $rules['email'] = ['required', 'email', 'max:255', 'unique:users,email'];
         }
 
-        // Password validation: 8-16 characters, at least one uppercase, one number, and one special character
+        // Password validation: 8-16 characters, at least one uppercase, one number, one special character, and match confirmation
         if ($isUpdate) {
             // For updates, password is optional but must meet requirements if provided
             $rules['password'] = [
@@ -103,7 +103,8 @@ class User extends Authenticatable
                 'string',
                 'min:8',
                 'max:16',
-                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]+$/',
+                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/',
+                'confirmed',
             ];
         } else {
             // For creation, password is required
@@ -112,7 +113,8 @@ class User extends Authenticatable
                 'string',
                 'min:8',
                 'max:16',
-                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]+$/',
+                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/',
+                'confirmed',
             ];
         }
 
@@ -140,7 +142,8 @@ class User extends Authenticatable
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.max' => 'La contraseña no debe exceder los 16 caracteres.',
-            'password.regex' => 'La contraseña debe contener al menos una mayúscula, un número y un carácter especial (@$!%*?&#).',
+            'password.regex' => 'La contraseña debe contener al menos una mayúscula, un número y un carácter especial (@$!%*?&#-_.).',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
             'phone_number.string' => 'El número de teléfono debe ser una cadena de texto.',
             'phone_number.max' => 'El número de teléfono no debe exceder los 20 caracteres.',
             'address.string' => 'La dirección debe ser una cadena de texto.',

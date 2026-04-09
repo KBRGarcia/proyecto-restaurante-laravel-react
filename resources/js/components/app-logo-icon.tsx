@@ -1,20 +1,27 @@
 import { SVGAttributes } from 'react';
 
-export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
+export default function AppLogoIcon(props: Readonly<SVGAttributes<SVGElement>>) {
     return (
-        <svg {...props} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            {/* Tenedor (izquierda, cruzado) */}
-            <g transform="rotate(-45 12 12)">
-                <line x1="8" y1="4" x2="8" y2="20" />
-                <line x1="8" y1="4" x2="8" y2="9" />
-                <line x1="6" y1="4" x2="6" y2="9" />
-                <line x1="10" y1="4" x2="10" y2="9" />
+        <svg {...props} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            {/* Círculo rojo de fondo */}
+            <circle cx="50" cy="50" r="50" fill="#D42B2B" />
+
+            {/* Tenedor (izquierda) */}
+            <g fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="30" y1="18" x2="30" y2="38" />
+                <line x1="36" y1="18" x2="36" y2="38" />
+                <line x1="42" y1="18" x2="42" y2="38" />
+                <path d="M30 38 C30 44 36 46 36 50" />
+                <path d="M42 38 C42 44 36 46 36 50" />
+                <line x1="36" y1="50" x2="36" y2="82" />
+                <line x1="33" y1="82" x2="39" y2="82" />
             </g>
-            
-            {/* Cuchillo (derecha, cruzado) */}
-            <g transform="rotate(45 12 12)">
-                <line x1="16" y1="4" x2="16" y2="20" />
-                <path d="M14 4 L18 4 L18 7 L14 7 Z" fill="currentColor" />
+
+            {/* Cuchara (derecha) */}
+            <g fill="none" stroke="white" strokeWidth="3" strokeLinecap="round">
+                <ellipse cx="60" cy="29" rx="7.5" ry="11" />
+                <line x1="60" y1="40" x2="60" y2="82" />
+                <line x1="57" y1="82" x2="63" y2="82" />
             </g>
         </svg>
     );

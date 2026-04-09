@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Product } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import products from '@/routes/products';
 import { Button } from '@/components/ui/button';
@@ -34,7 +34,8 @@ interface ProductEditProps {
 }
 
 export default function ProductEdit({ product, fields }: ProductEditProps) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'PUT',
         name: product?.name || '',
         description: product?.description || '',
         price: product?.price || '',
@@ -76,17 +77,9 @@ export default function ProductEdit({ product, fields }: ProductEditProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Si hay una imagen, usar POST con _method=PUT
-        if (data.image) {
-            router.post(products.update(product.id).url, {
-                ...data,
-                _method: 'PUT',
-            } as any, {
-                forceFormData: true,
-            });
-        } else {
-            put(products.update(product.id).url);
-        }
+        post(products.update(product.id).url, {
+            forceFormData: !!data.image,
+        });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

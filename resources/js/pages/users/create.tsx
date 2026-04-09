@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import users from '@/routes/users';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, ArrowLeft, Save, UserPlus } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, ArrowLeft, Save, UserPlus, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 
 interface FormField {
     name: string;
@@ -60,17 +60,19 @@ export default function UserCreate({ fields }: UserCreateProps) {
         profile_picture: null as File | null,
     });
 
+    // State for password visibility toggles
+    const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
+
+    const togglePasswordVisibility = (fieldName: string) => {
+        setShowPassword((prev) => ({ ...prev, [fieldName]: !prev[fieldName] }));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
-        // Si hay una imagen, usar POST con FormData
-        if (data.profile_picture) {
-            router.post(users.store().url, data as any, {
-                forceFormData: true,
-            });
-        } else {
-            post(users.store().url);
-        }
+
+        post(users.store().url, {
+            forceFormData: !!data.profile_picture,
+        });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,6 +107,7 @@ export default function UserCreate({ fields }: UserCreateProps) {
         };
         const gridClass = field.grid_cols ? gridColsMap[field.grid_cols] : 'col-span-12';
         const value = data[field.name as keyof typeof data] || '';
+        const hasError = !!errors[field.name as keyof typeof errors];
 
         switch (field.type) {
             case 'text':
@@ -121,15 +124,15 @@ export default function UserCreate({ fields }: UserCreateProps) {
                             placeholder={field.placeholder}
                             value={value as string}
                             onChange={(e) => setData(field.name as any, e.target.value)}
-                            className={errors[field.name as keyof typeof errors] ? 'border-destructive' : ''}
+                            className={hasError ? 'border-destructive' : ''}
                             required={field.required}
                         />
-                        {errors[field.name as keyof typeof errors] && (
+                        {hasError && (
                             <p className="text-sm text-destructive mt-1">
                                 {errors[field.name as keyof typeof errors]}
                             </p>
                         )}
-                        {field.help_text && !errors[field.name as keyof typeof errors] && (
+                        {field.help_text && !hasError && (
                             <p className="text-sm text-muted-foreground mt-1">{field.help_text}</p>
                         )}
                     </div>
@@ -142,21 +145,35 @@ export default function UserCreate({ fields }: UserCreateProps) {
                             {field.label}
                             {field.required && <span className="text-destructive ml-1">*</span>}
                         </Label>
-                        <Input
-                            id={field.name}
-                            type="password"
-                            placeholder={field.placeholder}
-                            value={value as string}
-                            onChange={(e) => setData(field.name as any, e.target.value)}
-                            className={errors[field.name as keyof typeof errors] ? 'border-destructive' : ''}
-                            required={field.required}
-                        />
-                        {errors[field.name as keyof typeof errors] && (
+                        <div className="relative">
+                            <Input
+                                id={field.name}
+                                type={showPassword[field.name] ? 'text' : 'password'}
+                                placeholder={field.placeholder}
+                                value={value as string}
+                                onChange={(e) => setData(field.name as any, e.target.value)}
+                                className={`pr-10 ${hasError ? 'border-destructive' : ''}`}
+                                required={field.required}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => togglePasswordVisibility(field.name)}
+                                className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors"
+                                tabIndex={-1}
+                            >
+                                {showPassword[field.name] ? (
+                                    <EyeOff className="size-4" />
+                                ) : (
+                                    <Eye className="size-4" />
+                                )}
+                            </button>
+                        </div>
+                        {hasError && (
                             <p className="text-sm text-destructive mt-1">
                                 {errors[field.name as keyof typeof errors]}
                             </p>
                         )}
-                        {field.help_text && !errors[field.name as keyof typeof errors] && (
+                        {field.help_text && !hasError && (
                             <p className="text-sm text-muted-foreground mt-1">{field.help_text}</p>
                         )}
                     </div>
@@ -174,11 +191,11 @@ export default function UserCreate({ fields }: UserCreateProps) {
                             placeholder={field.placeholder}
                             value={value as string}
                             onChange={(e) => setData(field.name as any, e.target.value)}
-                            className={errors[field.name as keyof typeof errors] ? 'border-destructive' : ''}
+                            className={hasError ? 'border-destructive' : ''}
                             rows={field.rows || 3}
                             required={field.required}
                         />
-                        {errors[field.name as keyof typeof errors] && (
+                        {hasError && (
                             <p className="text-sm text-destructive mt-1">
                                 {errors[field.name as keyof typeof errors]}
                             </p>
@@ -198,7 +215,7 @@ export default function UserCreate({ fields }: UserCreateProps) {
                             value={value as string}
                             onChange={(e) => setData(field.name as any, e.target.value)}
                             className={`flex h-9 w-full rounded-md border ${
-                                errors[field.name as keyof typeof errors] ? 'border-destructive' : 'border-input'
+                                hasError ? 'border-destructive' : 'border-input'
                             } bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                             required={field.required}
                         >
@@ -211,7 +228,7 @@ export default function UserCreate({ fields }: UserCreateProps) {
                                 </option>
                             ))}
                         </select>
-                        {errors[field.name as keyof typeof errors] && (
+                        {hasError && (
                             <p className="text-sm text-destructive mt-1">
                                 {errors[field.name as keyof typeof errors]}
                             </p>
@@ -231,14 +248,14 @@ export default function UserCreate({ fields }: UserCreateProps) {
                             type="file"
                             accept={field.accept}
                             onChange={handleFileChange}
-                            className={errors[field.name as keyof typeof errors] ? 'border-destructive' : ''}
+                            className={hasError ? 'border-destructive' : ''}
                         />
-                        {errors[field.name as keyof typeof errors] && (
+                        {hasError && (
                             <p className="text-sm text-destructive mt-1">
                                 {errors[field.name as keyof typeof errors]}
                             </p>
                         )}
-                        {field.help_text && !errors[field.name as keyof typeof errors] && (
+                        {field.help_text && !hasError && (
                             <p className="text-sm text-muted-foreground mt-1">{field.help_text}</p>
                         )}
                     </div>
@@ -249,10 +266,12 @@ export default function UserCreate({ fields }: UserCreateProps) {
         }
     };
 
+    const errorCount = Object.keys(errors).length;
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Crear Usuario" />
-            
+
             <div className="flex h-full flex-1 flex-col gap-4 p-4">
                 <Card>
                     <CardHeader>
@@ -275,13 +294,20 @@ export default function UserCreate({ fields }: UserCreateProps) {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        {Object.keys(errors).length > 0 && (
-                            <Alert variant="destructive" className="mb-6">
-                                <AlertCircle className="size-4" />
-                                <AlertDescription>
-                                    Por favor, corrija los errores en el formulario antes de continuar.
-                                </AlertDescription>
-                            </Alert>
+                        {errorCount > 0 && (
+                            <div className="mb-6 flex items-start gap-3 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-red-800 dark:border-red-700 dark:bg-red-950 dark:text-red-300">
+                                <AlertCircle className="mt-0.5 size-5 shrink-0 text-red-600 dark:text-red-400" />
+                                <div>
+                                    <p className="font-semibold text-sm">
+                                        Se encontraron {errorCount} error{errorCount > 1 ? 'es' : ''} en el formulario
+                                    </p>
+                                    <ul className="mt-1 list-disc list-inside text-sm space-y-0.5">
+                                        {Object.values(errors).map((error, i) => (
+                                            <li key={i}>{error}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
                         )}
 
                         <form onSubmit={handleSubmit}>
@@ -297,9 +323,7 @@ export default function UserCreate({ fields }: UserCreateProps) {
                                 </Link>
                                 <Button type="submit" disabled={processing}>
                                     {processing ? (
-                                        <>
-                                            <span className="mr-2">Creando...</span>
-                                        </>
+                                        <span className="mr-2">Creando...</span>
                                     ) : (
                                         <>
                                             <Save className="mr-2 size-4" />
@@ -315,4 +339,3 @@ export default function UserCreate({ fields }: UserCreateProps) {
         </AppLayout>
     );
 }
-

@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import products from '@/routes/products';
 import { Button } from '@/components/ui/button';
@@ -63,14 +63,9 @@ export default function ProductCreate({ fields }: ProductCreateProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Si hay una imagen, usar POST con FormData
-        if (data.image) {
-            router.post(products.store().url, data as any, {
-                forceFormData: true,
-            });
-        } else {
-            post(products.store().url);
-        }
+        post(products.store().url, {
+            forceFormData: !!data.image,
+        });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,7 +132,7 @@ export default function ProductCreate({ fields }: ProductCreateProps) {
                             id={field.name}
                             type="number"
                             placeholder={field.placeholder}
-                            value={value}
+                            value={value as string | number}
                             onChange={(e) => {
                                 setData(field.name as any, e.target.value);
                             }}

@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type User } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import users from '@/routes/users';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, ArrowLeft, Save, UserCog } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, ArrowLeft, Save, UserCog, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 
 interface FormField {
     name: string;
@@ -33,7 +33,8 @@ interface UserEditProps {
 }
 
 export default function UserEdit({ user, fields }: UserEditProps) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'PUT',
         name: user?.name || '',
         last_name: user?.last_name || '',
         email: user?.email || '',
@@ -45,6 +46,13 @@ export default function UserEdit({ user, fields }: UserEditProps) {
         status: user?.status || 'active',
         profile_picture: null as File | null,
     });
+
+    // State for password visibility toggles
+    const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
+
+    const togglePasswordVisibility = (fieldName: string) => {
+        setShowPassword((prev) => ({ ...prev, [fieldName]: !prev[fieldName] }));
+    };
 
     // Verificar que user existe
     if (!user) {
@@ -76,17 +84,9 @@ export default function UserEdit({ user, fields }: UserEditProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Si hay una imagen, usar POST con _method=PUT
-        if (data.profile_picture) {
-            router.post(users.update(user.id).url, {
-                ...data,
-                _method: 'PUT',
-            } as any, {
-                forceFormData: true,
-            });
-        } else {
-            put(users.update(user.id).url);
-        }
+        post(users.update(user.id).url, {
+            forceFormData: !!data.profile_picture,
+        });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,23 +114,38 @@ export default function UserEdit({ user, fields }: UserEditProps) {
 
         // En edición, no mostrar campos de password si show_on_edit es false
         if (field.show_on_edit === false && (field.name === 'password' || field.name === 'password_confirmation')) {
-            // Mostrarlos pero como opcionales
+            // Mostrarlos pero como opcionales con show/hide toggle
             const passwordGridClass = field.grid_cols ? gridColsMap[field.grid_cols] : 'col-span-12';
+            const hasError = !!errors[field.name as keyof typeof errors];
             return (
                 <div key={field.name} className={passwordGridClass}>
                     <Label htmlFor={field.name}>
                         {field.label}
-                        <span className="text-muted-foreground ml-1">(Opcional - dejar en blanco para mantener la actual)</span>
+                        <span className="text-muted-foreground ml-1 text-xs">(Opcional - dejar en blanco para mantener la actual)</span>
                     </Label>
-                    <Input
-                        id={field.name}
-                        type="password"
-                        placeholder={field.placeholder}
-                        value={data[field.name as keyof typeof data] as string}
-                        onChange={(e) => setData(field.name as any, e.target.value)}
-                        className={errors[field.name as keyof typeof errors] ? 'border-destructive' : ''}
-                    />
-                    {errors[field.name as keyof typeof errors] && (
+                    <div className="relative">
+                        <Input
+                            id={field.name}
+                            type={showPassword[field.name] ? 'text' : 'password'}
+                            placeholder={field.placeholder}
+                            value={data[field.name as keyof typeof data] as string}
+                            onChange={(e) => setData(field.name as any, e.target.value)}
+                            className={`pr-10 ${hasError ? 'border-destructive' : ''}`}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => togglePasswordVisibility(field.name)}
+                            className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors"
+                            tabIndex={-1}
+                        >
+                            {showPassword[field.name] ? (
+                                <EyeOff className="size-4" />
+                            ) : (
+                                <Eye className="size-4" />
+                            )}
+                        </button>
+                    </div>
+                    {hasError && (
                         <p className="text-sm text-destructive mt-1">
                             {errors[field.name as keyof typeof errors]}
                         </p>
@@ -299,12 +314,19 @@ export default function UserEdit({ user, fields }: UserEditProps) {
                     </CardHeader>
                     <CardContent>
                         {Object.keys(errors).length > 0 && (
-                            <Alert variant="destructive" className="mb-6">
-                                <AlertCircle className="size-4" />
-                                <AlertDescription>
-                                    Por favor, corrija los errores en el formulario antes de continuar.
-                                </AlertDescription>
-                            </Alert>
+                            <div className="mb-6 flex items-start gap-3 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-red-800 dark:border-red-700 dark:bg-red-950 dark:text-red-300">
+                                <AlertCircle className="mt-0.5 size-5 shrink-0 text-red-600 dark:text-red-400" />
+                                <div>
+                                    <p className="font-semibold text-sm">
+                                        Se encontraron {Object.keys(errors).length} error{Object.keys(errors).length > 1 ? 'es' : ''} en el formulario
+                                    </p>
+                                    <ul className="mt-1 list-disc list-inside text-sm space-y-0.5">
+                                        {Object.values(errors).map((error, i) => (
+                                            <li key={i}>{error}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
                         )}
 
                         <form onSubmit={handleSubmit}>

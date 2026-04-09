@@ -174,7 +174,7 @@ class UserResource extends JsonResource
                 'placeholder' => '••••••••',
                 'required' => true,
                 'validation' => 'required|string|min:8|max:16',
-                'help_text' => 'Mínimo 8 caracteres, máximo 16. Debe contener al menos una mayúscula, un número y un carácter especial (@$!%*?&#)',
+                'help_text' => 'Mínimo 8 caracteres, máximo 16. Debe contener al menos una mayúscula, un número y un carácter especial (@$!%*?&#-_.)',
                 'grid_cols' => 6,
                 'show_on_edit' => false,
             ],

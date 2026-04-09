@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Category } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import categories from '@/routes/categories';
 import { Button } from '@/components/ui/button';
@@ -35,7 +35,8 @@ interface CategoryEditProps {
 }
 
 export default function CategoryEdit({ category, fields }: CategoryEditProps) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'PUT',
         name: category?.name || '',
         description: category?.description || '',
         image: null as File | null,
@@ -73,17 +74,9 @@ export default function CategoryEdit({ category, fields }: CategoryEditProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Si hay una imagen, usar POST con _method=PUT
-        if (data.image) {
-            router.post(categories.update(category.id).url, {
-                ...data,
-                _method: 'PUT',
-            } as any, {
-                forceFormData: true,
-            });
-        } else {
-            put(categories.update(category.id).url);
-        }
+        post(categories.update(category.id).url, {
+            forceFormData: !!data.image,
+        });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -6,8 +6,10 @@ import orderDetails from '@/routes/order-details';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Edit, Eye, Plus, Search, Trash2, FileText } from 'lucide-react';
+import { Plus, Search, FileText } from 'lucide-react';
 import { useState } from 'react';
+import { TooltipProvider} from "@/components/ui/tooltip";
+import { TableRowActions } from '@/components/resources/index/ActionButtons';
 
 interface OrderDetailsIndexProps {
     orderDetails: {
@@ -89,182 +91,178 @@ export default function OrderDetailsIndex({
     const productFilterOptions = filters.find(f => f.name === 'product_id')?.options || [];
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Detalles de Órdenes" />
-            
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Card>
-                    <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <FileText className="size-8 text-primary" />
-                                <div>
-                                    <CardTitle>Detalles de Órdenes</CardTitle>
-                                    <CardDescription>
-                                        Gestión de detalles de órdenes del sistema
-                                    </CardDescription>
+        <TooltipProvider>
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title="Detalles de Órdenes" />
+                
+                <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <FileText className="size-8 text-primary" />
+                                    <div>
+                                        <CardTitle>Detalles de Órdenes</CardTitle>
+                                        <CardDescription>
+                                            Gestión de detalles de órdenes del sistema
+                                        </CardDescription>
+                                    </div>
                                 </div>
+                                <Link href={orderDetails.create().url}>
+                                    <Button>
+                                        <Plus className="mr-2 size-4" />
+                                        Nuevo Detalle
+                                    </Button>
+                                </Link>
                             </div>
-                            <Link href={orderDetails.create().url}>
-                                <Button>
-                                    <Plus className="mr-2 size-4" />
-                                    Nuevo Detalle
+                        </CardHeader>
+                        <CardContent>
+                            {/* Filtros de búsqueda */}
+                            <div className="mb-6 grid gap-4 md:grid-cols-4">
+                                <div className="relative">
+                                    <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Buscar..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                        className="pl-8"
+                                    />
+                                </div>
+                                <select
+                                    value={orderFilter}
+                                    onChange={(e) => setOrderFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                >
+                                    <option value="">Todas las órdenes</option>
+                                    {orderFilterOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <select
+                                    value={productFilter}
+                                    onChange={(e) => setProductFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                >
+                                    <option value="">Todos los productos</option>
+                                    {productFilterOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <Button onClick={handleSearch} className="w-full">
+                                    Buscar
                                 </Button>
-                            </Link>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        {/* Filtros de búsqueda */}
-                        <div className="mb-6 grid gap-4 md:grid-cols-4">
-                            <div className="relative">
-                                <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
-                                <Input
-                                    placeholder="Buscar..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                    className="pl-8"
-                                />
                             </div>
-                            <select
-                                value={orderFilter}
-                                onChange={(e) => setOrderFilter(e.target.value)}
-                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                            >
-                                <option value="">Todas las órdenes</option>
-                                {orderFilterOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                            <select
-                                value={productFilter}
-                                onChange={(e) => setProductFilter(e.target.value)}
-                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                            >
-                                <option value="">Todos los productos</option>
-                                {productFilterOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                            <Button onClick={handleSearch} className="w-full">
-                                Buscar
-                            </Button>
-                        </div>
 
-                        {/* Tabla de detalles de órdenes */}
-                        <div className="rounded-md border">
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead className="bg-muted/50">
-                                        <tr>
-                                            {columns.filter(col => col.key !== 'actions').map((column) => (
-                                                <th
-                                                    key={column.key}
-                                                    className={`px-4 py-3 text-left text-sm font-medium ${
-                                                        column.sortable ? 'cursor-pointer hover:bg-muted' : ''
-                                                    }`}
-                                                    onClick={() => column.sortable && handleSort(column.key)}
-                                                >
-                                                    <div className="flex items-center gap-2">
-                                                        {column.label}
-                                                        {column.sortable && queryParams.sort_by === column.key && (
-                                                            <span>{queryParams.sort_order === 'asc' ? '↑' : '↓'}</span>
-                                                        )}
-                                                    </div>
-                                                </th>
-                                            ))}
-                                            <th className="px-4 py-3 text-left text-sm font-medium">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y">
-                                        {orderDetailsData.data.length > 0 ? (
-                                            orderDetailsData.data.map((orderDetail) => (
-                                                <tr key={orderDetail.id} className="hover:bg-muted/50">
-                                                    <td className="px-4 py-3 text-sm">{orderDetail.id}</td>
-                                                    <td className="px-4 py-3 text-sm">
-                                                        <span className="font-medium">#{orderDetail.order_number}</span>
-                                                    </td>
-                                                    <td className="px-4 py-3 text-sm">{orderDetail.product_name}</td>
-                                                    <td className="px-4 py-3 text-sm font-medium">{orderDetail.quantity}</td>
-                                                    <td className="px-4 py-3 text-sm">${orderDetail.unit_price_formatted}</td>
-                                                    <td className="px-4 py-3 text-sm font-semibold">${orderDetail.subtotal_formatted}</td>
-                                                    <td className="px-4 py-3 text-sm">
+                            {/* Tabla de detalles de órdenes */}
+                            <div className="rounded-md border">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-muted/50">
+                                            <tr>
+                                                {columns.filter(col => col.key !== 'actions').map((column) => (
+                                                    <th
+                                                        key={column.key}
+                                                        className={`px-4 py-3 text-left text-sm font-medium ${
+                                                            column.sortable ? 'cursor-pointer hover:bg-muted' : ''
+                                                        }`}
+                                                        onClick={() => column.sortable && handleSort(column.key)}
+                                                    >
                                                         <div className="flex items-center gap-2">
-                                                            <Link href={orderDetails.show(orderDetail.id).url}>
-                                                                <Button variant="ghost" size="sm">
-                                                                    <Eye className="size-4" />
-                                                                </Button>
-                                                            </Link>
-                                                            <Link href={orderDetails.edit(orderDetail.id).url}>
-                                                                <Button variant="ghost" size="sm">
-                                                                    <Edit className="size-4" />
-                                                                </Button>
-                                                            </Link>
-                                                            <Button 
-                                                                variant="ghost" 
-                                                                size="sm"
-                                                                onClick={() => handleDelete(orderDetail.id)}
-                                                            >
-                                                                <Trash2 className="size-4 text-destructive" />
-                                                            </Button>
+                                                            {column.label}
+                                                            {column.sortable && queryParams.sort_by === column.key && (
+                                                                <span>{queryParams.sort_order === 'asc' ? '↑' : '↓'}</span>
+                                                            )}
                                                         </div>
+                                                    </th>
+                                                ))}
+                                                <th className="px-4 py-3 text-left text-sm font-medium">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y">
+                                            {orderDetailsData.data.length > 0 ? (
+                                                orderDetailsData.data.map((orderDetail) => (
+                                                    <tr key={orderDetail.id} className="hover:bg-muted/50">
+                                                        <td className="px-4 py-3 text-sm">{orderDetail.id}</td>
+                                                        <td className="px-4 py-3 text-sm">
+                                                            <span className="font-medium">#{orderDetail.order_number}</span>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-sm">{orderDetail.product_name}</td>
+                                                        <td className="px-4 py-3 text-sm font-medium">{orderDetail.quantity}</td>
+                                                        <td className="px-4 py-3 text-sm">${orderDetail.unit_price_formatted}</td>
+                                                        <td className="px-4 py-3 text-sm font-semibold">${orderDetail.subtotal_formatted}</td>
+                                                        {/* Botones de acción */}
+                                                        <td className="px-4 py-3 text-right">
+                                                            <TableRowActions
+                                                                id={orderDetail.id}
+                                                                urls={{
+                                                                    show: orderDetails.show(orderDetail.id).url,
+                                                                    edit: orderDetails.edit(orderDetail.id).url,
+                                                                }}
+                                                                onDelete={handleDelete}
+                                                                tooltips={{
+                                                                    show: 'Ver orden',
+                                                                    edit: 'Editar orden',
+                                                                    delete: 'Eliminar orden',
+                                                                }}/>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                                                        No se encontraron detalles de órdenes
                                                     </td>
                                                 </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
-                                                    No se encontraron detalles de órdenes
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Paginación */}
-                        {pagination.total > 0 && (
-                            <div className="mt-4 flex items-center justify-between">
-                                <div className="text-sm text-muted-foreground">
-                                    Mostrando {pagination.from} a {pagination.to} de {pagination.total} registros
+                            {/* Paginación */}
+                            {pagination.total > 0 && (
+                                <div className="mt-4 flex items-center justify-between">
+                                    <div className="text-sm text-muted-foreground">
+                                        Mostrando {pagination.from} a {pagination.to} de {pagination.total} registros
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {pagination.current_page > 1 && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => router.get(orderDetails.index().url, {
+                                                    ...queryParams,
+                                                    page: pagination.current_page - 1,
+                                                })}
+                                            >
+                                                Anterior
+                                            </Button>
+                                        )}
+                                        {pagination.current_page < pagination.last_page && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => router.get(orderDetails.index().url, {
+                                                    ...queryParams,
+                                                    page: pagination.current_page + 1,
+                                                })}
+                                            >
+                                                Siguiente
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="flex gap-2">
-                                    {pagination.current_page > 1 && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => router.get(orderDetails.index().url, {
-                                                ...queryParams,
-                                                page: pagination.current_page - 1,
-                                            })}
-                                        >
-                                            Anterior
-                                        </Button>
-                                    )}
-                                    {pagination.current_page < pagination.last_page && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => router.get(orderDetails.index().url, {
-                                                ...queryParams,
-                                                page: pagination.current_page + 1,
-                                            })}
-                                        >
-                                            Siguiente
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
-        </AppLayout>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </AppLayout>
+        </TooltipProvider>
     );
 }
 

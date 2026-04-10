@@ -1,16 +1,17 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Order, type TableColumn, type FilterField, type Pagination } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import orders from '@/routes/orders';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Search, ShoppingCart } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Search, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
-import { TooltipProvider} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { TableRowActions } from '@/components/resources/index/ActionButtons';
+import { PageHeader } from '@/components/resources/index/PageHeader';
 
 interface OrdersIndexProps {
     orders: {
@@ -41,11 +42,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function OrdersIndex({ 
-    orders: ordersData, 
-    columns, 
-    queryParams = {}, 
-    pagination 
+export default function OrdersIndex({
+    orders: ordersData,
+    columns,
+    queryParams = {},
+    pagination
 }: OrdersIndexProps) {
     const [search, setSearch] = useState(queryParams.search || '');
     const [statusFilter, setStatusFilter] = useState(queryParams.status || '');
@@ -66,9 +67,9 @@ export default function OrdersIndex({
     };
 
     const handleSort = (column: string) => {
-        const sortOrder = 
-            queryParams.sort_by === column && queryParams.sort_order === 'asc' 
-                ? 'desc' 
+        const sortOrder =
+            queryParams.sort_by === column && queryParams.sort_order === 'asc'
+                ? 'desc'
                 : 'asc';
 
         router.get(orders.index().url, {
@@ -110,96 +111,62 @@ export default function OrdersIndex({
         <TooltipProvider>
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Órdenes" />
-                
+
                 <div className="flex h-full flex-1 flex-col gap-4 p-4">
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <ShoppingCart className="size-5" />
-                                    Gestión de Órdenes
-                                </CardTitle>
-                                <CardDescription>
-                                    Administra todas las órdenes del sistema
-                                </CardDescription>
-                            </div>
-                            <Link href={orders.create().url}>
-                                <Button>
-                                    <Plus className="mr-2 size-4" />
-                                    Nueva Orden
-                                </Button>
-                            </Link>
-                        </CardHeader>
+                        {/* Header */}
+                        <PageHeader
+                            icon={ShoppingCart}
+                            title="Gestión de Órdenes"
+                            description="Administra todas las órdenes del sistema"
+                            createButton={{
+                                url: orders.create().url,
+                                label: 'Nueva Orden',
+                            }}
+                        />
+
+                        {/* Content */}
                         <CardContent>
-                            {/* Filtros */}
-                            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end">
-                                <div className="flex-1">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Buscar
-                                    </label>
-                                    <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            type="text"
-                                            placeholder="Buscar por ID, cliente, teléfono..."
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="pl-10"
-                                        />
-                                    </div>
+                            {/* Filtros de Busqueda*/}
+                            <div className="mb-6 grid gap-4 md:grid-cols-5">
+                                <div className="relative">
+                                    <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Buscar..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                        className="pl-10"
+                                    />
                                 </div>
-                                
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Estado
-                                    </label>
-                                    <select
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todos los estados</option>
-                                        <option value="pending">Pendiente</option>
-                                        <option value="preparing">En Preparación</option>
-                                        <option value="ready">Listo</option>
-                                        <option value="delivered">Entregado</option>
-                                        <option value="canceled">Cancelado</option>
-                                    </select>
-                                </div>
-
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Tipo de Servicio
-                                    </label>
-                                    <select
-                                        value={serviceTypeFilter}
-                                        onChange={(e) => setServiceTypeFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todos los tipos</option>
-                                        <option value="delivery">Domicilio</option>
-                                        <option value="pickup">Recoger</option>
-                                    </select>
-                                </div>
-
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Moneda
-                                    </label>
-                                    <select
-                                        value={currencyFilter}
-                                        onChange={(e) => setCurrencyFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todas las monedas</option>
-                                        <option value="nacional">Nacional</option>
-                                        <option value="internacional">Internacional</option>
-                                    </select>
-                                </div>
-
-                                <Button onClick={handleSearch}>
-                                    <Search className="mr-2 size-4" />
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todos los estados</option>
+                                    <option value="pending">Pendiente</option>
+                                    <option value="preparing">En Preparación</option>
+                                    <option value="ready">Listo</option>
+                                    <option value="delivered">Entregado</option>
+                                    <option value="canceled">Cancelado</option>
+                                </select>
+                                <select
+                                    value={serviceTypeFilter}
+                                    onChange={(e) => setServiceTypeFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="delivery">Domicilio</option>
+                                    <option value="pickup">Recoger</option>
+                                </select>
+                                <select
+                                    value={currencyFilter}
+                                    onChange={(e) => setCurrencyFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todas las monedas</option>
+                                    <option value="nacional">Nacional</option>
+                                    <option value="internacional">Internacional</option>
+                                </select>
+                                <Button onClick={handleSearch} className="w-full">
                                     Buscar
                                 </Button>
                             </div>
@@ -239,7 +206,7 @@ export default function OrdersIndex({
                                     <tbody className="divide-y">
                                         {ordersData.data.length === 0 ? (
                                             <tr>
-                                                <td 
+                                                <td
                                                     colSpan={columns.filter(col => col.visible).length + 1}
                                                     className="px-4 py-8 text-center text-muted-foreground"
                                                 >
@@ -266,8 +233,8 @@ export default function OrdersIndex({
                                                         {order.currency_label}
                                                     </td>
                                                     <td className="px-4 py-3">
-                                                        {order.order_date_formatted || 
-                                                            (order.order_date 
+                                                        {order.order_date_formatted ||
+                                                            (order.order_date
                                                                 ? new Date(order.order_date).toLocaleDateString('es-ES')
                                                                 : '-'
                                                             )
@@ -287,7 +254,7 @@ export default function OrdersIndex({
                                                                 show: 'Ver orden',
                                                                 edit: 'Editar orden',
                                                                 delete: 'Eliminar orden',
-                                                            }}/>
+                                                            }} />
                                                     </td>
                                                 </tr>
                                             ))

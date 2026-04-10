@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Search, CreditCard } from 'lucide-react';
+import { Plus, Search, CreditCard, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { TooltipProvider} from "@/components/ui/tooltip";
 import { TableRowActions } from '@/components/resources/index/ActionButtons';
+import { PageHeader } from '@/components/resources/index/PageHeader';
 
 interface PaymentMethodsIndexProps {
     payment_methods: {
@@ -102,75 +103,49 @@ export default function PaymentMethodsIndex({
                 
                 <div className="flex h-full flex-1 flex-col gap-4 p-4">
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <CreditCard className="size-5" />
-                                    Gestión de Métodos de Pago
-                                </CardTitle>
-                                <CardDescription>
-                                    Administra todos los métodos de pago del sistema
-                                </CardDescription>
-                            </div>
-                            <Link href={paymentMethods.create().url}>
-                                <Button>
-                                    <Plus className="mr-2 size-4" />
-                                    Nuevo Método de Pago
-                                </Button>
-                            </Link>
-                        </CardHeader>
+                        {/* Header */}
+                        <PageHeader
+                            icon={CreditCard}
+                            title="Gestión de Métodos de Pago"
+                            description="Administra todos los métodos de pago del sistema"
+                            createButton={{
+                                url: paymentMethods.create().url,
+                                label: 'Nuevo Método de Pago',
+                            }}
+                        />
+
+                        {/* Content */}
                         <CardContent>
-                            {/* Filtros */}
-                            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end">
-                                <div className="flex-1">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Buscar
-                                    </label>
-                                    <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            type="text"
-                                            placeholder="Buscar por código o nombre..."
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="pl-10"
-                                        />
-                                    </div>
+                            {/* Filtros de Busqueda*/}
+                            <div className="mb-6 grid gap-4 md:grid-cols-4">
+                                <div className="relative">
+                                    <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground"/>
+                                    <Input
+                                        type="text"
+                                        placeholder="Buscar..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                        className="pl-10"
+                                    />
                                 </div>
-                                
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Tipo de Moneda
-                                    </label>
-                                    <select
-                                        value={currencyTypeFilter}
-                                        onChange={(e) => setCurrencyTypeFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todos los tipos</option>
-                                        <option value="nacional">Nacional</option>
-                                        <option value="internacional">Internacional</option>
-                                    </select>
-                                </div>
-
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Estado
-                                    </label>
-                                    <select
-                                        value={activeFilter}
-                                        onChange={(e) => setActiveFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todos los estados</option>
-                                        <option value="1">Activo</option>
-                                        <option value="0">Inactivo</option>
-                                    </select>
-                                </div>
-
-                                <Button onClick={handleSearch}>
-                                    <Search className="mr-2 size-4" />
+                                <select
+                                    value={currencyTypeFilter}
+                                    onChange={(e) => setCurrencyTypeFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="nacional">Nacional</option>
+                                    <option value="internacional">Internacional</option>
+                                </select>
+                                <select
+                                    value={activeFilter}
+                                    onChange={(e) => setActiveFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todos los estados</option>
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+                                <Button onClick={handleSearch} className="w-full">
                                     Buscar
                                 </Button>
                             </div>

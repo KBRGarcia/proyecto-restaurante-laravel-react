@@ -11,6 +11,7 @@ import { Plus, Search, Receipt } from 'lucide-react';
 import { useState } from 'react';
 import { TooltipProvider} from "@/components/ui/tooltip";
 import { TableRowActions } from '@/components/resources/index/ActionButtons';
+import { PageHeader } from '@/components/resources/index/PageHeader';
 
 interface PhysicalPaymentOrdersIndexProps {
     physicalPaymentOrders: {
@@ -123,43 +124,35 @@ export default function PhysicalPaymentOrdersIndex({
                 
                 <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                     <Card>
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Receipt className="size-8 text-primary" />
-                                    <div>
-                                        <CardTitle>Órdenes de Pago Físico</CardTitle>
-                                        <CardDescription>
-                                            Gestión de órdenes pendientes de pago físico
-                                        </CardDescription>
-                                    </div>
-                                </div>
-                                <Link href={physicalPaymentOrders.create().url}>
-                                    <Button>
-                                        <Plus className="mr-2 size-4" />
-                                        Nueva Orden
-                                    </Button>
-                                </Link>
-                            </div>
-                        </CardHeader>
+                        {/* Header */}
+                        <PageHeader
+                            icon={Receipt}
+                            title="Gestión de Órdenes de Pago Físico"
+                            description="Administra todas las órdenes pendientes de pago físico"
+                            createButton={{
+                                url: physicalPaymentOrders.create().url,
+                                label: 'Nueva Orden',
+                            }}
+                        />
+                        
+                        {/* Content */}
                         <CardContent>
                             {/* Filtros de búsqueda */}
-                            <div className="mb-6 grid gap-4 md:grid-cols-4">
+                            <div className="mb-6 grid gap-4 md:grid-cols-3">
                                 <div className="relative">
                                     <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
                                     <Input
-                                        placeholder="Buscar por ID o número de orden..."
+                                        placeholder="Buscar..."
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                        className="pl-8"
+                                        className="pl-10"
                                     />
                                 </div>
                                 <select
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                >
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
                                     <option value="">Todos los estados</option>
                                     {statusFilterOptions.map((option) => (
                                         <option key={option.value} value={option.value}>
@@ -167,7 +160,6 @@ export default function PhysicalPaymentOrdersIndex({
                                         </option>
                                     ))}
                                 </select>
-                                <div className="md:col-span-1"></div>
                                 <Button onClick={handleSearch} className="w-full">
                                     Buscar
                                 </Button>

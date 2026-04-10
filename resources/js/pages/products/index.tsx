@@ -11,6 +11,7 @@ import { Plus, Search, Package } from 'lucide-react';
 import { useState } from 'react';
 import { TooltipProvider} from "@/components/ui/tooltip";
 import { TableRowActions } from '@/components/resources/index/ActionButtons';
+import { PageHeader } from '@/components/resources/index/PageHeader';
 
 interface ProductsIndexProps {
     products: {
@@ -113,78 +114,52 @@ export default function ProductsIndex({
                 
                 <div className="flex h-full flex-1 flex-col gap-4 p-4">
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Package className="size-5" />
-                                    Gestión de Productos
-                                </CardTitle>
-                                <CardDescription>
-                                    Administra todos los productos del sistema
-                                </CardDescription>
-                            </div>
-                            <Link href={products.create().url}>
-                                <Button>
-                                    <Plus className="mr-2 size-4" />
-                                    Nuevo Producto
-                                </Button>
-                            </Link>
-                        </CardHeader>
+                        {/* Header */}
+                        <PageHeader
+                            icon={Package}
+                            title="Gestión de Productos"
+                            description="Administra todos los productos del sistema"
+                            createButton={{
+                                url: products.create().url,
+                                label: 'Nuevo Producto',
+                            }}
+                        />
+
+                        {/* Content */}
                         <CardContent>
-                            {/* Filtros */}
-                            <div className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
-                                <div className="md:col-span-2">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Buscar
-                                    </label>
-                                    <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            type="text"
-                                            placeholder="Buscar por nombre o descripción..."
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="pl-10"
-                                        />
-                                    </div>
+                            {/* Filtros de Busqueda*/}
+                            <div className="mb-6 grid gap-4 md:grid-cols-4">
+                                <div className="relative">
+                                    <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Buscar..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                        className="pl-10"
+                                    />
                                 </div>
-
-                                <div>
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Categoría
-                                    </label>
-                                    <select
-                                        value={categoryFilter}
-                                        onChange={(e) => setCategoryFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        {getCategoryOptions().map((option: any) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Estado
-                                    </label>
-                                    <select
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todos los estados</option>
-                                        <option value="active">Activo</option>
-                                        <option value="inactive">Inactivo</option>
-                                        <option value="out of stock">Agotado</option>
-                                    </select>
-                                </div>
-
-                                <Button onClick={handleSearch} className="md:mt-auto">
-                                    <Search className="mr-2 size-4" />
+                                <select
+                                    value={categoryFilter}
+                                    onChange={(e) => setCategoryFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    {getCategoryOptions().map((option: any) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todos los estados</option>
+                                    <option value="active">Activo</option>
+                                    <option value="inactive">Inactivo</option>
+                                    <option value="out of stock">Agotado</option>
+                                </select>
+                                <Button onClick={handleSearch} className="w-full">
                                     Buscar
                                 </Button>
                             </div>

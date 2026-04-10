@@ -11,6 +11,7 @@ import { Plus, Search, Users as UsersIcon } from 'lucide-react';
 import { useState } from 'react';
 import { TooltipProvider} from "@/components/ui/tooltip";
 import { TableRowActions } from '@/components/resources/index/ActionButtons';
+import { PageHeader } from '@/components/resources/index/PageHeader';
 
 interface UsersIndexProps {
     users: {
@@ -107,76 +108,50 @@ export default function UsersIndex({
                 
                 <div className="flex h-full flex-1 flex-col gap-4 p-4">
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <UsersIcon className="size-5" />
-                                    Gestión de Usuarios
-                                </CardTitle>
-                                <CardDescription>
-                                    Administra todos los usuarios del sistema
-                                </CardDescription>
-                            </div>
-                            <Link href={users.create().url}>
-                                <Button>
-                                    <Plus className="mr-2 size-4" />
-                                    Nuevo Usuario
-                                </Button>
-                            </Link>
-                        </CardHeader>
+                        {/* Header */}
+                        <PageHeader
+                            icon={UsersIcon}
+                            title="Gestión de Usuarios"
+                            description="Administra todos los usuarios del sistema"
+                            createButton={{
+                                url: users.create().url,
+                                label: 'Nuevo Usuario',
+                            }}
+                        />
+
+                        {/* Content */}
                         <CardContent>
                             {/* Filtros */}
-                            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end">
-                                <div className="flex-1">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Buscar
-                                    </label>
-                                    <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            type="text"
-                                            placeholder="Buscar por nombre, apellido o email..."
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="pl-10"
-                                        />
-                                    </div>
+                            <div className="mb-6 grid gap-4 md:grid-cols-4">
+                                <div className="relative">
+                                    <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Buscar..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                        className="pl-10"
+                                    />
                                 </div>
-                                
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Rol
-                                    </label>
-                                    <select
-                                        value={roleFilter}
-                                        onChange={(e) => setRoleFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todos los roles</option>
-                                        <option value="client">Cliente</option>
-                                        <option value="employee">Empleado</option>
-                                        <option value="admin">Administrador</option>
-                                    </select>
-                                </div>
-
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Estado
-                                    </label>
-                                    <select
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todos los estados</option>
-                                        <option value="active">Activo</option>
-                                        <option value="inactive">Inactivo</option>
-                                    </select>
-                                </div>
-
-                                <Button onClick={handleSearch}>
-                                    <Search className="mr-2 size-4" />
+                                <select
+                                    value={roleFilter}
+                                    onChange={(e) => setRoleFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todos los roles</option>
+                                    <option value="client">Cliente</option>
+                                    <option value="employee">Empleado</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todos los estados</option>
+                                    <option value="active">Activo</option>
+                                    <option value="inactive">Inactivo</option>
+                                </select>
+                                <Button onClick={handleSearch} className="w-full">
                                     Buscar
                                 </Button>
                             </div>

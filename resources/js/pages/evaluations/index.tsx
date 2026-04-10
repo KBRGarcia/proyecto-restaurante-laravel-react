@@ -6,10 +6,11 @@ import evaluations from '@/routes/evaluations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Search, Star } from 'lucide-react';
+import { Plus, Search, Star, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { TooltipProvider} from "@/components/ui/tooltip";
 import { TableRowActions } from '@/components/resources/index/ActionButtons';
+import { PageHeader } from '@/components/resources/index/PageHeader';
 
 interface EvaluationsIndexProps {
     evaluations: {
@@ -108,63 +109,44 @@ export default function EvaluationsIndex({
                 
                 <div className="flex h-full flex-1 flex-col gap-4 p-4">
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Star className="size-5" />
-                                    Gestión de Evaluaciones
-                                </CardTitle>
-                                <CardDescription>
-                                    Administra todas las evaluaciones y comentarios del sistema
-                                </CardDescription>
-                            </div>
-                            <Link href={evaluations.create().url}>
-                                <Button>
-                                    <Plus className="mr-2 size-4" />
-                                    Nueva Evaluación
-                                </Button>
-                            </Link>
-                        </CardHeader>
+                        {/* Header */}
+                        <PageHeader
+                            icon={Star}
+                            title="Gestión de Evaluaciones"
+                            description="Administra todas las evaluaciones y comentarios del sistema"
+                            createButton={{
+                                url: evaluations.create().url,
+                                label: 'Nueva Evaluación',
+                            }}
+                        />
+                        
+                        {/* Content */}
                         <CardContent>
-                            {/* Filtros */}
-                            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end">
-                                <div className="flex-1">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Buscar
-                                    </label>
-                                    <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            type="text"
-                                            placeholder="Buscar por usuario, producto o comentario..."
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="pl-10"
-                                        />
-                                    </div>
+                            {/* Filtros de Busqueda*/}
+                            <div className="mb-6 grid gap-4 md:grid-cols-3">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Buscar..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                        className="pl-10"
+                                    />
                                 </div>
-                                
-                                <div className="w-full md:w-48">
-                                    <label className="mb-1.5 block text-sm font-medium text-foreground">
-                                        Calificación
-                                    </label>
-                                    <select
-                                        value={ratingFilter}
-                                        onChange={(e) => setRatingFilter(e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100"
-                                    >
-                                        <option value="">Todas las calificaciones</option>
-                                        <option value="5">⭐⭐⭐⭐⭐ (5 estrellas)</option>
-                                        <option value="4">⭐⭐⭐⭐ (4 estrellas)</option>
-                                        <option value="3">⭐⭐⭐ (3 estrellas)</option>
-                                        <option value="2">⭐⭐ (2 estrellas)</option>
-                                        <option value="1">⭐ (1 estrella)</option>
-                                    </select>
-                                </div>
-
-                                <Button onClick={handleSearch}>
-                                    <Search className="mr-2 size-4" />
+                                <select
+                                    value={ratingFilter}
+                                    onChange={(e) => setRatingFilter(e.target.value)}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-neutral-900 dark:text-neutral-100">
+                                    <option value="">Todas las calificaciones</option>
+                                    <option value="5">⭐⭐⭐⭐⭐ (5 estrellas)</option>
+                                    <option value="4">⭐⭐⭐⭐ (4 estrellas)</option>
+                                    <option value="3">⭐⭐⭐ (3 estrellas)</option>
+                                    <option value="2">⭐⭐ (2 estrellas)</option>
+                                    <option value="1">⭐ (1 estrella)</option>
+                                </select>
+                                <Button onClick={handleSearch} className="w-full">
                                     Buscar
                                 </Button>
                             </div>

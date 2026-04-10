@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Search, FileText } from 'lucide-react';
 import { useState } from 'react';
-import { TooltipProvider} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { TableRowActions } from '@/components/resources/index/ActionButtons';
 
 interface OrderDetailsIndexProps {
@@ -39,12 +39,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function OrderDetailsIndex({ 
-    orderDetails: orderDetailsData, 
-    columns, 
-    filters, 
-    queryParams = {}, 
-    pagination 
+export default function OrderDetailsIndex({
+    orderDetails: orderDetailsData,
+    columns,
+    filters,
+    queryParams = {},
+    pagination
 }: OrderDetailsIndexProps) {
     const [search, setSearch] = useState(queryParams.search || '');
     const [orderFilter, setOrderFilter] = useState(queryParams.order_id?.toString() || '');
@@ -63,9 +63,9 @@ export default function OrderDetailsIndex({
     };
 
     const handleSort = (column: string) => {
-        const sortOrder = 
-            queryParams.sort_by === column && queryParams.sort_order === 'asc' 
-                ? 'desc' 
+        const sortOrder =
+            queryParams.sort_by === column && queryParams.sort_order === 'asc'
+                ? 'desc'
                 : 'asc';
 
         router.get(orderDetails.index().url, {
@@ -94,9 +94,10 @@ export default function OrderDetailsIndex({
         <TooltipProvider>
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Detalles de Órdenes" />
-                
+
                 <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                     <Card>
+                        {/* Header */}
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
@@ -116,6 +117,8 @@ export default function OrderDetailsIndex({
                                 </Link>
                             </div>
                         </CardHeader>
+
+                        {/* Content */}
                         <CardContent>
                             {/* Filtros de búsqueda */}
                             <div className="mb-6 grid gap-4 md:grid-cols-4">
@@ -126,14 +129,12 @@ export default function OrderDetailsIndex({
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                        className="pl-8"
-                                    />
+                                        className="pl-10"/>
                                 </div>
                                 <select
                                     value={orderFilter}
                                     onChange={(e) => setOrderFilter(e.target.value)}
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                >
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
                                     <option value="">Todas las órdenes</option>
                                     {orderFilterOptions.map((option) => (
                                         <option key={option.value} value={option.value}>
@@ -144,8 +145,7 @@ export default function OrderDetailsIndex({
                                 <select
                                     value={productFilter}
                                     onChange={(e) => setProductFilter(e.target.value)}
-                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                >
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
                                     <option value="">Todos los productos</option>
                                     {productFilterOptions.map((option) => (
                                         <option key={option.value} value={option.value}>
@@ -167,9 +167,8 @@ export default function OrderDetailsIndex({
                                                 {columns.filter(col => col.key !== 'actions').map((column) => (
                                                     <th
                                                         key={column.key}
-                                                        className={`px-4 py-3 text-left text-sm font-medium ${
-                                                            column.sortable ? 'cursor-pointer hover:bg-muted' : ''
-                                                        }`}
+                                                        className={`px-4 py-3 text-left text-sm font-medium ${column.sortable ? 'cursor-pointer hover:bg-muted' : ''
+                                                            }`}
                                                         onClick={() => column.sortable && handleSort(column.key)}
                                                     >
                                                         <div className="flex items-center gap-2">
@@ -208,7 +207,7 @@ export default function OrderDetailsIndex({
                                                                     show: 'Ver orden',
                                                                     edit: 'Editar orden',
                                                                     delete: 'Eliminar orden',
-                                                                }}/>
+                                                                }} />
                                                         </td>
                                                     </tr>
                                                 ))

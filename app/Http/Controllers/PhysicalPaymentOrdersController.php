@@ -6,7 +6,6 @@ use App\Http\Resources\PhysicalPaymentOrdersResource;
 use App\Models\Order;
 use App\Models\PhysicalPaymentOrders;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class PhysicalPaymentOrdersController extends Controller
 {
@@ -44,22 +43,13 @@ class PhysicalPaymentOrdersController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $physicalPaymentOrders = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $physicalPaymentOrderss = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('physical-payment-orders/index', [
-            'physicalPaymentOrders' => PhysicalPaymentOrdersResource::collection($physicalPaymentOrders),
-            'columns' => PhysicalPaymentOrdersResource::tableColumns(),
-            'filters' => PhysicalPaymentOrdersResource::filterFields(),
-            'queryParams' => $request->only(['search', 'status', 'order_id', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $physicalPaymentOrders->currentPage(),
-                'last_page' => $physicalPaymentOrders->lastPage(),
-                'per_page' => $physicalPaymentOrders->perPage(),
-                'total' => $physicalPaymentOrders->total(),
-                'from' => $physicalPaymentOrders->firstItem(),
-                'to' => $physicalPaymentOrders->lastItem(),
-            ],
-        ]);
+        return response()->json($physicalPaymentOrderss)->header('x-total-count', $total);
     }
 
     /**
@@ -82,10 +72,7 @@ class PhysicalPaymentOrdersController extends Controller
                 ];
             });
 
-        return Inertia::render('physical-payment-orders/create', [
-            'formFields' => PhysicalPaymentOrdersResource::formFields(),
-            'orders' => $orders,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -107,9 +94,7 @@ class PhysicalPaymentOrdersController extends Controller
 
         $physicalPaymentOrder = PhysicalPaymentOrders::create($validated);
 
-        return redirect()
-            ->route('physical-payment-orders.index')
-            ->with('success', 'Orden de pago físico creada exitosamente.');
+        return response()->json($physicalPaymentOrders, 201);
     }
 
     /**
@@ -119,9 +104,7 @@ class PhysicalPaymentOrdersController extends Controller
     {
         $physicalPaymentOrder->load(['order.user']);
 
-        return Inertia::render('physical-payment-orders/show', [
-            'physicalPaymentOrder' => new PhysicalPaymentOrdersResource($physicalPaymentOrder),
-        ]);
+        return response()->json($physicalPaymentOrders);
     }
 
     /**
@@ -143,11 +126,7 @@ class PhysicalPaymentOrdersController extends Controller
                 ];
             });
 
-        return Inertia::render('physical-payment-orders/edit', [
-            'physicalPaymentOrder' => new PhysicalPaymentOrdersResource($physicalPaymentOrder),
-            'formFields' => PhysicalPaymentOrdersResource::formFields(),
-            'orders' => $orders,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -162,9 +141,7 @@ class PhysicalPaymentOrdersController extends Controller
 
         $physicalPaymentOrder->update($validated);
 
-        return redirect()
-            ->route('physical-payment-orders.index')
-            ->with('success', 'Orden de pago físico actualizada exitosamente.');
+        return response()->json($physicalPaymentOrders, 200);
     }
 
     /**
@@ -174,8 +151,6 @@ class PhysicalPaymentOrdersController extends Controller
     {
         $physicalPaymentOrder->delete();
 
-        return redirect()
-            ->route('physical-payment-orders.index')
-            ->with('success', 'Orden de pago físico eliminada exitosamente.');
+        return response()->json(null, 204);
     }
 }

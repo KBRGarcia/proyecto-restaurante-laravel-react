@@ -6,7 +6,6 @@ use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -63,22 +62,13 @@ class OrderController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $orders = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $orders = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('orders/index', [
-            'orders' => OrderResource::collection($orders),
-            'columns' => OrderResource::tableColumns(),
-            'filters' => OrderResource::filterFields(),
-            'queryParams' => $request->only(['search', 'status', 'service_type', 'currency', 'user_id', 'assigned_employee_id', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $orders->currentPage(),
-                'last_page' => $orders->lastPage(),
-                'per_page' => $orders->perPage(),
-                'total' => $orders->total(),
-                'from' => $orders->firstItem(),
-                'to' => $orders->lastItem(),
-            ],
-        ]);
+        return response()->json($orders)->header('x-total-count', $total);
     }
 
     /**
@@ -110,11 +100,7 @@ class OrderController extends Controller
                 ];
             });
 
-        return Inertia::render('orders/create', [
-            'fields' => OrderResource::formFields(),
-            'users' => $users,
-            'employees' => $employees,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -141,9 +127,7 @@ class OrderController extends Controller
 
         $order = Order::create($validated);
 
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Orden creada exitosamente.');
+        return response()->json($order, 201);
     }
 
     /**
@@ -153,9 +137,7 @@ class OrderController extends Controller
     {
         $order->load(['user', 'assignedEmployee']);
 
-        return Inertia::render('orders/show', [
-            'order' => new OrderResource($order),
-        ]);
+        return response()->json($order);
     }
 
     /**
@@ -189,12 +171,7 @@ class OrderController extends Controller
                 ];
             });
 
-        return Inertia::render('orders/edit', [
-            'order' => new OrderResource($order),
-            'fields' => OrderResource::formFields(),
-            'users' => $users,
-            'employees' => $employees,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -234,9 +211,7 @@ class OrderController extends Controller
 
         $order->update($validated);
 
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Orden actualizada exitosamente.');
+        return response()->json($order, 200);
     }
 
     /**
@@ -246,8 +221,6 @@ class OrderController extends Controller
     {
         $order->delete();
 
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Orden eliminada exitosamente.');
+        return response()->json(null, 204);
     }
 }

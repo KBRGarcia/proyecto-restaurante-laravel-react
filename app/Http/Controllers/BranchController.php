@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BranchResource;
 use App\Models\Branch;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class BranchController extends Controller
 {
@@ -57,22 +56,13 @@ class BranchController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $branches = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $branches = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('branches/index', [
-            'branches' => BranchResource::collection($branches),
-            'columns' => BranchResource::tableColumns(),
-            'filters' => BranchResource::filterFields(),
-            'queryParams' => $request->only(['search', 'active', 'is_main', 'has_delivery', 'has_parking', 'city', 'state', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $branches->currentPage(),
-                'last_page' => $branches->lastPage(),
-                'per_page' => $branches->perPage(),
-                'total' => $branches->total(),
-                'from' => $branches->firstItem(),
-                'to' => $branches->lastItem(),
-            ],
-        ]);
+        return response()->json($branches)->header('x-total-count', $total);
     }
 
     /**
@@ -80,9 +70,7 @@ class BranchController extends Controller
      */
     public function create()
     {
-        return Inertia::render('branches/create', [
-            'formFields' => BranchResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -116,9 +104,7 @@ class BranchController extends Controller
 
         Branch::create($validated);
 
-        return redirect()
-            ->route('branches.index')
-            ->with('success', 'Sucursal creada exitosamente.');
+        return response()->json($branch, 201);
     }
 
     /**
@@ -126,9 +112,7 @@ class BranchController extends Controller
      */
     public function show(Branch $branch)
     {
-        return Inertia::render('branches/show', [
-            'branch' => new BranchResource($branch),
-        ]);
+        return response()->json($branch);
     }
 
     /**
@@ -136,10 +120,7 @@ class BranchController extends Controller
      */
     public function edit(Branch $branch)
     {
-        return Inertia::render('branches/edit', [
-            'branch' => new BranchResource($branch),
-            'formFields' => BranchResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -168,9 +149,7 @@ class BranchController extends Controller
 
         $branch->update($validated);
 
-        return redirect()
-            ->route('branches.index')
-            ->with('success', 'Sucursal actualizada exitosamente.');
+        return response()->json($branch, 200);
     }
 
     /**
@@ -180,8 +159,6 @@ class BranchController extends Controller
     {
         $branch->delete();
 
-        return redirect()
-            ->route('branches.index')
-            ->with('success', 'Sucursal eliminada exitosamente.');
+        return response()->json(null, 204);
     }
 }

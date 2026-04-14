@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -44,22 +43,13 @@ class UserController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $users = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $users = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('users/index', [
-            'users' => UserResource::collection($users),
-            'columns' => UserResource::tableColumns(),
-            'filters' => UserResource::filterFields(),
-            'queryParams' => $request->only(['search', 'role', 'status', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'per_page' => $users->perPage(),
-                'total' => $users->total(),
-                'from' => $users->firstItem(),
-                'to' => $users->lastItem(),
-            ],
-        ]);
+        return response()->json($users)->header('x-total-count', $total);
     }
 
     /**
@@ -67,9 +57,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('users/create', [
-            'fields' => UserResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -94,9 +82,7 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
-        return redirect()
-            ->route('users.index')
-            ->with('success', 'Usuario creado exitosamente.');
+        return response()->json($user, 201);
     }
 
     /**
@@ -104,9 +90,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return Inertia::render('users/show', [
-            'user' => (new UserResource($user))->resolve(),
-        ]);
+        return response()->json($user);
     }
 
     /**
@@ -114,10 +98,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return Inertia::render('users/edit', [
-            'user' => (new UserResource($user))->resolve(),
-            'fields' => UserResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -149,9 +130,7 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()
-            ->route('users.index')
-            ->with('success', 'Usuario actualizado exitosamente.');
+        return response()->json($user, 200);
     }
 
     /**
@@ -161,9 +140,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect()
-            ->route('users.index')
-            ->with('success', 'Usuario eliminado exitosamente.');
+        return response()->json(null, 204);
     }
 
     /**

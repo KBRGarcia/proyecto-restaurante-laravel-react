@@ -6,7 +6,6 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
@@ -37,22 +36,13 @@ class CategoryController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $categories = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $categories = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('categories/index', [
-            'categories' => CategoryResource::collection($categories),
-            'columns' => CategoryResource::tableColumns(),
-            'filters' => CategoryResource::filterFields(),
-            'queryParams' => $request->only(['search', 'status', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $categories->currentPage(),
-                'last_page' => $categories->lastPage(),
-                'per_page' => $categories->perPage(),
-                'total' => $categories->total(),
-                'from' => $categories->firstItem(),
-                'to' => $categories->lastItem(),
-            ],
-        ]);
+        return response()->json($categories)->header('x-total-count', $total);
     }
 
     /**
@@ -60,9 +50,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return Inertia::render('categories/create', [
-            'fields' => CategoryResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -81,9 +69,7 @@ class CategoryController extends Controller
 
         $category = Category::create($validated);
 
-        return redirect()
-            ->route('categories.index')
-            ->with('success', 'Categoría creada exitosamente.');
+        return response()->json($category, 201);
     }
 
     /**
@@ -91,9 +77,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return Inertia::render('categories/show', [
-            'category' => (new CategoryResource($category))->resolve(),
-        ]);
+        return response()->json($category);
     }
 
     /**
@@ -101,10 +85,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return Inertia::render('categories/edit', [
-            'category' => (new CategoryResource($category))->resolve(),
-            'fields' => CategoryResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -125,9 +106,7 @@ class CategoryController extends Controller
 
         $category->update($validated);
 
-        return redirect()
-            ->route('categories.index')
-            ->with('success', 'Categoría actualizada exitosamente.');
+        return response()->json($category, 200);
     }
 
     /**
@@ -137,9 +116,7 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return redirect()
-            ->route('categories.index')
-            ->with('success', 'Categoría eliminada exitosamente.');
+        return response()->json(null, 204);
     }
 
     /**

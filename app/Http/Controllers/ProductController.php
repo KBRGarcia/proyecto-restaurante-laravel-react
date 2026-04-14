@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Inertia\Inertia;
 
 class ProductController extends Controller
 {
@@ -48,7 +47,11 @@ class ProductController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $products = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $products = $query->offset($start)->limit($end - $start)->get();
 
         // Obtener categorías para los filtros
         $categories = Category::active()->ordered()->get()->map(function ($category) {
@@ -69,20 +72,7 @@ class ProductController extends Controller
             }
         }
 
-        return Inertia::render('products/index', [
-            'products' => ProductResource::collection($products),
-            'columns' => ProductResource::tableColumns(),
-            'filters' => $filters,
-            'queryParams' => $request->only(['search', 'category_id', 'status', 'is_special', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $products->currentPage(),
-                'last_page' => $products->lastPage(),
-                'per_page' => $products->perPage(),
-                'total' => $products->total(),
-                'from' => $products->firstItem(),
-                'to' => $products->lastItem(),
-            ],
-        ]);
+        return response()->json($products)->header('x-total-count', $total);
     }
 
     /**
@@ -106,9 +96,7 @@ class ProductController extends Controller
             }
         }
 
-        return Inertia::render('products/create', [
-            'fields' => $fields,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -133,9 +121,7 @@ class ProductController extends Controller
 
         $product = Product::create($validated);
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Producto creado exitosamente.');
+        return response()->json($product, 201);
     }
 
     /**
@@ -145,9 +131,7 @@ class ProductController extends Controller
     {
         $product->load('category');
 
-        return Inertia::render('products/show', [
-            'product' => (new ProductResource($product))->resolve(),
-        ]);
+        return response()->json($product);
     }
 
     /**
@@ -173,10 +157,7 @@ class ProductController extends Controller
             }
         }
 
-        return Inertia::render('products/edit', [
-            'product' => (new ProductResource($product))->resolve(),
-            'fields' => $fields,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -200,9 +181,7 @@ class ProductController extends Controller
 
         $product->update($validated);
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Producto actualizado exitosamente.');
+        return response()->json($product, 200);
     }
 
     /**
@@ -212,9 +191,7 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Producto eliminado exitosamente.');
+        return response()->json(null, 204);
     }
 
     /**

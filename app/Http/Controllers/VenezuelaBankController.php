@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\VenezuelaBankResource;
 use App\Models\VenezuelaBank;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class VenezuelaBankController extends Controller
 {
@@ -38,22 +37,13 @@ class VenezuelaBankController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $banks = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $venezuelaBanks = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('venezuela-banks/index', [
-            'banks' => VenezuelaBankResource::collection($banks),
-            'columns' => VenezuelaBankResource::tableColumns(),
-            'filters' => VenezuelaBankResource::filterFields(),
-            'queryParams' => $request->only(['search', 'active', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $banks->currentPage(),
-                'last_page' => $banks->lastPage(),
-                'per_page' => $banks->perPage(),
-                'total' => $banks->total(),
-                'from' => $banks->firstItem(),
-                'to' => $banks->lastItem(),
-            ],
-        ]);
+        return response()->json($venezuelaBanks)->header('x-total-count', $total);
     }
 
     /**
@@ -61,9 +51,7 @@ class VenezuelaBankController extends Controller
      */
     public function create()
     {
-        return Inertia::render('venezuela-banks/create', [
-            'formFields' => VenezuelaBankResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -88,9 +76,7 @@ class VenezuelaBankController extends Controller
 
         $bank = VenezuelaBank::create($validated);
 
-        return redirect()
-            ->route('venezuela-banks.show', $bank->id)
-            ->with('success', 'Banco creado exitosamente.');
+        return response()->json($venezuelaBank, 201);
     }
 
     /**
@@ -98,9 +84,7 @@ class VenezuelaBankController extends Controller
      */
     public function show(VenezuelaBank $venezuelaBank)
     {
-        return Inertia::render('venezuela-banks/show', [
-            'bank' => new VenezuelaBankResource($venezuelaBank),
-        ]);
+        return response()->json($venezuelaBank);
     }
 
     /**
@@ -108,10 +92,7 @@ class VenezuelaBankController extends Controller
      */
     public function edit(VenezuelaBank $venezuelaBank)
     {
-        return Inertia::render('venezuela-banks/edit', [
-            'bank' => new VenezuelaBankResource($venezuelaBank),
-            'formFields' => VenezuelaBankResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -136,9 +117,7 @@ class VenezuelaBankController extends Controller
 
         $venezuelaBank->update($validated);
 
-        return redirect()
-            ->route('venezuela-banks.show', $venezuelaBank->id)
-            ->with('success', 'Banco actualizado exitosamente.');
+        return response()->json($venezuelaBank, 200);
     }
 
     /**
@@ -148,8 +127,6 @@ class VenezuelaBankController extends Controller
     {
         $venezuelaBank->delete();
 
-        return redirect()
-            ->route('venezuela-banks.index')
-            ->with('success', 'Banco eliminado exitosamente.');
+        return response()->json(null, 204);
     }
 }

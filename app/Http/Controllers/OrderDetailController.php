@@ -6,7 +6,6 @@ use App\Http\Resources\OrderDetailResource;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class OrderDetailController extends Controller
 {
@@ -48,22 +47,13 @@ class OrderDetailController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         // Paginación
-        $orderDetails = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $orderDetails = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('order-details/index', [
-            'orderDetails' => OrderDetailResource::collection($orderDetails),
-            'columns' => OrderDetailResource::tableColumns(),
-            'filters' => OrderDetailResource::filterFields(),
-            'queryParams' => $request->only(['search', 'order_id', 'product_id', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $orderDetails->currentPage(),
-                'last_page' => $orderDetails->lastPage(),
-                'per_page' => $orderDetails->perPage(),
-                'total' => $orderDetails->total(),
-                'from' => $orderDetails->firstItem(),
-                'to' => $orderDetails->lastItem(),
-            ],
-        ]);
+        return response()->json($orderDetails)->header('x-total-count', $total);
     }
 
     /**
@@ -71,9 +61,7 @@ class OrderDetailController extends Controller
      */
     public function create()
     {
-        return Inertia::render('order-details/create', [
-            'fields' => OrderDetailResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -99,9 +87,7 @@ class OrderDetailController extends Controller
         // Actualizar los totales de la orden
         $this->updateOrderTotals($orderDetail->order_id);
 
-        return redirect()
-            ->route('order-details.index')
-            ->with('success', 'Detalle de orden creado exitosamente.');
+        return response()->json($orderDetail, 201);
     }
 
     /**
@@ -111,9 +97,7 @@ class OrderDetailController extends Controller
     {
         $orderDetail->load(['order.user', 'product.category']);
 
-        return Inertia::render('order-details/show', [
-            'orderDetail' => new OrderDetailResource($orderDetail),
-        ]);
+        return response()->json($orderDetail);
     }
 
     /**
@@ -123,10 +107,7 @@ class OrderDetailController extends Controller
     {
         $orderDetail->load(['order', 'product']);
 
-        return Inertia::render('order-details/edit', [
-            'orderDetail' => new OrderDetailResource($orderDetail),
-            'fields' => OrderDetailResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -160,9 +141,7 @@ class OrderDetailController extends Controller
             $this->updateOrderTotals($previousOrderId);
         }
 
-        return redirect()
-            ->route('order-details.index')
-            ->with('success', 'Detalle de orden actualizado exitosamente.');
+        return response()->json($orderDetail, 200);
     }
 
     /**
@@ -178,9 +157,7 @@ class OrderDetailController extends Controller
         // Actualizar los totales de la orden
         $this->updateOrderTotals($orderId);
 
-        return redirect()
-            ->route('order-details.index')
-            ->with('success', 'Detalle de orden eliminado exitosamente.');
+        return response()->json(null, 204);
     }
 
     /**

@@ -1,8 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\EvaluationController::index
-* @see app/Http/Controllers/EvaluationController.php:22
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:20
+* @route '/api/evaluations'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/evaluations',
+    url: '/api/evaluations',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\EvaluationController::index
-* @see app/Http/Controllers/EvaluationController.php:22
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:20
+* @route '/api/evaluations'
 */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -25,8 +25,8 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\EvaluationController::index
-* @see app/Http/Controllers/EvaluationController.php:22
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:20
+* @route '/api/evaluations'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,8 +35,8 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\EvaluationController::index
-* @see app/Http/Controllers/EvaluationController.php:22
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:20
+* @route '/api/evaluations'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,8 +45,8 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\EvaluationController::index
-* @see app/Http/Controllers/EvaluationController.php:22
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:20
+* @route '/api/evaluations'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(options),
@@ -55,8 +55,8 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\EvaluationController::index
-* @see app/Http/Controllers/EvaluationController.php:22
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:20
+* @route '/api/evaluations'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(options),
@@ -65,8 +65,8 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\EvaluationController::index
-* @see app/Http/Controllers/EvaluationController.php:22
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:20
+* @route '/api/evaluations'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url({
@@ -81,90 +81,9 @@ indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 index.form = indexForm
 
 /**
-* @see \App\Http\Controllers\EvaluationController::create
-* @see app/Http/Controllers/EvaluationController.php:72
-* @route '/evaluations/create'
-*/
-export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: create.url(options),
-    method: 'get',
-})
-
-create.definition = {
-    methods: ["get","head"],
-    url: '/evaluations/create',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\EvaluationController::create
-* @see app/Http/Controllers/EvaluationController.php:72
-* @route '/evaluations/create'
-*/
-create.url = (options?: RouteQueryOptions) => {
-    return create.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\EvaluationController::create
-* @see app/Http/Controllers/EvaluationController.php:72
-* @route '/evaluations/create'
-*/
-create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: create.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::create
-* @see app/Http/Controllers/EvaluationController.php:72
-* @route '/evaluations/create'
-*/
-create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: create.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::create
-* @see app/Http/Controllers/EvaluationController.php:72
-* @route '/evaluations/create'
-*/
-const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: create.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::create
-* @see app/Http/Controllers/EvaluationController.php:72
-* @route '/evaluations/create'
-*/
-createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: create.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::create
-* @see app/Http/Controllers/EvaluationController.php:72
-* @route '/evaluations/create'
-*/
-createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: create.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-create.form = createForm
-
-/**
 * @see \App\Http\Controllers\EvaluationController::store
-* @see app/Http/Controllers/EvaluationController.php:106
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:93
+* @route '/api/evaluations'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -173,13 +92,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: '/evaluations',
+    url: '/api/evaluations',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\EvaluationController::store
-* @see app/Http/Controllers/EvaluationController.php:106
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:93
+* @route '/api/evaluations'
 */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -187,8 +106,8 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\EvaluationController::store
-* @see app/Http/Controllers/EvaluationController.php:106
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:93
+* @route '/api/evaluations'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -197,8 +116,8 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\EvaluationController::store
-* @see app/Http/Controllers/EvaluationController.php:106
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:93
+* @route '/api/evaluations'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(options),
@@ -207,8 +126,8 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\EvaluationController::store
-* @see app/Http/Controllers/EvaluationController.php:106
-* @route '/evaluations'
+* @see app/Http/Controllers/EvaluationController.php:93
+* @route '/api/evaluations'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(options),
@@ -219,8 +138,8 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\EvaluationController::show
-* @see app/Http/Controllers/EvaluationController.php:133
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:120
+* @route '/api/evaluations/{evaluation}'
 */
 export const show = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -229,13 +148,13 @@ export const show = (args: { evaluation: number | { id: number } } | [evaluation
 
 show.definition = {
     methods: ["get","head"],
-    url: '/evaluations/{evaluation}',
+    url: '/api/evaluations/{evaluation}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\EvaluationController::show
-* @see app/Http/Controllers/EvaluationController.php:133
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:120
+* @route '/api/evaluations/{evaluation}'
 */
 show.url = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -267,8 +186,8 @@ show.url = (args: { evaluation: number | { id: number } } | [evaluation: number 
 
 /**
 * @see \App\Http\Controllers\EvaluationController::show
-* @see app/Http/Controllers/EvaluationController.php:133
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:120
+* @route '/api/evaluations/{evaluation}'
 */
 show.get = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -277,8 +196,8 @@ show.get = (args: { evaluation: number | { id: number } } | [evaluation: number 
 
 /**
 * @see \App\Http\Controllers\EvaluationController::show
-* @see app/Http/Controllers/EvaluationController.php:133
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:120
+* @route '/api/evaluations/{evaluation}'
 */
 show.head = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
@@ -287,8 +206,8 @@ show.head = (args: { evaluation: number | { id: number } } | [evaluation: number
 
 /**
 * @see \App\Http\Controllers\EvaluationController::show
-* @see app/Http/Controllers/EvaluationController.php:133
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:120
+* @route '/api/evaluations/{evaluation}'
 */
 const showForm = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
@@ -297,8 +216,8 @@ const showForm = (args: { evaluation: number | { id: number } } | [evaluation: n
 
 /**
 * @see \App\Http\Controllers\EvaluationController::show
-* @see app/Http/Controllers/EvaluationController.php:133
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:120
+* @route '/api/evaluations/{evaluation}'
 */
 showForm.get = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
@@ -307,8 +226,8 @@ showForm.get = (args: { evaluation: number | { id: number } } | [evaluation: num
 
 /**
 * @see \App\Http\Controllers\EvaluationController::show
-* @see app/Http/Controllers/EvaluationController.php:133
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:120
+* @route '/api/evaluations/{evaluation}'
 */
 showForm.head = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
@@ -323,114 +242,9 @@ showForm.head = (args: { evaluation: number | { id: number } } | [evaluation: nu
 show.form = showForm
 
 /**
-* @see \App\Http\Controllers\EvaluationController::edit
-* @see app/Http/Controllers/EvaluationController.php:145
-* @route '/evaluations/{evaluation}/edit'
-*/
-export const edit = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: edit.url(args, options),
-    method: 'get',
-})
-
-edit.definition = {
-    methods: ["get","head"],
-    url: '/evaluations/{evaluation}/edit',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\EvaluationController::edit
-* @see app/Http/Controllers/EvaluationController.php:145
-* @route '/evaluations/{evaluation}/edit'
-*/
-edit.url = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { evaluation: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { evaluation: args.id }
-    }
-
-    if (Array.isArray(args)) {
-        args = {
-            evaluation: args[0],
-        }
-    }
-
-    args = applyUrlDefaults(args)
-
-    const parsedArgs = {
-        evaluation: typeof args.evaluation === 'object'
-        ? args.evaluation.id
-        : args.evaluation,
-    }
-
-    return edit.definition.url
-            .replace('{evaluation}', parsedArgs.evaluation.toString())
-            .replace(/\/+$/, '') + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\EvaluationController::edit
-* @see app/Http/Controllers/EvaluationController.php:145
-* @route '/evaluations/{evaluation}/edit'
-*/
-edit.get = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: edit.url(args, options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::edit
-* @see app/Http/Controllers/EvaluationController.php:145
-* @route '/evaluations/{evaluation}/edit'
-*/
-edit.head = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: edit.url(args, options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::edit
-* @see app/Http/Controllers/EvaluationController.php:145
-* @route '/evaluations/{evaluation}/edit'
-*/
-const editForm = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: edit.url(args, options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::edit
-* @see app/Http/Controllers/EvaluationController.php:145
-* @route '/evaluations/{evaluation}/edit'
-*/
-editForm.get = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: edit.url(args, options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\EvaluationController::edit
-* @see app/Http/Controllers/EvaluationController.php:145
-* @route '/evaluations/{evaluation}/edit'
-*/
-editForm.head = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: edit.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-edit.form = editForm
-
-/**
 * @see \App\Http\Controllers\EvaluationController::update
-* @see app/Http/Controllers/EvaluationController.php:182
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:164
+* @route '/api/evaluations/{evaluation}'
 */
 export const update = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -439,13 +253,13 @@ export const update = (args: { evaluation: number | { id: number } } | [evaluati
 
 update.definition = {
     methods: ["put","patch"],
-    url: '/evaluations/{evaluation}',
+    url: '/api/evaluations/{evaluation}',
 } satisfies RouteDefinition<["put","patch"]>
 
 /**
 * @see \App\Http\Controllers\EvaluationController::update
-* @see app/Http/Controllers/EvaluationController.php:182
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:164
+* @route '/api/evaluations/{evaluation}'
 */
 update.url = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -477,8 +291,8 @@ update.url = (args: { evaluation: number | { id: number } } | [evaluation: numbe
 
 /**
 * @see \App\Http\Controllers\EvaluationController::update
-* @see app/Http/Controllers/EvaluationController.php:182
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:164
+* @route '/api/evaluations/{evaluation}'
 */
 update.put = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -487,8 +301,8 @@ update.put = (args: { evaluation: number | { id: number } } | [evaluation: numbe
 
 /**
 * @see \App\Http\Controllers\EvaluationController::update
-* @see app/Http/Controllers/EvaluationController.php:182
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:164
+* @route '/api/evaluations/{evaluation}'
 */
 update.patch = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -497,8 +311,8 @@ update.patch = (args: { evaluation: number | { id: number } } | [evaluation: num
 
 /**
 * @see \App\Http\Controllers\EvaluationController::update
-* @see app/Http/Controllers/EvaluationController.php:182
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:164
+* @route '/api/evaluations/{evaluation}'
 */
 const updateForm = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
@@ -512,8 +326,8 @@ const updateForm = (args: { evaluation: number | { id: number } } | [evaluation:
 
 /**
 * @see \App\Http\Controllers\EvaluationController::update
-* @see app/Http/Controllers/EvaluationController.php:182
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:164
+* @route '/api/evaluations/{evaluation}'
 */
 updateForm.put = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
@@ -527,8 +341,8 @@ updateForm.put = (args: { evaluation: number | { id: number } } | [evaluation: n
 
 /**
 * @see \App\Http\Controllers\EvaluationController::update
-* @see app/Http/Controllers/EvaluationController.php:182
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:164
+* @route '/api/evaluations/{evaluation}'
 */
 updateForm.patch = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
@@ -544,8 +358,8 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\EvaluationController::destroy
-* @see app/Http/Controllers/EvaluationController.php:209
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:191
+* @route '/api/evaluations/{evaluation}'
 */
 export const destroy = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -554,13 +368,13 @@ export const destroy = (args: { evaluation: number | { id: number } } | [evaluat
 
 destroy.definition = {
     methods: ["delete"],
-    url: '/evaluations/{evaluation}',
+    url: '/api/evaluations/{evaluation}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\EvaluationController::destroy
-* @see app/Http/Controllers/EvaluationController.php:209
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:191
+* @route '/api/evaluations/{evaluation}'
 */
 destroy.url = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -592,8 +406,8 @@ destroy.url = (args: { evaluation: number | { id: number } } | [evaluation: numb
 
 /**
 * @see \App\Http\Controllers\EvaluationController::destroy
-* @see app/Http/Controllers/EvaluationController.php:209
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:191
+* @route '/api/evaluations/{evaluation}'
 */
 destroy.delete = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -602,8 +416,8 @@ destroy.delete = (args: { evaluation: number | { id: number } } | [evaluation: n
 
 /**
 * @see \App\Http\Controllers\EvaluationController::destroy
-* @see app/Http/Controllers/EvaluationController.php:209
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:191
+* @route '/api/evaluations/{evaluation}'
 */
 const destroyForm = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
@@ -617,8 +431,8 @@ const destroyForm = (args: { evaluation: number | { id: number } } | [evaluation
 
 /**
 * @see \App\Http\Controllers\EvaluationController::destroy
-* @see app/Http/Controllers/EvaluationController.php:209
-* @route '/evaluations/{evaluation}'
+* @see app/Http/Controllers/EvaluationController.php:191
+* @route '/api/evaluations/{evaluation}'
 */
 destroyForm.delete = (args: { evaluation: number | { id: number } } | [evaluation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
@@ -632,6 +446,6 @@ destroyForm.delete = (args: { evaluation: number | { id: number } } | [evaluatio
 
 destroy.form = destroyForm
 
-const EvaluationController = { index, create, store, show, edit, update, destroy }
+const EvaluationController = { index, store, show, update, destroy }
 
 export default EvaluationController

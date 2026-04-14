@@ -8,15 +8,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Validator;
-use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
 
 class PaymentMethodController extends Controller
 {
     /**
      * Display a listing of the payment methods.
      */
-    public function index(Request $request): InertiaResponse
+    public function index(Request $request)
     {
         $query = PaymentMethod::query();
 
@@ -44,32 +42,21 @@ class PaymentMethodController extends Controller
         $sortOrder = $request->get('sort_order', 'asc');
         $query->orderBy($sortBy, $sortOrder);
 
-        $paymentMethods = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $paymentMethods = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('payment-methods/index', [
-            'payment_methods' => PaymentMethodResource::collection($paymentMethods),
-            'columns' => PaymentMethodResource::tableColumns(),
-            'filters' => PaymentMethodResource::filterFields(),
-            'queryParams' => $request->only(['search', 'currency_type', 'active', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $paymentMethods->currentPage(),
-                'last_page' => $paymentMethods->lastPage(),
-                'per_page' => $paymentMethods->perPage(),
-                'total' => $paymentMethods->total(),
-                'from' => $paymentMethods->firstItem(),
-                'to' => $paymentMethods->lastItem(),
-            ],
-        ]);
+        return response()->json($paymentMethods)->header('x-total-count', $total);
     }
 
     /**
      * Show the form for creating a new payment method.
      */
-    public function create(): InertiaResponse
+    public function create()
     {
-        return Inertia::render('payment-methods/create', [
-            'fields' => PaymentMethodResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -107,22 +94,17 @@ class PaymentMethodController extends Controller
     /**
      * Display the specified payment method.
      */
-    public function show(PaymentMethod $paymentMethod): InertiaResponse
+    public function show(PaymentMethod $paymentMethod)
     {
-        return Inertia::render('payment-methods/show', [
-            'payment_method' => new PaymentMethodResource($paymentMethod),
-        ]);
+        return response()->json($paymentMethod);
     }
 
     /**
      * Show the form for editing the specified payment method.
      */
-    public function edit(PaymentMethod $paymentMethod): InertiaResponse
+    public function edit(PaymentMethod $paymentMethod)
     {
-        return Inertia::render('payment-methods/edit', [
-            'payment_method' => new PaymentMethodResource($paymentMethod),
-            'fields' => PaymentMethodResource::formFields(),
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**

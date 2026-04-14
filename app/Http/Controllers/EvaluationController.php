@@ -11,15 +11,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Validator;
-use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
 
 class EvaluationController extends Controller
 {
     /**
      * Display a listing of the evaluations.
      */
-    public function index(Request $request): InertiaResponse
+    public function index(Request $request)
     {
         $query = Evaluation::with(['user', 'order', 'product']);
 
@@ -48,28 +46,19 @@ class EvaluationController extends Controller
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
 
-        $evaluations = $query->paginate($request->get('per_page', 10))->withQueryString();
+        // Paginación para Refine
+        $start = $request->get('_start', 0);
+        $end = $request->get('_end', 10);
+        $total = $query->count();
+        $evaluations = $query->offset($start)->limit($end - $start)->get();
 
-        return Inertia::render('evaluations/index', [
-            'evaluations' => EvaluationResource::collection($evaluations),
-            'columns' => EvaluationResource::tableColumns(),
-            'filters' => EvaluationResource::filterFields(),
-            'queryParams' => $request->only(['search', 'rating', 'sort_by', 'sort_order', 'per_page']),
-            'pagination' => [
-                'current_page' => $evaluations->currentPage(),
-                'last_page' => $evaluations->lastPage(),
-                'per_page' => $evaluations->perPage(),
-                'total' => $evaluations->total(),
-                'from' => $evaluations->firstItem(),
-                'to' => $evaluations->lastItem(),
-            ],
-        ]);
+        return response()->json($evaluations)->header('x-total-count', $total);
     }
 
     /**
      * Show the form for creating a new evaluation.
      */
-    public function create(): InertiaResponse
+    public function create()
     {
         $fields = EvaluationResource::formFields();
 
@@ -95,9 +84,7 @@ class EvaluationController extends Controller
             ];
         })->toArray();
 
-        return Inertia::render('evaluations/create', [
-            'fields' => $fields,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**
@@ -130,19 +117,17 @@ class EvaluationController extends Controller
     /**
      * Display the specified evaluation.
      */
-    public function show(Evaluation $evaluation): InertiaResponse
+    public function show(Evaluation $evaluation)
     {
         $evaluation->load(['user', 'order', 'product']);
 
-        return Inertia::render('evaluations/show', [
-            'evaluation' => new EvaluationResource($evaluation),
-        ]);
+        return response()->json($evaluation);
     }
 
     /**
      * Show the form for editing the specified evaluation.
      */
-    public function edit(Evaluation $evaluation): InertiaResponse
+    public function edit(Evaluation $evaluation)
     {
         $evaluation->load(['user', 'order', 'product']);
 
@@ -170,10 +155,7 @@ class EvaluationController extends Controller
             ];
         })->toArray();
 
-        return Inertia::render('evaluations/edit', [
-            'evaluation' => new EvaluationResource($evaluation),
-            'fields' => $fields,
-        ]);
+        return response()->json(['message' => 'Not used in API']);
     }
 
     /**

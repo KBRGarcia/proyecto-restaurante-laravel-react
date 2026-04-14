@@ -17,12 +17,12 @@ A continuación, se detalla una lista exhaustiva de todas las herramientas, fram
 
 ### Framework y Núcleo
 - **Laravel Framework**: `v13.4.0`
-- **Inertia Laravel**: `v3.0.2` (Integración con el frontend).
+- **Laravel Sanctum**: (Sistema de Autenticación API)
 - **Laravel Fortify**: `v1.36.2` (Lógica de autenticación backend).
 
 ### Utilidades y Desarrollo
 - **Laravel Tinker**: `v3.0.0` (REPL interactivo).
-- **Laravel Wayfinder**: `v0.1.16` (Generación de tipos para rutas).
+- **Laravel Wayfinder**: `v0.1.16` (Migrando a React Router).
 - **Laravel MCP**: `v0.6.5` (Model Context Protocol).
 - **Laravel Sail**: `v1.56.0` (Entorno Docker).
 - **Laravel Pail**: `v1.2.6` (Visualización de logs en tiempo real).
@@ -40,22 +40,25 @@ A continuación, se detalla una lista exhaustiva de todas las herramientas, fram
 
 ## ⚛️ Frontend (React Ecosystem)
 
-### Núcleo y Lenguaje
+### Núcleo y Arquitectura
 - **React**: `19.2.4`
 - **React DOM**: `19.2.4`
 - **TypeScript**: `v6.0.2`
-- **Inertia React**: `v3.0.3`
+- **Refine** (`@refinedev/core`): `^5.0.12` (Framework Data-Intensive SPA)
+- **Refine Simple Rest** (`@refinedev/simple-rest`): `^6.0.1` (Data Provider)
+- **React Router DOM**: `^6.0.0`
+- **Refine React Router** (`@refinedev/react-router`): `^2.0.4`
 
 ### Construcción y Estilos
 - **Vite**: `v8.0.7` (Bundler y entorno de desarrollo).
-- **Tailwind CSS**: `v4.2.2` (Framework de estilos).
+- **Tailwind CSS**: `v4.2.2` (Para vistas custom fuera del dashboard admin).
 - **@tailwindcss/vite**: `4.2.2`
 - **LightningCSS**: `1.32.0` (Compilador CSS ultrarrápido).
 
-### Componentes de UI (Radix UI / Headless UI)
-- **Headless UI**: `v2.2.10`
-- **Lucide React**: `v1.7.0` (Iconografía).
-- **Radix UI Core Components**:
+### Componentes de UI (Ant Design & Headless)
+- **Ant Design** (`antd`): Framework de UI principal.
+- **Refine Antd** (`@refinedev/antd`): `^6.0.3` (Integración nativa).
+- **Headless UI / Radix UI**: (Antiguos, en fase de desuso por reemplazo con Ant Design).
     - Avatar: `v1.1.11`
     - Checkbox: `v1.3.3`
     - Collapsible: `v1.1.12`

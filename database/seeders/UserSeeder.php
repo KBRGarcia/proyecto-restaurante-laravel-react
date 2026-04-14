@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -16,13 +17,16 @@ class UserSeeder extends Seeder
         // Limpiar la tabla antes de insertar
         DB::table('users')->delete();
 
+        // Generar el hash una sola vez para reutilizarlo
+        $hashedPassword = Hash::make('Grecia-123');
+
         DB::table('users')->insert([
             [
                 'name' => 'Admin',
                 'last_name' => 'Principal',
                 'email' => 'admin@restaurante.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => null,
                 'address' => null,
                 'profile_picture' => null,
@@ -39,7 +43,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Pérez',
                 'email' => 'juan@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0101',
                 'address' => 'Calle 1 #123',
                 'profile_picture' => null,
@@ -56,7 +60,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'González',
                 'email' => 'maria@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0102',
                 'address' => 'Avenida 2 #456',
                 'profile_picture' => null,
@@ -73,7 +77,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Rodríguez',
                 'email' => 'carlos@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0103',
                 'address' => 'Boulevard 3 #789',
                 'profile_picture' => null,
@@ -90,7 +94,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Martínez',
                 'email' => 'ana@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0104',
                 'address' => 'Calle 4 #321',
                 'profile_picture' => null,
@@ -107,7 +111,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'López',
                 'email' => 'luis@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0105',
                 'address' => 'Avenida 5 #654',
                 'profile_picture' => null,
@@ -124,7 +128,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Hernández',
                 'email' => 'sofia@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0106',
                 'address' => 'Boulevard 6 #987',
                 'profile_picture' => null,
@@ -141,7 +145,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'García',
                 'email' => 'diego@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0107',
                 'address' => 'Calle 7 #159',
                 'profile_picture' => null,
@@ -158,7 +162,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Díaz',
                 'email' => 'elena@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0108',
                 'address' => 'Avenida 8 #753',
                 'profile_picture' => null,
@@ -175,7 +179,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Ramírez',
                 'email' => 'miguel@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0109',
                 'address' => 'Boulevard 9 #951',
                 'profile_picture' => null,
@@ -192,7 +196,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Torres',
                 'email' => 'laura@example.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+1 555-0110',
                 'address' => 'Calle 10 #852',
                 'profile_picture' => null,
@@ -209,7 +213,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Garcia Torres',
                 'email' => 'ikabarugarcia12@gmail.com',
                 'email_verified_at' => null,
-                'password' => '$2y$12$jZkMhhHtNl6wE0JPB92RC.Xgp1ZMyCFgZP6Hnys/9/2Ua5c5yLmzC',
+                'password' => $hashedPassword,
                 'phone_number' => '+58 414 2591853',
                 'address' => null,
                 'profile_picture' => null,
@@ -224,3 +228,4 @@ class UserSeeder extends Seeder
         ]);
     }
 }
+

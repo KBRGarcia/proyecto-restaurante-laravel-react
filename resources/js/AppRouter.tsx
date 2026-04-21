@@ -1,32 +1,17 @@
 import { Refine, AuthProvider } from "@refinedev/core";
 import { AuthPage, ThemedLayout, ThemedSider, useNotificationProvider } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
-
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { Header } from "./components/header";
 import { CustomRegister } from "./components/auth/CustomRegister";
-import { UserOutlined,
-    BranchesOutlined,
-    ProductOutlined,
-    StarOutlined,
-    CreditCardOutlined,
-    BankOutlined,
-    FileDoneOutlined,
-    FileOutlined,
-    DollarOutlined,
-    InboxOutlined } from "@ant-design/icons";
-
+import { CustomLogin } from "./components/auth/CustomLogin";
+import { UserOutlined, BranchesOutlined, ProductOutlined, StarOutlined, CreditCardOutlined, BankOutlined, FileDoneOutlined, FileOutlined, DollarOutlined, InboxOutlined, DashboardOutlined } from "@ant-design/icons";
 import dataProvider from "@refinedev/simple-rest";
-import routerProvider, {
-    NavigateToResource,
-    CatchAllNavigate,
-    UnsavedChangesNotifier,
-    DocumentTitleHandler,
-} from "@refinedev/react-router";
+import routerProvider, { NavigateToResource, CatchAllNavigate, UnsavedChangesNotifier, DocumentTitleHandler } from "@refinedev/react-router";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import axios from "axios";
-
-
+import { Link } from "@refinedev/core";
+// Resources
 import { UserList } from "./pages/users/list";
 import { UserCreate } from "./pages/users/create";
 import { UserEdit } from "./pages/users/edit";
@@ -202,6 +187,29 @@ const authProvider: AuthProvider = {
     },
 };
 
+// Manejo del Dashboard
+const CustomDashboard = () => {
+    return (
+        <div>
+            <h1>Dashboard :3</h1>
+        </div>
+    );
+};
+
+// Manejo del titulo del proyecto
+const CustomTitle = ({ collapsed }: { collapsed: boolean }) => (
+    <Link to="/dashboard">
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "12px", textDecoration: "none" }}>
+            <img src="/logo.png" alt="Logo" style={{ maxHeight: "40px" }} />
+            {!collapsed &&
+                <span style={{ fontSize: "18px", fontWeight: "bold", color: "#ef4444", whiteSpace: "nowrap" }}>
+                    Sabor & Tradición
+                </span>}
+        </div>
+    </Link>
+);
+
+// Menú de navegación lateral
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -212,6 +220,11 @@ export default function AppRouter() {
                     authProvider={authProvider}
                     notificationProvider={useNotificationProvider}
                     resources={[
+                        {
+                            name: "dashboard",
+                            list: "/dashboard",
+                            meta: { canDelete: true, icon: <DashboardOutlined /> },
+                        },
                         {
                             name: "users",
                             list: "/users",
@@ -298,10 +311,11 @@ export default function AppRouter() {
                         warnWhenUnsavedChanges: true,
                     }}
                 >
+                    {/* Rutas de la página principal */}
                     <Routes>
                         <Route
                             path="/login"
-                            element={<AuthPage type="login" title={<h1 style={{ fontSize: "24px", color: "#ef4444", textAlign: "center" }}>Restaurante</h1>} />}
+                            element={<CustomLogin />}
                         />
                         <Route
                             path="/register"
@@ -311,14 +325,19 @@ export default function AppRouter() {
                         {/* Rutas Protegidas */}
                         <Route
                             element={
-                                <ThemedLayout Header={Header} Sider={ThemedSider}>
+                                <ThemedLayout Header={Header} Sider={(props) => <ThemedSider {...props} Title={({ collapsed }) => <CustomTitle collapsed={collapsed} />} />}>
                                     <Outlet />
                                 </ThemedLayout>
                             }
                         >
                             <Route
                                 index
-                                element={<NavigateToResource resource="users" />}
+                                element={<NavigateToResource resource="dashboard" />}
+                            />
+
+                            <Route
+                                path="/dashboard"
+                                element={< CustomDashboard />}
                             />
 
                             <Route path="/users">

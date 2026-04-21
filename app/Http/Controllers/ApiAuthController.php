@@ -53,8 +53,8 @@ class ApiAuthController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'empleado',
-            'status' => 'activo',
+            'role' => 'employee',
+            'status' => 'active',
             'registration_date' => now(),
         ]);
 

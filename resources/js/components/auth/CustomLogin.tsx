@@ -1,16 +1,16 @@
-import { useRegister } from "@refinedev/core";
+import { useLogin } from "@refinedev/core";
 import { Button, Card, Col, Form, Input, Layout, Row, Typography, theme } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
 
 const { Title } = Typography;
 
-export const CustomRegister: React.FC = () => {
-    const { mutate: register, isPending } = useRegister();
+export const CustomLogin: React.FC = () => {
+    const { mutate: login, isPending } = useLogin();
     const { token } = theme.useToken();
 
     const onFinish = (values: Record<string, string>) => {
-        register(values);
+        login(values);
     };
 
     return (
@@ -26,26 +26,15 @@ export const CustomRegister: React.FC = () => {
                     >
                         <div style={{ textAlign: "center", marginBottom: "24px" }}>
                             <img src="/logo.png" alt="logo" style={{ maxHeight: "150px" }} />
-                            <Title level={3} style={{ color: token.colorPrimary }}>
-                                Crear Cuenta
+                            <Title level={2} style={{ color: token.colorPrimary, margin: 0 }}>
+                                Sabor & Tradición
                             </Title>
+                            <div style={{ marginTop: "12px", color: token.colorTextSecondary }}>
+                                Inicia sesión en tu cuenta
+                            </div>
                         </div>
-                        <Form layout="vertical" onFinish={onFinish} requiredMark={false}>
-                            <Form.Item
-                                name="name"
-                                label="Nombre"
-                                rules={[{ required: true, message: "El nombre es obligatorio" }]}
-                            >
-                                <Input size="large" placeholder="Tu nombre" />
-                            </Form.Item>
-                            <Form.Item
-                                name="last_name"
-                                label="Apellido"
-                                rules={[{ required: true, message: "El apellido es obligatorio" }]}
-                            >
-                                <Input size="large" placeholder="Tu apellido" />
-                            </Form.Item>
 
+                        <Form layout="vertical" onFinish={onFinish} requiredMark={false}>
                             <Form.Item
                                 name="email"
                                 label="Correo Electrónico"
@@ -60,7 +49,7 @@ export const CustomRegister: React.FC = () => {
                             <Form.Item
                                 name="password"
                                 label="Contraseña"
-                                rules={[{ required: true, message: "La contraseña es obligatoria" }, { min: 8, message: "Mínimo 8 caracteres" }]}
+                                rules={[{ required: true, message: "La contraseña es obligatoria" }]}
                                 extra={
                                     <div style={{ fontSize: "12px", marginTop: "8px", color: "rgb(107 114 128)" }}>
                                         <p style={{ marginBottom: "-5px" }}>Debe tener entre 8 y 16 caracteres.</p>
@@ -82,11 +71,17 @@ export const CustomRegister: React.FC = () => {
                                     loading={isPending}
                                     style={{ marginTop: "5px" }}
                                 >
-                                    Registrarse
+                                    Entrar
                                 </Button>
                             </Form.Item>
-                            <div style={{ textAlign: "center", marginTop: "12px" }}>
-                                Ya tienes una cuenta? <Link to="/login" style={{ color: token.colorPrimary }}>Inicia sesión aquí</Link>
+
+                            <div style={{ textAlign: "center", marginTop: "16px" }}>
+                                ¿No tienes una cuenta? <Link to="/register" style={{ color: token.colorPrimary }}>Regístrate aquí</Link>
+                            </div>
+                            <div style={{ textAlign: "center", marginTop: "16px", color: "rgb(107 114 128)" }}>
+                                <p style={{ marginBottom: "-5px" }}>Cuenta de prueba Administrador</p>
+                                <p style={{ marginBottom: "-5px" }}>admin@restaurante.com</p>
+                                <p>Grecia-123</p>
                             </div>
                         </Form>
                     </Card>

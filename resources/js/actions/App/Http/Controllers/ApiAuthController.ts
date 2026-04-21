@@ -56,8 +56,64 @@ loginForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => (
 login.form = loginForm
 
 /**
-* @see \App\Http\Controllers\ApiAuthController::logout
+* @see \App\Http\Controllers\ApiAuthController::register
 * @see app/Http/Controllers/ApiAuthController.php:42
+* @route '/api/register'
+*/
+export const register = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: register.url(options),
+    method: 'post',
+})
+
+register.definition = {
+    methods: ["post"],
+    url: '/api/register',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\ApiAuthController::register
+* @see app/Http/Controllers/ApiAuthController.php:42
+* @route '/api/register'
+*/
+register.url = (options?: RouteQueryOptions) => {
+    return register.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ApiAuthController::register
+* @see app/Http/Controllers/ApiAuthController.php:42
+* @route '/api/register'
+*/
+register.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: register.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\ApiAuthController::register
+* @see app/Http/Controllers/ApiAuthController.php:42
+* @route '/api/register'
+*/
+const registerForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: register.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\ApiAuthController::register
+* @see app/Http/Controllers/ApiAuthController.php:42
+* @route '/api/register'
+*/
+registerForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: register.url(options),
+    method: 'post',
+})
+
+register.form = registerForm
+
+/**
+* @see \App\Http\Controllers\ApiAuthController::logout
+* @see app/Http/Controllers/ApiAuthController.php:72
 * @route '/api/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -72,7 +128,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:42
+* @see app/Http/Controllers/ApiAuthController.php:72
 * @route '/api/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -81,7 +137,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:42
+* @see app/Http/Controllers/ApiAuthController.php:72
 * @route '/api/logout'
 */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -91,7 +147,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:42
+* @see app/Http/Controllers/ApiAuthController.php:72
 * @route '/api/logout'
 */
 const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -101,7 +157,7 @@ const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =>
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:42
+* @see app/Http/Controllers/ApiAuthController.php:72
 * @route '/api/logout'
 */
 logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -113,7 +169,7 @@ logout.form = logoutForm
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:52
+* @see app/Http/Controllers/ApiAuthController.php:82
 * @route '/api/me'
 */
 export const me = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -128,7 +184,7 @@ me.definition = {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:52
+* @see app/Http/Controllers/ApiAuthController.php:82
 * @route '/api/me'
 */
 me.url = (options?: RouteQueryOptions) => {
@@ -137,7 +193,7 @@ me.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:52
+* @see app/Http/Controllers/ApiAuthController.php:82
 * @route '/api/me'
 */
 me.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -147,7 +203,7 @@ me.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:52
+* @see app/Http/Controllers/ApiAuthController.php:82
 * @route '/api/me'
 */
 me.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -157,7 +213,7 @@ me.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:52
+* @see app/Http/Controllers/ApiAuthController.php:82
 * @route '/api/me'
 */
 const meForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -167,7 +223,7 @@ const meForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:52
+* @see app/Http/Controllers/ApiAuthController.php:82
 * @route '/api/me'
 */
 meForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -177,7 +233,7 @@ meForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:52
+* @see app/Http/Controllers/ApiAuthController.php:82
 * @route '/api/me'
 */
 meForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -192,6 +248,6 @@ meForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 me.form = meForm
 
-const ApiAuthController = { login, logout, me }
+const ApiAuthController = { login, register, logout, me }
 
 export default ApiAuthController

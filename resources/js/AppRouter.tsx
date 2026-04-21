@@ -1,7 +1,20 @@
 import { Refine, AuthProvider } from "@refinedev/core";
-import { AuthPage, RefineThemes, useNotificationProvider } from "@refinedev/antd";
-import { ConfigProvider } from "antd";
+import { AuthPage, ThemedLayout, ThemedSider, useNotificationProvider } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
+
+import { ColorModeContextProvider } from "./contexts/color-mode";
+import { Header } from "./components/header";
+import { CustomRegister } from "./components/auth/CustomRegister";
+import { UserOutlined,
+    BranchesOutlined,
+    ProductOutlined,
+    StarOutlined,
+    CreditCardOutlined,
+    BankOutlined,
+    FileDoneOutlined,
+    FileOutlined,
+    DollarOutlined,
+    InboxOutlined } from "@ant-design/icons";
 
 import dataProvider from "@refinedev/simple-rest";
 import routerProvider, {
@@ -70,10 +83,10 @@ axiosInstance.interceptors.request.use((request) => {
 
 // Implementación del Auth Provider usando Sanctum
 const authProvider: AuthProvider = {
-    login: async ({ email, password }: any) => {
+    login: async ({ email, password }: Record<string, string>) => {
         try {
             const response = await axiosInstance.post(`${API_URL}/login`, { email, password });
-            
+
             if (response.data?.token) {
                 localStorage.setItem("auth_token", response.data.token);
                 localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -96,6 +109,40 @@ const authProvider: AuthProvider = {
             error: {
                 message: "Error de inicio de sesión",
                 name: "Inicio de sesión fallido",
+            },
+        };
+    },
+    register: async ({ name, last_name, email, password }: Record<string, string>) => {
+        try {
+            const response = await axiosInstance.post(`${API_URL}/register`, {
+                name,
+                last_name,
+                email,
+                password,
+            });
+
+            if (response.data?.token) {
+                localStorage.setItem("auth_token", response.data.token);
+                localStorage.setItem("user", JSON.stringify(response.data.user));
+                return {
+                    success: true,
+                    redirectTo: "/",
+                };
+            }
+        } catch (error: any) {
+            return {
+                success: false,
+                error: {
+                    message: "Error de registro",
+                    name: error.response?.data?.message || "Falló el registro",
+                },
+            };
+        }
+        return {
+            success: false,
+            error: {
+                message: "Error de registro",
+                name: "Falló el registro",
             },
         };
     },
@@ -135,7 +182,7 @@ const authProvider: AuthProvider = {
                 if (userString) {
                     return JSON.parse(userString);
                 }
-                
+
                 const response = await axiosInstance.get(`${API_URL}/me`);
                 return response.data;
             } catch (error) {
@@ -144,20 +191,21 @@ const authProvider: AuthProvider = {
         }
         return null;
     },
-    onError: async (error: any) => {
-        if (error.response?.status === 401) {
+    onError: async (error: unknown) => {
+        const err = error as any;
+        if (err.response?.status === 401) {
             return {
                 logout: true,
             };
         }
-        return { error };
+        return { error: new Error(err?.message || "Unknown error") };
     },
 };
 
 export default function AppRouter() {
     return (
         <BrowserRouter>
-            <ConfigProvider theme={RefineThemes.Blue}>
+            <ColorModeContextProvider>
                 <Refine
                     dataProvider={dataProvider(API_URL, axiosInstance)}
                     routerProvider={routerProvider}
@@ -170,7 +218,7 @@ export default function AppRouter() {
                             create: "/users/create",
                             edit: "/users/edit/:id",
                             show: "/users/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <UserOutlined /> },
                         },
                         {
                             name: "branches",
@@ -178,7 +226,7 @@ export default function AppRouter() {
                             create: "/branches/create",
                             edit: "/branches/edit/:id",
                             show: "/branches/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <BranchesOutlined /> },
                         },
                         {
                             name: "categories",
@@ -186,7 +234,7 @@ export default function AppRouter() {
                             create: "/categories/create",
                             edit: "/categories/edit/:id",
                             show: "/categories/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <ProductOutlined /> },
                         },
                         {
                             name: "evaluations",
@@ -194,15 +242,7 @@ export default function AppRouter() {
                             create: "/evaluations/create",
                             edit: "/evaluations/edit/:id",
                             show: "/evaluations/show/:id",
-                            meta: { canDelete: true },
-                        },
-                        {
-                            name: "order-details",
-                            list: "/order-details",
-                            create: "/order-details/create",
-                            edit: "/order-details/edit/:id",
-                            show: "/order-details/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <StarOutlined /> },
                         },
                         {
                             name: "orders",
@@ -210,7 +250,15 @@ export default function AppRouter() {
                             create: "/orders/create",
                             edit: "/orders/edit/:id",
                             show: "/orders/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <FileOutlined /> },
+                        },
+                        {
+                            name: "order-details",
+                            list: "/order-details",
+                            create: "/order-details/create",
+                            edit: "/order-details/edit/:id",
+                            show: "/order-details/show/:id",
+                            meta: { canDelete: true, icon: <FileDoneOutlined /> },
                         },
                         {
                             name: "payment-methods",
@@ -218,7 +266,7 @@ export default function AppRouter() {
                             create: "/payment-methods/create",
                             edit: "/payment-methods/edit/:id",
                             show: "/payment-methods/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <CreditCardOutlined /> },
                         },
                         {
                             name: "physical-payment-orders",
@@ -226,7 +274,7 @@ export default function AppRouter() {
                             create: "/physical-payment-orders/create",
                             edit: "/physical-payment-orders/edit/:id",
                             show: "/physical-payment-orders/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <DollarOutlined /> },
                         },
                         {
                             name: "products",
@@ -234,7 +282,7 @@ export default function AppRouter() {
                             create: "/products/create",
                             edit: "/products/edit/:id",
                             show: "/products/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <InboxOutlined /> },
                         },
                         {
                             name: "venezuela-banks",
@@ -242,7 +290,7 @@ export default function AppRouter() {
                             create: "/venezuela-banks/create",
                             edit: "/venezuela-banks/edit/:id",
                             show: "/venezuela-banks/show/:id",
-                            meta: { canDelete: true },
+                            meta: { canDelete: true, icon: <BankOutlined /> },
                         },
                     ]}
                     options={{
@@ -253,19 +301,27 @@ export default function AppRouter() {
                     <Routes>
                         <Route
                             path="/login"
-                            element={<AuthPage type="login" />}
+                            element={<AuthPage type="login" title={<h1 style={{ fontSize: "24px", color: "#ef4444", textAlign: "center" }}>Restaurante</h1>} />}
+                        />
+                        <Route
+                            path="/register"
+                            element={<CustomRegister />}
                         />
 
                         {/* Rutas Protegidas */}
                         <Route
-                            element={<Outlet />}
+                            element={
+                                <ThemedLayout Header={Header} Sider={ThemedSider}>
+                                    <Outlet />
+                                </ThemedLayout>
+                            }
                         >
                             <Route
                                 index
                                 element={<NavigateToResource resource="users" />}
                             />
-                            
-                                                        <Route path="/users">
+
+                            <Route path="/users">
                                 <Route index element={<UserList />} />
                                 <Route path="create" element={<UserCreate />} />
                                 <Route path="edit/:id" element={<UserEdit />} />
@@ -334,7 +390,7 @@ export default function AppRouter() {
                     <UnsavedChangesNotifier />
                     <DocumentTitleHandler />
                 </Refine>
-            </ConfigProvider>
+            </ColorModeContextProvider>
         </BrowserRouter>
     );
 }

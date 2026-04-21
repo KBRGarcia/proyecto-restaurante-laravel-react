@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 // Rutas públicas de autenticación
 Route::post('/login', [ApiAuthController::class, 'login']);
+Route::post('/register', [ApiAuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [ApiAuthController::class, 'logout']);

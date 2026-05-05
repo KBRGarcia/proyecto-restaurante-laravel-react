@@ -11,8 +11,6 @@ export const UserShow = () => {
 
     return (
         <Show isLoading={isLoading}>
-            <Title level={5}>ID</Title>
-            <Text>{record?.id}</Text>
 
             <Title level={5}>Nombre</Title>
             <Text>{record?.name} {record?.last_name}</Text>

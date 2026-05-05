@@ -17,6 +17,15 @@ const customRedTheme = {
         colorPrimary: '#ef4444', // Rojo
         colorInfo: '#ef4444', 
     },
+
+    components: {
+        Button: {
+            colorPrimary: '#1677ff', // Los botones primary son azules por defecto.
+            colorPrimaryHover: '#4096ff', // El color azul mas claro para el hover.
+            colorPrimaryActive: '#0958d9', // El color azul oscuro al hacer click.
+            borderRadius: 6, // Botones redondeados
+        }
+    },
 };
 
 export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({

@@ -5,6 +5,7 @@ import { ColorModeContextProvider } from "./contexts/color-mode";
 import { Header } from "./components/header";
 import { CustomRegister } from "./components/auth/CustomRegister";
 import { CustomLogin } from "./components/auth/CustomLogin";
+import { CustomDashboard } from "./components/dashboard/CustomDashboard";
 import { UserOutlined, BranchesOutlined, ProductOutlined, StarOutlined, CreditCardOutlined, BankOutlined, FileDoneOutlined, FileOutlined, DollarOutlined, InboxOutlined, DashboardOutlined } from "@ant-design/icons";
 import dataProvider from "@refinedev/simple-rest";
 import routerProvider, { NavigateToResource, CatchAllNavigate, UnsavedChangesNotifier, DocumentTitleHandler } from "@refinedev/react-router";
@@ -187,14 +188,7 @@ const authProvider: AuthProvider = {
     },
 };
 
-// Manejo del Dashboard
-const CustomDashboard = () => {
-    return (
-        <div>
-            <h1>Dashboard :3</h1>
-        </div>
-    );
-};
+
 
 // Manejo del titulo del proyecto
 const CustomTitle = ({ collapsed }: { collapsed: boolean }) => (

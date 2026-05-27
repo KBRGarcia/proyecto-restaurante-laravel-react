@@ -1,12 +1,8 @@
-import {
-    List,
-    useTable,
-    EditButton,
-    ShowButton,
-    DeleteButton,
-    DateField
-} from "@refinedev/antd";
-import { Table, Space } from "antd";
+import { List, useTable, DateField } from "@refinedev/antd";
+import { Table, Space, Tag, Typography } from "antd";
+import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
+
+const { Text } = Typography;
 
 export const VenezuelaBanksList = () => {
     const { tableProps } = useTable({
@@ -14,10 +10,30 @@ export const VenezuelaBanksList = () => {
     });
 
     return (
-        <List>
+        <List
+            headerButtons={({ defaultButtons }) => (
+                <>
+                    <CustomCreateButton />
+                </>
+            )}
+        >
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="ID" />
-                <Table.Column dataIndex="name" title="Identificador (Nombre/ID)" render={(value, record: any) => value || record.id} />
+                <Table.Column dataIndex="id" title="ID" width={80} />
+                <Table.Column 
+                    dataIndex="code" 
+                    title="Código" 
+                    render={(value: string) => <Text code>{value}</Text>}
+                />
+                <Table.Column dataIndex="name" title="Nombre del Banco" />
+                <Table.Column 
+                    dataIndex="active" 
+                    title="Estado" 
+                    render={(value: boolean) => (
+                        <Tag color={value ? "success" : "error"}>
+                            {value ? "Activo" : "Inactivo"}
+                        </Tag>
+                    )}
+                />
                 <Table.Column
                     dataIndex="created_at"
                     title="Creado"
@@ -26,11 +42,13 @@ export const VenezuelaBanksList = () => {
                 <Table.Column
                     title="Acciones"
                     dataIndex="actions"
+                    align="center"
+                    width={150}
                     render={(_, record: { id: number }) => (
                         <Space>
-                            <ShowButton hideText size="small" recordItemId={record.id} />
-                            <EditButton hideText size="small" recordItemId={record.id} />
-                            <DeleteButton hideText size="small" recordItemId={record.id} />
+                            <CustomShowButton recordItemId={record.id} />
+                            <CustomEditButton recordItemId={record.id} />
+                            <CustomDeleteButton recordItemId={record.id} />
                         </Space>
                     )}
                 />

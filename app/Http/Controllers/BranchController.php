@@ -16,8 +16,9 @@ class BranchController extends Controller
         $query = Branch::query();
 
         // Búsqueda general usando el scope search del modelo
-        if ($request->filled('search')) {
-            $query->search($request->search);
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->get('search', $request->get('q'));
+            $query->search($search);
         }
 
         // Filtro por estado (activa/inactiva)
@@ -51,9 +52,24 @@ class BranchController extends Controller
         }
 
         // Ordenamiento
-        $sortBy = $request->get('sort_by', 'name');
-        $sortOrder = $request->get('sort_order', 'asc');
-        $query->orderBy($sortBy, $sortOrder);
+        $sortBy = $request->get('sort_by');
+        $sortOrder = $request->get('sort_order');
+        if (!$sortBy && $request->filled('_sort')) {
+            $sortBy = $request->get('_sort');
+            $sortOrder = $request->get('_order', 'asc');
+        }
+        $sortBy = $sortBy ?: 'name';
+        $sortOrder = $sortOrder ?: 'asc';
+        if (str_contains($sortBy, ',')) {
+            $sortFields = explode(',', $sortBy);
+            $sortOrders = explode(',', (string) $sortOrder);
+            foreach ($sortFields as $index => $field) {
+                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
+                $query->orderBy($field, $order);
+            }
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // Paginación
         // Paginación para Refine
@@ -78,6 +94,16 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
+        // Pre-procesar las horas antes de la validación
+        $data = $request->all();
+        if (isset($data['opening_time']) && strlen($data['opening_time']) === 5) {
+            $data['opening_time'] .= ':00';
+        }
+        if (isset($data['closing_time']) && strlen($data['closing_time']) === 5) {
+            $data['closing_time'] .= ':00';
+        }
+        $request->merge($data);
+
         $validated = $request->validate(Branch::rules(), Branch::messages());
 
         // Convertir valores de boolean que vienen como string
@@ -85,14 +111,6 @@ class BranchController extends Controller
         $validated['has_delivery'] = filter_var($validated['has_delivery'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $validated['has_parking'] = filter_var($validated['has_parking'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $validated['active'] = filter_var($validated['active'] ?? true, FILTER_VALIDATE_BOOLEAN);
-
-        // Agregar los segundos a las horas si no están presentes
-        if (isset($validated['opening_time']) && strlen($validated['opening_time']) === 5) {
-            $validated['opening_time'] .= ':00';
-        }
-        if (isset($validated['closing_time']) && strlen($validated['closing_time']) === 5) {
-            $validated['closing_time'] .= ':00';
-        }
 
         // Establecer creation_date si no se proporciona
         if (!isset($validated['creation_date'])) {
@@ -102,7 +120,7 @@ class BranchController extends Controller
         // Establecer update_date
         $validated['update_date'] = now();
 
-        Branch::create($validated);
+        $branch = Branch::create($validated);
 
         return response()->json($branch, 201);
     }
@@ -128,6 +146,16 @@ class BranchController extends Controller
      */
     public function update(Request $request, Branch $branch)
     {
+        // Pre-procesar las horas antes de la validación
+        $data = $request->all();
+        if (isset($data['opening_time']) && strlen($data['opening_time']) === 5) {
+            $data['opening_time'] .= ':00';
+        }
+        if (isset($data['closing_time']) && strlen($data['closing_time']) === 5) {
+            $data['closing_time'] .= ':00';
+        }
+        $request->merge($data);
+
         $validated = $request->validate(Branch::rules(true), Branch::messages());
 
         // Convertir valores de boolean que vienen como string
@@ -135,14 +163,6 @@ class BranchController extends Controller
         $validated['has_delivery'] = filter_var($validated['has_delivery'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $validated['has_parking'] = filter_var($validated['has_parking'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $validated['active'] = filter_var($validated['active'] ?? true, FILTER_VALIDATE_BOOLEAN);
-
-        // Agregar los segundos a las horas si no están presentes
-        if (isset($validated['opening_time']) && strlen($validated['opening_time']) === 5) {
-            $validated['opening_time'] .= ':00';
-        }
-        if (isset($validated['closing_time']) && strlen($validated['closing_time']) === 5) {
-            $validated['closing_time'] .= ':00';
-        }
 
         // Actualizar update_date
         $validated['update_date'] = now();

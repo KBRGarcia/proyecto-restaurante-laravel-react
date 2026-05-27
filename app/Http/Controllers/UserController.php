@@ -18,8 +18,8 @@ class UserController extends Controller
         $query = User::query();
 
         // Búsqueda general
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->get('search', $request->get('q'));
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
@@ -38,9 +38,24 @@ class UserController extends Controller
         }
 
         // Ordenamiento
-        $sortBy = $request->get('sort_by', 'id');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
+        $sortBy = $request->get('sort_by');
+        $sortOrder = $request->get('sort_order');
+        if (!$sortBy && $request->filled('_sort')) {
+            $sortBy = $request->get('_sort');
+            $sortOrder = $request->get('_order', 'asc');
+        }
+        $sortBy = $sortBy ?: 'id';
+        $sortOrder = $sortOrder ?: 'desc';
+        if (str_contains($sortBy, ',')) {
+            $sortFields = explode(',', $sortBy);
+            $sortOrders = explode(',', (string) $sortOrder);
+            foreach ($sortFields as $index => $field) {
+                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
+                $query->orderBy($field, $order);
+            }
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // Paginación
         // Paginación para Refine
@@ -75,6 +90,8 @@ class UserController extends Controller
             $image = $request->file('profile_picture');
             $imageData = base64_encode(file_get_contents($image->getRealPath()));
             $validated['profile_picture'] = 'data:' . $image->getMimeType() . ';base64,' . $imageData;
+        } elseif ($request->filled('profile_picture') && str_starts_with($request->profile_picture, 'data:image')) {
+            $validated['profile_picture'] = $request->profile_picture;
         }
 
         // Establecer fecha de registro
@@ -126,6 +143,8 @@ class UserController extends Controller
             $image = $request->file('profile_picture');
             $imageData = base64_encode(file_get_contents($image->getRealPath()));
             $validated['profile_picture'] = 'data:' . $image->getMimeType() . ';base64,' . $imageData;
+        } elseif ($request->filled('profile_picture') && str_starts_with($request->profile_picture, 'data:image')) {
+            $validated['profile_picture'] = $request->profile_picture;
         }
 
         $user->update($validated);

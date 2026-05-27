@@ -22,8 +22,8 @@ class EvaluationController extends Controller
         $query = Evaluation::with(['user', 'order', 'product']);
 
         // Búsqueda
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->get('search', $request->get('q'));
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -42,9 +42,24 @@ class EvaluationController extends Controller
         }
 
         // Ordenamiento
-        $sortBy = $request->get('sort_by', 'evaluation_date');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
+        $sortBy = $request->get('sort_by');
+        $sortOrder = $request->get('sort_order');
+        if (!$sortBy && $request->filled('_sort')) {
+            $sortBy = $request->get('_sort');
+            $sortOrder = $request->get('_order', 'asc');
+        }
+        $sortBy = $sortBy ?: 'evaluation_date';
+        $sortOrder = $sortOrder ?: 'desc';
+        if (str_contains($sortBy, ',')) {
+            $sortFields = explode(',', $sortBy);
+            $sortOrders = explode(',', (string) $sortOrder);
+            foreach ($sortFields as $index => $field) {
+                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
+                $query->orderBy($field, $order);
+            }
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // Paginación para Refine
         $start = $request->get('_start', 0);
@@ -108,10 +123,7 @@ class EvaluationController extends Controller
         $evaluation = Evaluation::create($validator->validated());
         $evaluation->load(['user', 'order', 'product']);
 
-        return response()->json([
-            'message' => 'Evaluación creada exitosamente',
-            'data' => new EvaluationResource($evaluation),
-        ], 201);
+        return response()->json($evaluation, 201);
     }
 
     /**
@@ -179,10 +191,7 @@ class EvaluationController extends Controller
         $evaluation->update($validator->validated());
         $evaluation->load(['user', 'order', 'product']);
 
-        return response()->json([
-            'message' => 'Evaluación actualizada exitosamente',
-            'data' => new EvaluationResource($evaluation),
-        ], 200);
+        return response()->json($evaluation, 200);
     }
 
     /**

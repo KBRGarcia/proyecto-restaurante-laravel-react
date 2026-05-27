@@ -18,8 +18,8 @@ class ProductController extends Controller
         $query = Product::with('category');
 
         // Búsqueda general
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->get('search', $request->get('q'));
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
@@ -42,9 +42,24 @@ class ProductController extends Controller
         }
 
         // Ordenamiento
-        $sortBy = $request->get('sort_by', 'id');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
+        $sortBy = $request->get('sort_by');
+        $sortOrder = $request->get('sort_order');
+        if (!$sortBy && $request->filled('_sort')) {
+            $sortBy = $request->get('_sort');
+            $sortOrder = $request->get('_order', 'asc');
+        }
+        $sortBy = $sortBy ?: 'id';
+        $sortOrder = $sortOrder ?: 'desc';
+        if (str_contains($sortBy, ',')) {
+            $sortFields = explode(',', $sortBy);
+            $sortOrders = explode(',', (string) $sortOrder);
+            foreach ($sortFields as $index => $field) {
+                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
+                $query->orderBy($field, $order);
+            }
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // Paginación
         // Paginación para Refine
@@ -111,6 +126,8 @@ class ProductController extends Controller
             $image = $request->file('image');
             $imageData = base64_encode(file_get_contents($image->getRealPath()));
             $validated['image'] = 'data:' . $image->getMimeType() . ';base64,' . $imageData;
+        } elseif ($request->filled('image') && str_starts_with($request->image, 'data:image')) {
+            $validated['image'] = $request->image;
         }
 
         // Establecer fecha de creación del producto
@@ -174,6 +191,8 @@ class ProductController extends Controller
             $image = $request->file('image');
             $imageData = base64_encode(file_get_contents($image->getRealPath()));
             $validated['image'] = 'data:' . $image->getMimeType() . ';base64,' . $imageData;
+        } elseif ($request->filled('image') && str_starts_with($request->image, 'data:image')) {
+            $validated['image'] = $request->image;
         }
 
         // Manejar checkbox is_special

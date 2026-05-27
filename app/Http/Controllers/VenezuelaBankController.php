@@ -16,8 +16,8 @@ class VenezuelaBankController extends Controller
         $query = VenezuelaBank::query();
 
         // Búsqueda general
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->get('search', $request->get('q'));
             $query->search($search);
         }
 
@@ -32,9 +32,24 @@ class VenezuelaBankController extends Controller
         }
 
         // Ordenamiento
-        $sortBy = $request->get('sort_by', 'code');
-        $sortOrder = $request->get('sort_order', 'asc');
-        $query->orderBy($sortBy, $sortOrder);
+        $sortBy = $request->get('sort_by');
+        $sortOrder = $request->get('sort_order');
+        if (!$sortBy && $request->filled('_sort')) {
+            $sortBy = $request->get('_sort');
+            $sortOrder = $request->get('_order', 'asc');
+        }
+        $sortBy = $sortBy ?: 'code';
+        $sortOrder = $sortOrder ?: 'asc';
+        if (str_contains($sortBy, ',')) {
+            $sortFields = explode(',', $sortBy);
+            $sortOrders = explode(',', (string) $sortOrder);
+            foreach ($sortFields as $index => $field) {
+                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
+                $query->orderBy($field, $order);
+            }
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // Paginación
         // Paginación para Refine
@@ -59,6 +74,14 @@ class VenezuelaBankController extends Controller
      */
     public function store(Request $request)
     {
+        // Decodificar system_data si es un string JSON válido
+        if ($request->has('system_data') && is_string($request->input('system_data'))) {
+            $decoded = json_decode($request->input('system_data'), true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $request->merge(['system_data' => $decoded]);
+            }
+        }
+
         $validated = $request->validate(
             VenezuelaBank::rules(),
             VenezuelaBank::messages()
@@ -74,7 +97,7 @@ class VenezuelaBankController extends Controller
             $validated['creation_date'] = \Carbon\Carbon::parse($validated['creation_date']);
         }
 
-        $bank = VenezuelaBank::create($validated);
+        $venezuelaBank = VenezuelaBank::create($validated);
 
         return response()->json($venezuelaBank, 201);
     }
@@ -100,6 +123,14 @@ class VenezuelaBankController extends Controller
      */
     public function update(Request $request, VenezuelaBank $venezuelaBank)
     {
+        // Decodificar system_data si es un string JSON válido
+        if ($request->has('system_data') && is_string($request->input('system_data'))) {
+            $decoded = json_decode($request->input('system_data'), true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $request->merge(['system_data' => $decoded]);
+            }
+        }
+
         $validated = $request->validate(
             VenezuelaBank::rules($venezuelaBank->id),
             VenezuelaBank::messages()

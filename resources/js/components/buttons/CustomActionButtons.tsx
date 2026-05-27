@@ -13,9 +13,9 @@ export const CustomShowButton: React.FC<ShowButtonProps> = (props) => {
         <ShowButton
             type="primary"
             shape="circle"
-            style={{ backgroundColor: '1677ff', borderColor: '1677ff', color: 'white', ...props.style }}
+            style={{ backgroundColor: "#1677ff", borderColor: "#1677ff", color: "white", ...props.style }}
             hideText
-            size="medium"
+            size="middle"
             {...props}
         />
     );
@@ -27,10 +27,9 @@ export const CustomEditButton: React.FC<EditButtonProps> = (props) => {
         <EditButton
             type="primary"
             shape="circle"
-            colorHover="#82FF82"
             style={{ backgroundColor: '#4FC450', borderColor: '#4FC450', color: 'white', ...props.style }}
             hideText
-            size="medium"
+            size="middle"
             {...props}
         />
     );
@@ -44,7 +43,7 @@ export const CustomDeleteButton: React.FC<DeleteButtonProps> = (props) => {
             shape="circle"
             danger
             hideText
-            size="medium"
+            size="middle"
             {...props}
         />
     );

@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\BranchController::store
-* @see app/Http/Controllers/BranchController.php:79
+* @see app/Http/Controllers/BranchController.php:95
 * @route '/api/branches'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +97,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\BranchController::store
-* @see app/Http/Controllers/BranchController.php:79
+* @see app/Http/Controllers/BranchController.php:95
 * @route '/api/branches'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\BranchController::store
-* @see app/Http/Controllers/BranchController.php:79
+* @see app/Http/Controllers/BranchController.php:95
 * @route '/api/branches'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +116,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\BranchController::store
-* @see app/Http/Controllers/BranchController.php:79
+* @see app/Http/Controllers/BranchController.php:95
 * @route '/api/branches'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +126,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\BranchController::store
-* @see app/Http/Controllers/BranchController.php:79
+* @see app/Http/Controllers/BranchController.php:95
 * @route '/api/branches'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,7 +138,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\BranchController::show
-* @see app/Http/Controllers/BranchController.php:113
+* @see app/Http/Controllers/BranchController.php:131
 * @route '/api/branches/{branch}'
 */
 export const show = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -153,7 +153,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\BranchController::show
-* @see app/Http/Controllers/BranchController.php:113
+* @see app/Http/Controllers/BranchController.php:131
 * @route '/api/branches/{branch}'
 */
 show.url = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -186,7 +186,7 @@ show.url = (args: { branch: number | { id: number } } | [branch: number | { id: 
 
 /**
 * @see \App\Http\Controllers\BranchController::show
-* @see app/Http/Controllers/BranchController.php:113
+* @see app/Http/Controllers/BranchController.php:131
 * @route '/api/branches/{branch}'
 */
 show.get = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -196,7 +196,7 @@ show.get = (args: { branch: number | { id: number } } | [branch: number | { id: 
 
 /**
 * @see \App\Http\Controllers\BranchController::show
-* @see app/Http/Controllers/BranchController.php:113
+* @see app/Http/Controllers/BranchController.php:131
 * @route '/api/branches/{branch}'
 */
 show.head = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -206,7 +206,7 @@ show.head = (args: { branch: number | { id: number } } | [branch: number | { id:
 
 /**
 * @see \App\Http\Controllers\BranchController::show
-* @see app/Http/Controllers/BranchController.php:113
+* @see app/Http/Controllers/BranchController.php:131
 * @route '/api/branches/{branch}'
 */
 const showForm = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -216,7 +216,7 @@ const showForm = (args: { branch: number | { id: number } } | [branch: number | 
 
 /**
 * @see \App\Http\Controllers\BranchController::show
-* @see app/Http/Controllers/BranchController.php:113
+* @see app/Http/Controllers/BranchController.php:131
 * @route '/api/branches/{branch}'
 */
 showForm.get = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -226,7 +226,7 @@ showForm.get = (args: { branch: number | { id: number } } | [branch: number | { 
 
 /**
 * @see \App\Http\Controllers\BranchController::show
-* @see app/Http/Controllers/BranchController.php:113
+* @see app/Http/Controllers/BranchController.php:131
 * @route '/api/branches/{branch}'
 */
 showForm.head = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -243,7 +243,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\BranchController::update
-* @see app/Http/Controllers/BranchController.php:129
+* @see app/Http/Controllers/BranchController.php:147
 * @route '/api/branches/{branch}'
 */
 export const update = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -258,7 +258,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\BranchController::update
-* @see app/Http/Controllers/BranchController.php:129
+* @see app/Http/Controllers/BranchController.php:147
 * @route '/api/branches/{branch}'
 */
 update.url = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -291,7 +291,7 @@ update.url = (args: { branch: number | { id: number } } | [branch: number | { id
 
 /**
 * @see \App\Http\Controllers\BranchController::update
-* @see app/Http/Controllers/BranchController.php:129
+* @see app/Http/Controllers/BranchController.php:147
 * @route '/api/branches/{branch}'
 */
 update.put = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -301,7 +301,7 @@ update.put = (args: { branch: number | { id: number } } | [branch: number | { id
 
 /**
 * @see \App\Http\Controllers\BranchController::update
-* @see app/Http/Controllers/BranchController.php:129
+* @see app/Http/Controllers/BranchController.php:147
 * @route '/api/branches/{branch}'
 */
 update.patch = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -311,7 +311,7 @@ update.patch = (args: { branch: number | { id: number } } | [branch: number | { 
 
 /**
 * @see \App\Http\Controllers\BranchController::update
-* @see app/Http/Controllers/BranchController.php:129
+* @see app/Http/Controllers/BranchController.php:147
 * @route '/api/branches/{branch}'
 */
 const updateForm = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -326,7 +326,7 @@ const updateForm = (args: { branch: number | { id: number } } | [branch: number 
 
 /**
 * @see \App\Http\Controllers\BranchController::update
-* @see app/Http/Controllers/BranchController.php:129
+* @see app/Http/Controllers/BranchController.php:147
 * @route '/api/branches/{branch}'
 */
 updateForm.put = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -341,7 +341,7 @@ updateForm.put = (args: { branch: number | { id: number } } | [branch: number | 
 
 /**
 * @see \App\Http\Controllers\BranchController::update
-* @see app/Http/Controllers/BranchController.php:129
+* @see app/Http/Controllers/BranchController.php:147
 * @route '/api/branches/{branch}'
 */
 updateForm.patch = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -358,7 +358,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\BranchController::destroy
-* @see app/Http/Controllers/BranchController.php:158
+* @see app/Http/Controllers/BranchController.php:178
 * @route '/api/branches/{branch}'
 */
 export const destroy = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -373,7 +373,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\BranchController::destroy
-* @see app/Http/Controllers/BranchController.php:158
+* @see app/Http/Controllers/BranchController.php:178
 * @route '/api/branches/{branch}'
 */
 destroy.url = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -406,7 +406,7 @@ destroy.url = (args: { branch: number | { id: number } } | [branch: number | { i
 
 /**
 * @see \App\Http\Controllers\BranchController::destroy
-* @see app/Http/Controllers/BranchController.php:158
+* @see app/Http/Controllers/BranchController.php:178
 * @route '/api/branches/{branch}'
 */
 destroy.delete = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -416,7 +416,7 @@ destroy.delete = (args: { branch: number | { id: number } } | [branch: number | 
 
 /**
 * @see \App\Http\Controllers\BranchController::destroy
-* @see app/Http/Controllers/BranchController.php:158
+* @see app/Http/Controllers/BranchController.php:178
 * @route '/api/branches/{branch}'
 */
 const destroyForm = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -431,7 +431,7 @@ const destroyForm = (args: { branch: number | { id: number } } | [branch: number
 
 /**
 * @see \App\Http\Controllers\BranchController::destroy
-* @see app/Http/Controllers/BranchController.php:158
+* @see app/Http/Controllers/BranchController.php:178
 * @route '/api/branches/{branch}'
 */
 destroyForm.delete = (args: { branch: number | { id: number } } | [branch: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

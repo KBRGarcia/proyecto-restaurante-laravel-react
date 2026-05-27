@@ -53,6 +53,7 @@ import { VenezuelaBanksList } from "./pages/venezuela-banks/list";
 import { VenezuelaBanksCreate } from "./pages/venezuela-banks/create";
 import { VenezuelaBanksEdit } from "./pages/venezuela-banks/edit";
 import { VenezuelaBanksShow } from "./pages/venezuela-banks/show";
+import { ProfilePage } from "./pages/profile";
 
 // Proveedor de datos apuntando a la API de Laravel
 const API_URL = "/api";
@@ -394,6 +395,8 @@ export default function AppRouter() {
                                 <Route path="edit/:id" element={<VenezuelaBanksEdit />} />
                                 <Route path="show/:id" element={<VenezuelaBanksShow />} />
                             </Route>
+
+                            <Route path="/profile" element={<ProfilePage />} />
 
                         </Route>
 

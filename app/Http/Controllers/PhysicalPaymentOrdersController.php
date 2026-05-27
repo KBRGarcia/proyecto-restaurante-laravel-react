@@ -17,8 +17,8 @@ class PhysicalPaymentOrdersController extends Controller
         $query = PhysicalPaymentOrders::with(['order.user']);
 
         // Búsqueda general
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->get('search', $request->get('q'));
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%{$search}%")
                     ->orWhereHas('order', function ($orderQuery) use ($search) {
@@ -38,9 +38,24 @@ class PhysicalPaymentOrdersController extends Controller
         }
 
         // Ordenamiento
-        $sortBy = $request->get('sort_by', 'limit_date');
-        $sortOrder = $request->get('sort_order', 'asc');
-        $query->orderBy($sortBy, $sortOrder);
+        $sortBy = $request->get('sort_by');
+        $sortOrder = $request->get('sort_order');
+        if (!$sortBy && $request->filled('_sort')) {
+            $sortBy = $request->get('_sort');
+            $sortOrder = $request->get('_order', 'asc');
+        }
+        $sortBy = $sortBy ?: 'limit_date';
+        $sortOrder = $sortOrder ?: 'asc';
+        if (str_contains($sortBy, ',')) {
+            $sortFields = explode(',', $sortBy);
+            $sortOrders = explode(',', (string) $sortOrder);
+            foreach ($sortFields as $index => $field) {
+                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
+                $query->orderBy($field, $order);
+            }
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // Paginación
         // Paginación para Refine
@@ -94,7 +109,7 @@ class PhysicalPaymentOrdersController extends Controller
 
         $physicalPaymentOrder = PhysicalPaymentOrders::create($validated);
 
-        return response()->json($physicalPaymentOrders, 201);
+        return response()->json($physicalPaymentOrder, 201);
     }
 
     /**
@@ -104,7 +119,7 @@ class PhysicalPaymentOrdersController extends Controller
     {
         $physicalPaymentOrder->load(['order.user']);
 
-        return response()->json($physicalPaymentOrders);
+        return response()->json($physicalPaymentOrder);
     }
 
     /**
@@ -141,7 +156,7 @@ class PhysicalPaymentOrdersController extends Controller
 
         $physicalPaymentOrder->update($validated);
 
-        return response()->json($physicalPaymentOrders, 200);
+        return response()->json($physicalPaymentOrder, 200);
     }
 
     /**

@@ -1,67 +1,148 @@
 import { Create, useForm } from "@refinedev/antd";
-import { Form, Input, Select } from "antd";
+import { Form, Input, Select, Upload, Button, Avatar, Row, Col, theme } from "antd";
+import { UploadOutlined, UserOutlined } from "@ant-design/icons";
+import { useState } from "react";
+
+const { useToken } = theme;
 
 export const UserCreate = () => {
     const { formProps, saveButtonProps } = useForm();
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const { token } = useToken();
+
+    const getBase64 = (file: File): Promise<string> =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = (error) => reject(error);
+        });
+
+    const handleBeforeUpload = async (file: File) => {
+        try {
+            const base64Url = await getBase64(file);
+            setImageUrl(base64Url);
+            formProps.form?.setFieldsValue({ profile_picture: base64Url });
+        } catch (err) {
+            console.error(err);
+        }
+        return false;
+    };
 
     return (
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
-                <Form.Item
-                    label="Nombre"
-                    name={["name"]}
-                    rules={[{ required: true }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Apellido"
-                    name={["last_name"]}
-                    rules={[{ required: true }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Email"
-                    name={["email"]}
-                    rules={[{ required: true, type: "email" }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Contraseña"
-                    name={["password"]}
-                    rules={[{ required: true, min: 8 }]}
-                >
-                    <Input.Password />
-                </Form.Item>
-                <Form.Item
-                    label="Rol"
-                    name={["role"]}
-                    rules={[{ required: true }]}
-                    initialValue="cliente"
-                >
-                    <Select
-                        options={[
-                            { value: "admin", label: "Administrador" },
-                            { value: "militar", label: "Militar" },
-                            { value: "cliente", label: "Cliente" },
-                        ]}
-                    />
-                </Form.Item>
-                <Form.Item
-                    label="Estado"
-                    name={["status"]}
-                    rules={[{ required: true }]}
-                    initialValue="activo"
-                >
-                    <Select
-                        options={[
-                            { value: "activo", label: "Activo" },
-                            { value: "inactivo", label: "Inactivo" },
-                        ]}
-                    />
-                </Form.Item>
+                <Row gutter={16}>
+                    <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
+                        <Form.Item name="profile_picture" label="Foto de Perfil">
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
+                                <Avatar size={100} src={imageUrl} icon={<UserOutlined />} />
+                                <Upload beforeUpload={handleBeforeUpload} showUploadList={false} maxCount={1}>
+                                    <Button icon={<UploadOutlined />} size="small">Subir Foto</Button>
+                                </Upload>
+                            </div>
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} md={18}>
+                        <Row gutter={16}>
+                            <Col xs={24} sm={12}>
+                                <Form.Item
+                                    label="Nombre"
+                                    name={["name"]}
+                                    rules={[{ required: true, message: "El nombre es obligatorio" }]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12}>
+                                <Form.Item
+                                    label="Apellido"
+                                    name={["last_name"]}
+                                    rules={[{ required: true, message: "El apellido es obligatorio" }]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={16}>
+                            <Col xs={24} sm={12}>
+                                <Form.Item
+                                    label="Email"
+                                    name={["email"]}
+                                    rules={[{ required: true, type: "email", message: "Introduce un email válido" }]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12}>
+                                <Form.Item
+                                    label="Número de Teléfono"
+                                    name={["phone_number"]}
+                                >
+                                    <Input placeholder="+58 414 1234567" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+
+                <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                        <Form.Item
+                            label="Contraseña"
+                            name={["password"]}
+                            rules={[
+                                { required: true, message: "La contraseña es obligatoria" },
+                                { min: 8, message: "Mínimo 8 caracteres" }
+                            ]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                        <Form.Item
+                            label="Dirección"
+                            name={["address"]}
+                        >
+                            <Input.TextArea rows={1} />
+                        </Form.Item>
+                    </Col>
+                </Row>
+
+                <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                        <Form.Item
+                            label="Rol"
+                            name={["role"]}
+                            rules={[{ required: true }]}
+                            initialValue="client"
+                        >
+                            <Select
+                                options={[
+                                    { value: "admin", label: "Administrador" },
+                                    { value: "employee", label: "Empleado" },
+                                    { value: "client", label: "Cliente" },
+                                ]}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                        <Form.Item
+                            label="Estado"
+                            name={["status"]}
+                            rules={[{ required: true }]}
+                            initialValue="active"
+                        >
+                            <Select
+                                options={[
+                                    { value: "active", label: "Activo" },
+                                    { value: "inactive", label: "Inactivo" },
+                                ]}
+                            />
+                        </Form.Item>
+                    </Col>
+                </Row>
             </Form>
         </Create>
     );

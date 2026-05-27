@@ -19,8 +19,8 @@ class PaymentMethodController extends Controller
         $query = PaymentMethod::query();
 
         // Búsqueda
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = $request->get('search', $request->get('q'));
             $query->where(function ($q) use ($search) {
                 $q->where('code', 'like', "%{$search}%")
                     ->orWhere('name', 'like', "%{$search}%");
@@ -38,9 +38,24 @@ class PaymentMethodController extends Controller
         }
 
         // Ordenamiento
-        $sortBy = $request->get('sort_by', 'id');
-        $sortOrder = $request->get('sort_order', 'asc');
-        $query->orderBy($sortBy, $sortOrder);
+        $sortBy = $request->get('sort_by');
+        $sortOrder = $request->get('sort_order');
+        if (!$sortBy && $request->filled('_sort')) {
+            $sortBy = $request->get('_sort');
+            $sortOrder = $request->get('_order', 'asc');
+        }
+        $sortBy = $sortBy ?: 'id';
+        $sortOrder = $sortOrder ?: 'asc';
+        if (str_contains($sortBy, ',')) {
+            $sortFields = explode(',', $sortBy);
+            $sortOrders = explode(',', (string) $sortOrder);
+            foreach ($sortFields as $index => $field) {
+                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
+                $query->orderBy($field, $order);
+            }
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // Paginación para Refine
         $start = $request->get('_start', 0);
@@ -85,10 +100,7 @@ class PaymentMethodController extends Controller
 
         $paymentMethod = PaymentMethod::create($data);
 
-        return response()->json([
-            'message' => 'Método de pago creado exitosamente',
-            'data' => new PaymentMethodResource($paymentMethod),
-        ], 201);
+        return response()->json($paymentMethod, 201);
     }
 
     /**
@@ -133,10 +145,7 @@ class PaymentMethodController extends Controller
 
         $paymentMethod->update($data);
 
-        return response()->json([
-            'message' => 'Método de pago actualizado exitosamente',
-            'data' => new PaymentMethodResource($paymentMethod),
-        ], 200);
+        return response()->json($paymentMethod, 200);
     }
 
     /**

@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::store
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:81
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:96
 * @route '/api/physical-payment-orders'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +97,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::store
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:81
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:96
 * @route '/api/physical-payment-orders'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::store
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:81
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:96
 * @route '/api/physical-payment-orders'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +116,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::store
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:81
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:96
 * @route '/api/physical-payment-orders'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +126,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::store
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:81
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:96
 * @route '/api/physical-payment-orders'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,7 +138,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::show
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:103
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 export const show = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -153,7 +153,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::show
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:103
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 show.url = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -186,7 +186,7 @@ show.url = (args: { physical_payment_order: number | { id: number } } | [physica
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::show
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:103
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 show.get = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -196,7 +196,7 @@ show.get = (args: { physical_payment_order: number | { id: number } } | [physica
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::show
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:103
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 show.head = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -206,7 +206,7 @@ show.head = (args: { physical_payment_order: number | { id: number } } | [physic
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::show
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:103
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 const showForm = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -216,7 +216,7 @@ const showForm = (args: { physical_payment_order: number | { id: number } } | [p
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::show
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:103
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 showForm.get = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -226,7 +226,7 @@ showForm.get = (args: { physical_payment_order: number | { id: number } } | [phy
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::show
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:103
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:118
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 showForm.head = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -243,7 +243,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::update
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:135
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 export const update = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -258,7 +258,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::update
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:135
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 update.url = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -291,7 +291,7 @@ update.url = (args: { physical_payment_order: number | { id: number } } | [physi
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::update
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:135
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 update.put = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -301,7 +301,7 @@ update.put = (args: { physical_payment_order: number | { id: number } } | [physi
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::update
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:135
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 update.patch = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -311,7 +311,7 @@ update.patch = (args: { physical_payment_order: number | { id: number } } | [phy
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::update
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:135
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 const updateForm = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -326,7 +326,7 @@ const updateForm = (args: { physical_payment_order: number | { id: number } } | 
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::update
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:135
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 updateForm.put = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -341,7 +341,7 @@ updateForm.put = (args: { physical_payment_order: number | { id: number } } | [p
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::update
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:135
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 updateForm.patch = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -358,7 +358,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::destroy
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:165
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 export const destroy = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -373,7 +373,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::destroy
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:165
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 destroy.url = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -406,7 +406,7 @@ destroy.url = (args: { physical_payment_order: number | { id: number } } | [phys
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::destroy
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:165
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 destroy.delete = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -416,7 +416,7 @@ destroy.delete = (args: { physical_payment_order: number | { id: number } } | [p
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::destroy
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:165
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 const destroyForm = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -431,7 +431,7 @@ const destroyForm = (args: { physical_payment_order: number | { id: number } } |
 
 /**
 * @see \App\Http\Controllers\PhysicalPaymentOrdersController::destroy
-* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:150
+* @see app/Http/Controllers/PhysicalPaymentOrdersController.php:165
 * @route '/api/physical-payment-orders/{physical_payment_order}'
 */
 destroyForm.delete = (args: { physical_payment_order: number | { id: number } } | [physical_payment_order: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

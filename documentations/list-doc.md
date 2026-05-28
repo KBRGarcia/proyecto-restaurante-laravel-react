@@ -1,38 +1,83 @@
-# Documentación: resources/js/pages/users/list.tsx
+# Documentación: `resources/js/pages/users/list.tsx` (Listado / Index)
 
 ## ¿Qué es este archivo?
-Este archivo define la vista de "Listado" (Index/Tabla) para el recurso de Usuarios. Es la pantalla principal que ve el administrador cuando hace clic en "Usuarios" en el menú lateral. Muestra todos los usuarios registrados en una tabla paginada.
 
-## Métodos, Funciones y Variables
+Este archivo define la pantalla **principal del CRUD de Usuarios**: el **listado paginado** que el administrador ve al hacer clic en “Usuarios” en el menú lateral.
 
-### 1. `useTable` (Hook de Refine)
-- **Función**: Es un hook mágico proveído por `@refinedev/antd`.
-- **¿Qué hace?**: 
-  - Se comunica automáticamente con la API (`/api/users` por defecto, según el nombre del recurso en `AppRouter`).
-  - Maneja la paginación de los datos.
-  - Maneja la ordenación (sorting) y el filtrado.
-  - Devuelve un objeto `tableProps` que contiene toda la información necesaria para alimentar la tabla de Ant Design.
-- **`syncWithLocation: true`**: Sincroniza el número de página actual y los filtros con la URL del navegador (ej. `?page=2`).
+Relacionado con:
 
-### 2. Componente `<List>` (de Refine)
-- Es el contenedor o envoltura principal de la vista de listado.
-- Se encarga automáticamente de proveer el título ("Usuarios" o "Users"), el recuadro blanco de fondo (Paper/Card) y el área de la cabecera.
-- **Prop `headerButtons`**: Permite inyectar botones personalizados en la parte superior derecha de la tarjeta, como nuestro `<CustomCreateButton />`.
+- Registro del resource: `resources/js/AppRouter.tsx` (resource `users`)
+- Endpoints API: `routes/api.php` → `Route::apiResource('users', UserController::class)`
+- Controlador: `app/Http/Controllers/UserController.php` (`index()`)
 
-### 3. Componente `<Table>` (de Ant Design)
-- Es la grilla que muestra los datos en filas y columnas.
-- **Prop `{...tableProps}`**: Expande (inyecta) automáticamente todas las propiedades (datos, cargando, paginación) obtenidas del hook `useTable` hacia la tabla.
-- **Prop `rowKey="id"`**: Le indica a React cuál es el identificador único de cada fila para optimizar el renderizado.
+## Flujo completo (UI → API → BD)
 
-### 4. Componente `<Table.Column>`
-Se encarga de definir cómo se renderiza cada columna individual de la tabla.
-- **Prop `dataIndex`**: Debe coincidir exactamente con el nombre del campo en la respuesta JSON de Laravel (ej. `name`, `email`, `created_at`).
-- **Prop `title`**: Es el encabezado que el usuario ve en la tabla.
-- **Prop `render`**: (Opcional). Permite formatear cómo se ve el dato. Por ejemplo, se usa `<EmailField>` para convertir el texto plano en un enlace "mailto", y `<DateField format="LL">` para formatear la fecha a un string legible.
+Cuando abres `/users`, el flujo real es:
 
-## Mapeo Visual (Interfaz de Usuario)
+1. React Router renderiza `UserList`.
+2. `useTable()` ejecuta `dataProvider.getList("users")`.
+3. `@refinedev/simple-rest` hace un `GET` a:
+   - `GET /api/users?_start=0&_end=10&_sort=<campo>&_order=<asc|desc>`
+4. Axios agrega `Authorization: Bearer <token>` (configurado en `resources/js/AppRouter.tsx`).
+5. Laravel resuelve:
+   - `GET /api/users` → `UserController@index`
+6. `UserController@index` arma un query Eloquent (`User::query()`), aplica filtros/orden, pagina por `offset/limit`, consulta la tabla `users` y devuelve:
+   - **Body**: JSON (array de usuarios)
+   - **Header**: `x-total-count` (total de filas) para que Refine pagine
 
-- **El cuadro contenedor y Título Superior**: Controlado por la etiqueta `<List>`.
-- **El botón de "Crear Usuario" (Esquina superior derecha)**: Controlado por la función `headerButtons` dentro de `<List>`, que invoca al componente `<CustomCreateButton />`.
-- **La tabla de datos, las páginas y el esqueleto de carga**: Controlado todo internamente por `<Table {...tableProps}>`.
-- **Los botones de Ver, Editar y Eliminar de cada fila**: Controlados por la última columna (`<Table.Column dataIndex="actions">`). Usan la propiedad `render` para dibujar un componente `<Space>` (que separa los botones uniformemente) y dentro de él, invoca a nuestros botones personalizados (`CustomShowButton`, `CustomEditButton`, `CustomDeleteButton`), pasándole el `record.id` para que Refine sepa sobre qué registro exacto debe actuar al hacer clic.
+## Piezas clave en el archivo
+
+### 1) `useTable` (Refine)
+
+- **Qué hace**: maneja listado paginado/ordenado y te entrega `tableProps` listo para Ant Design.
+- **Por qué funciona “sin escribir fetch”**: Refine conoce el resource por la ruta actual (`/users`) y el `name: "users"` registrado en `AppRouter.tsx`.
+- **`syncWithLocation: true`**: sincroniza estado de tabla con la URL (útil para compartir links y para “volver” a la misma página/filtros).
+
+### 2) `<List>` (Refine Antd)
+
+Es el contenedor de página (título, card, acciones). En este proyecto se usa `headerButtons` para colocar el botón principal:
+
+- **Crear Usuario**: `<CustomCreateButton />` (componente compartido de botones)
+
+### 3) `<Table {...tableProps}>` (Ant Design)
+
+- **`rowKey="id"`**: obligatorio para una tabla estable (React necesita clave única).
+- **`Table.Column`**:
+  - `dataIndex`: debe coincidir con el campo que llega del backend (`email`, `role`, etc).
+  - `render`: se usa para formatear/combinar valores (ej: nombre completo, tags, avatar).
+
+### 4) Columna “Acciones”
+
+Cada fila incluye 3 acciones estándar del CRUD:
+
+- **Ver (Show)**: navega a `/users/show/:id`
+- **Editar (Edit)**: navega a `/users/edit/:id`
+- **Eliminar (Delete)**: dispara `DELETE /api/users/:id`
+
+Los botones están centralizados en `@/components/buttons/CustomActionButtons` para mantener consistencia visual.
+
+## Contrato de datos (lo que la tabla espera del backend)
+
+### Campos que se usan en esta tabla
+
+El listado renderiza (entre otros):
+
+- `profile_picture` (para el avatar)
+- `name` + `last_name` (nombre completo)
+- `email`
+- `role` (`admin|employee|client`)
+- `status` (`active|inactive`)
+- `created_at` (fecha de creación)
+
+### Paginación
+
+Para que Refine muestre paginación correcta, el backend debe incluir:
+
+- Header **`x-total-count`**
+
+Esto está implementado en `UserController@index`.
+
+## Notas importantes (para mantenimiento)
+
+- **Búsqueda / filtros**: el backend soporta `q`/`search`, y filtros por `role` y `status` (ver `UserController@index`). Si en el futuro agregas filtros UI, deben mapear a esos query params o adaptar el controlador.
+- **Ordenamiento**: Refine manda `_sort` y `_order`; el controlador también soporta `sort_by/sort_order` (compatibilidad).

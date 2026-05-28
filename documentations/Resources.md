@@ -1,198 +1,164 @@
-# 📚 Documentación: Arquitectura de Resources (Refine + API REST)
+# 📚 Arquitectura de “Resources” (Refine SPA + Laravel API REST)
 
-> **Objetivo:** Entender cómo funciona el patrón "Resource" en la nueva arquitectura frontend (S.P.A. con Refine) y backend (API REST con Laravel).
+> **Objetivo:** que cualquier persona (tú en el futuro o un nuevo integrante) pueda entender el flujo completo CRUD **desde la UI hasta la base de datos** usando el patrón **Resource** de Refine y `Route::apiResource()` de Laravel.
 
----
+## 🧠 Qué significa “Resource” en esta arquitectura
 
-## 🗺️ Visión General: El Nuevo Flujo (Inertia 👉 Refine)
+Un **Resource** es la unidad “CRUD” del sistema (por ejemplo `users`, `products`, `categories`). En esta app, el Resource existe en **dos capas**:
 
-Anteriormente usábamos Inertia.js, pero hemos migrado todo el panel de administración a **Refine**. Refine es un framework React puramente _headless_ para aplicaciones CRUD data-intensivas, y ahora está conectado a una **API REST pura** en Laravel.
+- **Frontend (Refine)**: el Resource define *rutas SPA* y qué componente renderiza cada vista (`list`, `create`, `edit`, `show`).
+- **Backend (Laravel)**: el Resource define *endpoints REST* vía `Route::apiResource()`, que mapean a métodos del controlador (`index`, `store`, `show`, `update`, `destroy`) y terminan ejecutando consultas Eloquent contra la base de datos.
 
-Cuando un usuario navega a `/users`, ocurre esto:
+En otras palabras:
 
 ```text
-[Navegador / Usuario]
-       ↓  Navega a /users (React Router DOM lo captura en el cliente)
-[Refine - resources/js/pages/users/list.tsx]
-       ↓  El componente React ejecuta useTable() y pide datos al DataProvider
-[Refine DataProvider - axios GET /api/users]
-       ↓  Petición con Bearer Token (Sanctum)
-[Laravel API Routes - routes/api.php]
-       ↓  Enruta al controlador correspondiente
-[UserController.php -> index()]
-       ↓  Consulta BD, pagina y arma JSON
-[Respuesta JSON + Headers (x-total-count)]
-       ↓  DataProvider intercepta y formatea
-[Refine muestra la tabla usando Ant Design]
+Refine Resource (name="users")  ↔  Laravel apiResource('users')  ↔  tabla `users`
 ```
 
-## 🛠️ Modificaciones Arquitectónicas Clave
+## 🗺️ Flujo real (de punta a punta) cuando visitas “Usuarios”
 
-| Tecnología Anterior | Nueva Tecnología | Razón del Cambio |
-|---|---|---|
-| Inertia.js | **Refine + React Router** | Refine permite construir CRUDs complejos con un 10% del esfuerzo, ya que autoconfigura filtros, ordenación y validaciones por pantalla. No es compatible con el sistema de navegación de Inertia. |
-| Sesiones (Cookies) | **Laravel Sanctum (Tokens)** | Como Refine opera como una aplicación aislada, necesita autenticarse mediante un _Bearer Token_ enviado en los headers HTTP de cada petición. |
-| Vistas/Controladores Web | **API Controllers (`/api`)** | Refine espera que el backend sea estrictamente una RESTful API (`GET`, `POST`, `PUT`, `DELETE` en JSON) en lugar de retornar HTML. |
-| Tailwind CSS Manual | **Ant Design (`antd`)** | Refine se integra magníficamente con Ant Design, brindando Tablas hiper robustas (DataGrids) que hubiese tomado semanas desarrollar de 0 en Tailwind puro. |
+Ejemplo: el admin entra a la lista de usuarios.
 
----
+```text
+[1] Navegador → /users
+    ↓
+[2] SPA (React Router) renderiza UserList (resources/js/pages/users/list.tsx)
+    ↓
+[3] Refine useTable() → dataProvider.getList("users")
+    ↓
+[4] simple-rest → GET /api/users?_start=0&_end=10&_sort=id&_order=desc
+    ↓   (Axios interceptor agrega Authorization: Bearer <token>)
+[5] Laravel routes/api.php (auth:sanctum) → UserController@index
+    ↓
+[6] Eloquent (User::query()) → consulta tabla `users`
+    ↓
+[7] Respuesta JSON + header x-total-count (paginación)
+    ↓
+[8] Refine pinta la tabla (Ant Design Table) con tableProps
+```
 
-## 1. 📦 El Backend: El Modelo y el Controlador
+## 1) Frontend: dónde se registra el Resource (Refine)
 
-### El Modelo (`app/Models/User.php`)
-Los modelos **no cambiaron**. Aquí seguimos definiendo:
-* `$fillable` para seguridad.
-* Relaciones (`hasMany`, `belongsTo`).
-* Reglas locales de validación estáticas (`rules()`, `messages()`).
+Archivo: `resources/js/AppRouter.tsx`.
 
-### El Controlador API (`UserController.php`)
+### 1.1. Registro del Resource en Refine
 
-Nuestros controladores deben retornar un objeto **JSON** y obedecer a la especificación típica REST para que `simple-rest` (el proveedor de Refine) lo entienda.
+Refine “aprende” cómo navegar a un Resource desde el arreglo `resources=[...]`:
 
-#### `index()` (Listado)
-`simple-rest` requiere dos cosas principales:
-1. Una respuesta o un array plano (ej. `[{ id: 1 }, ...]`)
-2. El conteo total para la paginación en un _Header_ `x-total-count`
+- `name`: nombre canónico del resource (y clave para el `dataProvider`).
+- `list/create/edit/show`: rutas SPA de React Router para cargar cada página.
 
-```php
-public function index(Request $request) {
-    $query = User::query();
+En este proyecto el Resource de usuarios está registrado como:
 
-    // Paginación via simple-rest usa _start y _end !
-    $start = $request->get('_start', 0);
-    $end = $request->get('_end', 10);
-    
-    $total = $query->count();
-    $users = $query->offset($start)->limit($end - $start)->get();
-
-    // Importante: Retornamos el array e inyectamos el total en la cabecera
-    return response()->json($users)->header('x-total-count', $total);
+```ts
+{
+  name: "users",
+  list: "/users",
+  create: "/users/create",
+  edit: "/users/edit/:id",
+  show: "/users/show/:id",
 }
 ```
 
-#### `store()` / `update()` / `destroy()`
-De igual forma, devuelven exclusivamente JSON.
+### 1.2. Conexión con la API (Data Provider)
 
-```php
-public function store(Request $request) {
-    // Valida y crea
-    $validated = $request->validate(User::rules(), User::messages());
-    // ... encriptar código, subir imgs, etc
-    $user = User::create($validated);
-    
-    // Retorna JSON status 201
-    return response()->json($user, 201);
-}
+En `AppRouter.tsx` se configura:
+
+- `API_URL = "/api"`
+- `dataProvider={dataProvider(API_URL, axiosInstance)}`
+
+Eso significa: **para el resource `users`, Refine llama a `/api/users`**.
+
+### 1.3. Autenticación SPA (Bearer Token con Sanctum)
+
+La SPA hace login contra el backend y guarda un token en `localStorage` como `auth_token`.
+
+Luego, un interceptor de Axios agrega:
+
+```text
+Authorization: Bearer <auth_token>
 ```
 
----
+Esto es lo que permite pasar el middleware `auth:sanctum` en Laravel (modo tokens personales).
 
-## 2. 🔀 El Configurado de Rutas
+Documento relacionado: `documentations/AppRouter-doc.md`.
 
-Todas las rutas deben estar en `routes/api.php` bajo la validación de `auth:sanctum`:
+## 2) Backend: dónde se registra el Resource (Laravel)
 
-```php
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('users', UserController::class);
-});
-```
-*Ya NO se usa `routes/web.php` para estas rutas.*
+Archivo: `routes/api.php`.
 
----
+El “Resource” de Laravel se define con `Route::apiResource()`, dentro del grupo protegido por Sanctum:
 
-## 3. 🖥️ El Frontend: La Magia de Refine
+- `/api/users` → `UserController@index` (GET)
+- `/api/users` → `UserController@store` (POST)
+- `/api/users/{user}` → `UserController@show` (GET)
+- `/api/users/{user}` → `UserController@update` (PUT/PATCH)
+- `/api/users/{user}` → `UserController@destroy` (DELETE)
 
-### `AppRouter.tsx` (El orquestador)
-Este archivo reemplaza el core de Inertia. Define el enrutador de React y el `<Refine>` Provider. Registramos un "Recurso" en Refine para indicarle cómo operar en él.
+La autenticación API está montada así:
 
-```tsx
-<Refine
-    dataProvider={dataProvider("/api", axiosInstance)} // Habla con el Backend
-    routerProvider={routerProvider}
-    authProvider={authProvider}
-    resources={[
-        {
-            name: "users",                 // Nombre del recurso (y la ruta base `/users`)
-            list: "/users",                // Qué componente carga
-            create: "/users/create",
-            edit: "/users/edit/:id",
-            show: "/users/show/:id",
-            meta: { canDelete: true },
-        },
-    ]}
->
-```
+- Públicas: `POST /api/login`, `POST /api/register`
+- Protegidas: todo el grupo `Route::middleware('auth:sanctum')`
 
-### Vistas CRUD Increíblemente Simples (`resources/js/pages/users/*`)
+## 3) Contrato “simple-rest” ↔ Laravel (query params + paginación)
 
-A diferencia de Inertia donde mapeábamos `state`, funciones y mutaciones mano a mano, Refine condensa la lógica del formulario usando los hooks internos y `Ant Design`.
+Refine usa `@refinedev/simple-rest`. Eso implica convenciones típicas en el request:
 
-#### `list.tsx`
-Mapea los datos del servidor a una DataGrid (Tabla):
-```tsx
-import { List, useTable, EmailField, EditButton, DeleteButton } from "@refinedev/antd";
-import { Table, Space } from "antd";
+- **Paginación**: `_start` y `_end`
+  - ejemplo: `_start=0&_end=10` → “dame 10 desde el offset 0”
+- **Ordenamiento**: `_sort` y `_order`
+  - ejemplo: `_sort=id&_order=desc`
+- **Búsqueda**: usualmente `q=...` (y en este backend también soportamos `search=...`)
 
-export const UserList = () => {
-    const { tableProps } = useTable({ syncWithLocation: true });
+### 3.1. Requisito crítico: `x-total-count`
 
-    return (
-        <List>
-            <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="ID" />
-                <Table.Column dataIndex="name" title="Nombre" />
-                <Table.Column dataIndex="email" render={(v) => <EmailField value={v} />} />
-                <Table.Column
-                    title="Acciones"
-                    render={(_, record: any) => (
-                        <Space>
-                            <EditButton hideText size="small" recordItemId={record.id} />
-                            <DeleteButton hideText size="small" recordItemId={record.id} />
-                        </Space>
-                    )}
-                />
-            </Table>
-        </List>
-    );
-};
+Para que Refine calcule paginación, el backend debe devolver el total en el header:
+
+```text
+x-total-count: <total_registros>
 ```
 
-#### `create.tsx`
-Crea el formulario y **autodispara el POST a `/api/users`** cuando se presiona Guardar.
+En este proyecto, `UserController@index` lo envía junto con el JSON.
 
-```tsx
-import { Create, useForm } from "@refinedev/antd";
-import { Form, Input, Select } from "antd";
+## 4) Conexión con la base de datos (Eloquent + migración)
 
-export const UserCreate = () => {
-    const { formProps, saveButtonProps } = useForm();
+### 4.1. Estructura de tabla `users`
 
-    return (
-        <Create saveButtonProps={saveButtonProps}>
-            {/* ...formProps inyecta estado onFinish, validaciones previas */}
-            <Form {...formProps} layout="vertical">
-                <Form.Item label="Nombre" name={["name"]} rules={[{ required: true }]}>
-                    <Input />
-                </Form.Item>
-                {/* Agrega más Input o Select según el backend */}
-            </Form>
-        </Create>
-    );
-};
-```
+Archivo: `database/migrations/0001_01_01_000000_create_users_table.php`.
 
----
+Campos clave usados por las pantallas CRUD:
 
-## 4. 🧰 ¿Qué pasa con los antiguos componentes (Headless UI / Shadcn)? 
+- Identidad: `id`
+- Datos: `name`, `last_name`, `email`, `phone_number`, `address`
+- Seguridad: `password` (hash)
+- Perfil: `profile_picture` (base64)
+- Control: `role` (`admin|employee|client`), `status` (`active|inactive`)
+- Tiempos: `registration_date`, `last_connection`, `created_at`, `updated_at`
 
-Anteriormente en `resources/js/components` teníamos componentes pre-estilizados usando `Tailwind` + `Radix Ui`. Si el dashboard 100% va a ser usando **Refine + Ant Design**, esos componentes de React ya no se usan en este módulo, están **inactivos**.
+### 4.2. Modelo `App\Models\User`
 
-Si a futuro el proyecto requiere un *Portal Público (ej. tienda)* donde queremos diseños visuales ultra personalizados alejados de un "Panel B2B", podremos usar esos componentes y aplicar "Refine Headless" (`@refinedev/core`) manteniendo así un mismo DataProvider.
+Archivo: `app/Models/User.php`.
 
-## 5. Resumen de Implementación de Nuevos Módulos
-Pasos exactos para crear un CRUD ahora:
-1. Crea/modifica tu Controlador para que retorne `response()->json()` en lugar de `Inertia`.
-2. Incluye `Route::apiResource('modulo', ...)` en `api.php`.
-3. Registra el Recurso dentro del prop `resources={[]}` del componente `<Refine>` dentro de `AppRouter.tsx`.
-4. Crea la vista `List` usando `<List>` y `useTable()` de `@refinedev/antd`.
-5. Crea la vista `Create`/`Edit` usando `<Create>`/`<Edit>` y la propiedad `{...formProps}` en tu Form de Ant Design. ¡El botón guardar lo hará mágicamente!
+Puntos importantes:
+
+- `protected $fillable = [...]`: define qué campos se pueden asignar masivamente (usado por `User::create()` / `$user->update()`).
+- `casts()` convierte fechas a `datetime`.
+- `rules()` y `messages()` son la fuente de validación reutilizable por el controlador.
+
+## 5) Cómo “se arma” un CRUD nuevo con este patrón (checklist real)
+
+Para crear un módulo nuevo (un nuevo Resource):
+
+1. **Migración + Modelo**: define tabla y `fillable/casts` (Eloquent).
+2. **Controlador API**: implementa `index/store/show/update/destroy` retornando JSON.
+3. **Ruta API**: `Route::apiResource('<resource>', <Controller>::class)` en `routes/api.php` (dentro de `auth:sanctum` si aplica).
+4. **Resource en Refine**: agrega `{ name, list/create/edit/show }` en `resources/js/AppRouter.tsx`.
+5. **Páginas SPA**: crea `resources/js/pages/<resource>/{list,create,edit,show}.tsx`.
+
+## 6) Lecturas recomendadas (oficiales)
+
+- Refine “Resources”: `https://refine.dev/docs/core/refine-component/#resources`
+- Refine “simple-rest data provider”: `https://refine.dev/docs/data/packages/simple-rest/`
+- Laravel `Route::apiResource`: `https://laravel.com/docs/routing#api-resource-routes`
+- Laravel Validation: `https://laravel.com/docs/validation`
+- Laravel Sanctum (API tokens): `https://laravel.com/docs/sanctum`

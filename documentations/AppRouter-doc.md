@@ -19,6 +19,23 @@ Es un objeto fundamental requerido por Refine para manejar el flujo de sesión. 
 - **`getIdentity`**: Devuelve los datos del usuario logueado actualmente, buscando primero en el `localStorage` o haciendo una petición a `/me`.
 - **`onError`**: Maneja errores globales HTTP. Si Laravel responde con un error `401 Unauthorized` (token expirado), desloguea al usuario automáticamente.
 
+#### Qué endpoints toca realmente (backend)
+
+Los endpoints están definidos en `routes/api.php` y el controlador de auth es `app/Http/Controllers/ApiAuthController.php`:
+
+- **Login**: `POST /api/login`
+  - valida credenciales y genera token con `createToken('auth_token')`
+  - responde `{ user, token }`
+- **Register**: `POST /api/register`
+  - crea usuario y genera token
+  - responde `{ user, token }` con **201**
+- **Logout** (protegido): `POST /api/logout`
+  - borra el **token actual** con `currentAccessToken()->delete()`
+- **Me** (protegido): `GET /api/me`
+  - retorna el usuario autenticado por el token
+
+> Nota: este flujo usa **Sanctum con tokens personales (Bearer)**, no cookies/SPA-CSRF.
+
 ### 3. Componente `CustomTitle`
 - **Función**: Es un pequeño componente funcional de React que renderiza el Logo y el nombre del proyecto ("Sabor & Tradición").
 - **Prop `collapsed`**: Recibe un booleano que indica si el menú lateral (Sider) está minimizado o expandido. Si está colapsado, oculta el texto y solo muestra el logo.
@@ -32,6 +49,22 @@ Es el componente que se exporta y renderiza en la aplicación completa.
   - `routerProvider`: Conecta Refine con React Router.
   - `authProvider`: Le pasa el objeto de autenticación que explicamos antes.
   - `resources`: **(¡MUY IMPORTANTE!)** Este arreglo (array) define todas las entidades del sistema (users, categories, products). Para cada entidad, se declaran sus rutas (`list`, `create`, `edit`, `show`) y metadatos como el ícono.
+
+#### ¿Por qué `resources` es tan importante?
+
+Porque es el “diccionario” que usa Refine para:
+
+- construir el menú lateral automáticamente (ThemedSider)
+- resolver navegación (por ejemplo `NavigateToResource`)
+- mapear cada pantalla CRUD al nombre de resource usado por el `dataProvider`
+
+Ejemplo (Usuarios):
+
+- Resource `name="users"` → endpoints base `/api/users`
+- List `/users` → `resources/js/pages/users/list.tsx`
+- Create `/users/create` → `resources/js/pages/users/create.tsx`
+- Edit `/users/edit/:id` → `resources/js/pages/users/edit.tsx`
+- Show `/users/show/:id` → `resources/js/pages/users/show.tsx`
   
 - **`<Routes>` y `<Route>`**: Definen el mapeo de URLs a Componentes en la pantalla.
 

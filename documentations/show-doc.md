@@ -1,33 +1,65 @@
-# Documentación: resources/js/pages/users/show.tsx
+# Documentación: `resources/js/pages/users/show.tsx` (Detalles / Show)
 
 ## ¿Qué es este archivo?
-Este archivo define la vista de "Detalles" (Show/View) para un único usuario. Se accede a esta pantalla cuando el administrador hace clic en el botón "Ver" (el ícono del ojo azul) en la tabla de usuarios.
 
-## Métodos, Funciones y Variables
+Este archivo define la vista de **Detalles** de un usuario: la pantalla a la que se llega desde el listado (`/users`) haciendo clic en el botón “Ver” (ojo).
 
-### 1. `useShow` (Hook de Refine)
-- **Función**: Es un hook proveído por `@refinedev/core`.
-- **¿Qué hace?**: 
-  - Extrae el ID del usuario directamente de la URL actual (gracias a la ruta configurada en `AppRouter`: `/users/show/:id`).
-  - Hace una petición `GET` automática a la API de Laravel (`/api/users/{id}`).
-  - Devuelve un objeto `query` que contiene el estado de la petición (cargando, error) y los datos retornados.
+Relacionado con:
 
-### 2. Extracción de Datos
-- **`const { data, isLoading } = query;`**: Extraemos los datos principales y el estado de carga (booleano) de la respuesta.
-- **`const record = data?.data;`**: Extraemos el objeto literal del usuario. Usamos el operador `?.` (Optional Chaining) para prevenir errores de JavaScript en caso de que `data` sea null mientras se está cargando.
+- Ruta SPA: `/users/show/:id` (en `resources/js/AppRouter.tsx`)
+- Endpoint API: `GET /api/users/:id`
+- Controlador: `app/Http/Controllers/UserController.php` (`show()`)
 
-### 3. Componente `<Show>` (de Refine)
-- Es el contenedor principal (similar a `<List>`).
-- **Prop `isLoading`**: Le indicamos a Refine que muestre un estado de carga (como un spinner o esqueleto) mientras esta variable sea `true`.
+## Flujo completo (UI → API → BD)
 
-### 4. Componentes de Tipografía (Ant Design)
-- **`Typography`**: Es la librería de textos de Ant Design. De ahí desestructuramos `Title` y `Text`.
-- **`<Title level={5}>`**: Actúa como un encabezado `<h5>`. Se usa para poner la etiqueta o título del campo (ej. "Nombre").
-- **`<Text>`**: Se usa para imprimir el valor real del campo.
-- **`<EmailField>` y `<DateField>`**: Componentes visuales de Refine para mostrar emails como enlaces clickeables y fechas formateadas correctamente, respectivamente.
+Al abrir la vista:
 
-## Mapeo Visual (Interfaz de Usuario)
+1. React Router renderiza `UserShow` con un `:id` en la URL.
+2. `useShow()` dispara:
+   - `dataProvider.getOne("users", { id })` → `GET /api/users/:id`
+3. Laravel resuelve `UserController@show(User $user)` y retorna JSON del usuario.
+4. Refine actualiza el estado de `query` y la UI renderiza el `record`.
 
-- **Contenedor Principal, Título y Botón de Atrás**: Todo esto es generado mágicamente por la etiqueta envolvente `<Show>`. Ella lee que estamos en el recurso "users" y automáticamente pone de título "Show User" y agrega un botón para volver a la tabla de lista.
-- **Botones de Acción en el Header (Editar y Eliminar)**: Al igual que el botón de volver, la etiqueta `<Show>` incluye automáticamente en la cabecera superior derecha los botones de "Editar" y "Eliminar" basándose en los permisos, y pasan por defecto el `record.id`.
-- **Vista de los datos del registro**: Todo lo que está dentro de `<Show> ... </Show>` es el contenido. Está estructurado de forma secuencial donde colocamos un `Title` (ej. "Rol") seguido del `Text` que extrae el valor de la base de datos (`{record?.role}`).
+## Piezas clave en el archivo
+
+### 1) `useShow()` (Refine)
+
+`useShow()`:
+
+- extrae `id` desde la URL
+- gestiona loading/error
+- expone `query` para leer `data` e `isLoading`
+
+En este archivo:
+
+- `const { data, isLoading } = query;`
+- `const record = data?.data;`
+
+### 2) `<Show isLoading={isLoading}>`
+
+`<Show>` es el layout de página de detalles. Mientras `isLoading` sea `true`, muestra loading.
+
+### 3) Render de datos (Ant Design + Refine Fields)
+
+La UI muestra (entre otros):
+
+- Foto: `Avatar src={record?.profile_picture}`
+- Nombre: `{record?.name} {record?.last_name}`
+- Email: `record?.email`
+- Rol y estado: tags (`admin|employee|client`, `active|inactive`)
+- Información de contacto: `phone_number`, `address`
+- Fechas: `registration_date`, `last_connection` (con `<DateField>`)
+
+## Contrato del endpoint `GET /api/users/:id`
+
+- **Response**: JSON del usuario (tal como Eloquent lo serializa)
+- **Campos sensibles**: el modelo oculta `password` (por `$hidden` en `app/Models/User.php`)
+
+## Acciones disponibles desde esta vista
+
+Por convención de Refine:
+
+- **Editar**: navegación a `/users/edit/:id`
+- **Eliminar**: `DELETE /api/users/:id`
+
+En este proyecto, los botones “Editar/Eliminar” pueden aparecer en el header del layout dependiendo de cómo esté configurado el layout y permisos.

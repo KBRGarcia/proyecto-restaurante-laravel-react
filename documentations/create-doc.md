@@ -1,29 +1,113 @@
-# Documentación: resources/js/pages/users/create.tsx
+# Documentación: `resources/js/pages/users/create.tsx` (Crear / Create)
 
 ## ¿Qué es este archivo?
-Este archivo define la vista y el formulario para "Crear" un nuevo registro de usuario. Es la pantalla que aparece al hacer clic en el botón principal "Crear Usuario" desde la lista.
 
-## Métodos, Funciones y Variables
+Este archivo define la vista y el formulario para **crear** un nuevo usuario. Es la pantalla que aparece al hacer clic en el botón principal **“Crear Usuario”** desde el listado.
 
-### 1. `useForm` (Hook de Refine / Ant Design)
-- **Función**: Es exactamente el mismo hook que usamos en `edit.tsx`, pero su comportamiento interno cambia basándose en el contexto.
-- **¿Qué hace diferente en Create?**:
-  - Sabe que la ruta es "create" (porque se definió en `AppRouter`), así que **no intenta buscar datos previos** ni lee un ID de la URL.
-  - Prepara un formulario completamente vacío.
-  - Al hacer clic en Guardar, procesa el formulario y realiza automáticamente una petición **POST** a `/api/users` en Laravel.
-  - Maneja de manera automática los errores devueltos por Laravel (ej. si el correo ya existe, marca el campo de correo en rojo y muestra el error).
+Relacionado con:
 
-### 2. Componente `<Create>` (de Refine)
-- Es el equivalente a `<Edit>` o `<Show>`, pero su cabecera tiene como título automático "Create User".
-- Recibe las `saveButtonProps` provenientes de `useForm` para vincular su botón de guardar del footer con nuestro formulario.
+- Rutas SPA: `resources/js/AppRouter.tsx` (`/users/create`)
+- Endpoint API: `POST /api/users`
+- Controlador: `app/Http/Controllers/UserController.php` (`store()`)
+- Modelo/validación: `app/Models/User.php` (`rules()`, `messages()`)
+- Tabla: migración `database/migrations/0001_01_01_000000_create_users_table.php`
 
-### 3. Componentes del Formulario (`Form`, `Form.Item`)
-Funciona bajo los mismos principios que la vista de edición, con una diferencia técnica clave:
-- **`rules` en la Contraseña**: Aquí el arreglo de reglas es más estricto (`rules={[{ required: true, min: 8 }]}`). Mientras que en la edición era opcional (para no forzar a reescribirla), al crear un usuario nuevo **es obligatorio** proporcionar una contraseña, y Ant Design verificará en tiempo real que tenga mínimo 8 caracteres.
-- **Prop `initialValue`**: Para los `<Form.Item>` de `role` y `status`, se configura un valor por defecto usando `initialValue="cliente"` e `initialValue="activo"`. Esto significa que, al abrir la pantalla de creación, esos selectores ya vendrán pre-seleccionados para agilizar el trabajo del administrador.
+## Flujo completo (UI → API → BD)
 
-## Mapeo Visual (Interfaz de Usuario)
+Al presionar “Guardar”:
 
-- **Cabecera "Create User" y botón de volver**: Dibujados por `<Create>`.
-- **Botón "Guardar"**: Dibujado automáticamente por `<Create>` e inyectado en el footer (abajo de todo). 
-- **Estructura de inputs**: El `<Form>` vertical acomoda los campos de texto uno debajo del otro. Los textos arriba de cada input provienen de la propiedad `label` (Ej: `label="Apellido"`). El `name` es invisible para el usuario, pero es el puente de datos hacia Laravel.
+1. Refine (`useForm`) recolecta valores del `<Form>`.
+2. Dispara `dataProvider.create("users", { data })`.
+3. `simple-rest` ejecuta:
+   - `POST /api/users`
+4. Axios agrega `Authorization: Bearer <token>` (interceptor en `AppRouter.tsx`).
+5. Laravel resuelve:
+   - `UserController@store(Request $request)`
+6. `store()` valida con `User::rules()` y `User::messages()`, hace `Hash::make()` de la contraseña, y ejecuta:
+   - `User::create($validated)` → INSERT en tabla `users`
+7. Respuesta:
+   - **201** con JSON del usuario creado
+
+## Piezas clave en el archivo
+
+### 1) `useForm()` (Refine Antd)
+
+- **Qué hace**: conecta Ant Design Form con Refine y con el `dataProvider`.
+- **Modo Create**: como estás en `/users/create`, Refine NO intenta cargar un registro previo y prepara un submit que hará `POST`.
+- **Errores del backend**: cuando Laravel responde **422** (validación), Refine/Antd muestran los errores en los campos.
+
+### 2) `<Create saveButtonProps={...}>`
+
+`<Create>` es el layout de página para “crear”. Contiene el botón “Guardar” y lo conecta con el submit real mediante `saveButtonProps`.
+
+### 3) Formulario y mapeo de campos → JSON
+
+Cada `Form.Item` define:
+
+- **`name`**: clave del payload JSON enviado a Laravel
+- **`rules`**: validación frontend (rápida/UX). **La fuente de verdad es Laravel**.
+
+En este formulario se envían, entre otros:
+
+- `name`, `last_name`, `email`
+- `phone_number`, `address`
+- `password`
+- `role` (default: `client`)
+- `status` (default: `active`)
+- `profile_picture` (ver sección siguiente)
+
+## Foto de perfil (`profile_picture`): cómo se envía
+
+La vista implementa un flujo típico de “subir foto” pero **sin subir archivo**:
+
+- El `Upload` usa `beforeUpload`.
+- Se convierte el archivo a **Base64 Data URL** con `FileReader.readAsDataURL`.
+- Se guarda en estado local `imageUrl` para previsualizar.
+- Se setea el valor del form:
+  - `formProps.form?.setFieldsValue({ profile_picture: base64Url })`
+
+Eso hace que el payload enviado sea un string como:
+
+```text
+data:image/png;base64,iVBORw0KGgoAAA...
+```
+
+En backend, `UserController@store` tiene lógica para aceptar:
+
+- un archivo real (`hasFile('profile_picture')`) y convertirlo a base64
+- o una cadena base64 si `profile_picture` empieza con `data:image`
+
+### Nota crítica de mantenimiento (validación)
+
+Actualmente el modelo valida `profile_picture` como **`image`** (archivo). Si el frontend envía base64 como string, Laravel puede rechazarlo en `validate()` con **422**.
+
+Si se presenta ese caso, hay 2 opciones coherentes:
+
+- **Opción A (recomendada para “subir archivo”)**: enviar multipart/form-data con archivo real (y dejar la regla `image`).
+- **Opción B (recomendada para “guardar base64”)**: cambiar la regla para aceptar string/base64 (y opcionalmente validar mime/tamaño por lógica propia).
+
+Esta documentación deja explícita la intención actual: **el controlador intenta aceptar base64**, pero la regla del modelo puede impedirlo.
+
+## Contrato del endpoint `POST /api/users`
+
+### Request (esperado)
+
+Campos típicos:
+
+- `name` (required)
+- `last_name` (required)
+- `email` (required, unique)
+- `password` (required)
+- `role` (required, `admin|employee|client`)
+- `status` (required, `active|inactive`)
+- opcionales: `phone_number`, `address`, `profile_picture`
+
+### Validación (backend = fuente de verdad)
+
+En `User::rules()` la contraseña tiene requisitos fuertes (min/max, regex, y `confirmed`).
+
+### Nota crítica (password confirmation)
+
+`confirmed` exige enviar `password_confirmation`. La UI actual **no** incluye un campo “confirmar contraseña”, por lo que el backend puede responder 422 si mantiene esa regla.
+
+Si se habilita esa validación, la pantalla debe agregar un `Form.Item` para `password_confirmation`.

@@ -113,6 +113,7 @@ export interface Product {
 export interface Order {
     id: number;
     user_id: number;
+    branch_id: number | null;
     user_name: string;
     user?: {
         id: number;
@@ -122,7 +123,7 @@ export interface Order {
         email: string;
         phone_number: string | null;
     };
-    status: 'pending' | 'preparing' | 'ready' | 'delivered' | 'canceled';
+    status: 'pending' | 'preparing' | 'ready' | 'on_the_way' | 'delivered' | 'canceled';
     status_label: string;
     service_type: 'delivery' | 'pickup';
     service_type_label: string;
@@ -240,10 +241,10 @@ export interface PaymentMethod {
     active: boolean;
     active_label: string;
     configuration: any | null;
-    creation_date: string;
-    update_date: string;
-    created_at: string;
-    updated_at: string;
+    creation_date: string | null;
+    update_date: string | null;
+    created_at: string | null;
+    updated_at: string | null;
     [key: string]: unknown;
 }
 
@@ -254,12 +255,33 @@ export interface VenezuelaBank {
     active: boolean;
     active_label: string;
     system_data: any | null;
-    creation_date: string;
+    creation_date: string | null;
     creation_date_formatted: string | null;
-    created_at: string;
+    created_at: string | null;
     created_at_formatted: string | null;
-    updated_at: string;
+    updated_at: string | null;
     updated_at_formatted: string | null;
+    [key: string]: unknown;
+}
+
+export interface OrderPayment {
+    id: number;
+    order_id: number;
+    method: 'pago_movil' | 'tarjeta_nacional' | 'efectivo' | 'transferencia' | 'tarjeta_credito' | 'binance' | 'paypal' | 'zinli' | 'zelle' | 'wally';
+    status: 'pending' | 'confirmed' | 'rejected' | 'refunded';
+    currency: 'nacional' | 'internacional';
+    amount: string | number;
+    exchange_rate: string | number | null;
+    bank_code: string | null;
+    reference_number: string | null;
+    payer_identification: string | null;
+    payer_phone: string | null;
+    proof_image_path: string | null;
+    paid_at: string | null;
+    confirmed_at: string | null;
+    notes: string | null;
+    created_at: string;
+    updated_at: string;
     [key: string]: unknown;
 }
 

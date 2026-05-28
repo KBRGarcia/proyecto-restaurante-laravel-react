@@ -1,6 +1,6 @@
 import { List, useTable, DateField } from "@refinedev/antd";
 import { Table, Space, Tag, Typography } from "antd";
-import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
+import { CustomShowButton } from "@/components/buttons/CustomActionButtons";
 
 const { Text } = Typography;
 
@@ -26,13 +26,7 @@ export const PaymentMethodsList = () => {
     };
 
     return (
-        <List
-            headerButtons={({ defaultButtons }) => (
-                <>
-                    <CustomCreateButton />
-                </>
-            )}
-        >
+        <List>
             <Table {...tableProps} rowKey="id">
                 <Table.Column dataIndex="id" title="ID" />
                 <Table.Column dataIndex="code" title="Código" render={(value) => <Text code>{value}</Text>} />
@@ -42,7 +36,7 @@ export const PaymentMethodsList = () => {
                 <Table.Column
                     dataIndex="created_at"
                     title="Creado"
-                    render={(value: string) => <DateField format="LL" value={value} />}
+                    render={(value: string | null) => value ? <DateField format="LL" value={value} /> : <Text>N/A</Text>}
                 />
                 <Table.Column
                     title="Acciones"
@@ -51,8 +45,6 @@ export const PaymentMethodsList = () => {
                     render={(_, record: { id: number }) => (
                         <Space>
                             <CustomShowButton recordItemId={record.id} />
-                            <CustomEditButton recordItemId={record.id} />
-                            <CustomDeleteButton recordItemId={record.id} />
                         </Space>
                     )}
                 />

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,6 +18,16 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'branch_id' => $this->branch_id,
+            'branch_name' => $this->branch?->name,
+            'branch' => $this->whenLoaded('branch', function () {
+                return [
+                    'id' => $this->branch->id,
+                    'name' => $this->branch->name,
+                    'city' => $this->branch->city,
+                    'state' => $this->branch->state,
+                ];
+            }),
             'user_name' => $this->user?->full_name ?? $this->user?->name . ' ' . $this->user?->last_name ?? 'Usuario no encontrado',
             'user' => $this->whenLoaded('user', function () {
                 return [
@@ -77,6 +88,7 @@ class OrderResource extends JsonResource
             'pending' => 'Pendiente',
             'preparing' => 'En Preparación',
             'ready' => 'Listo',
+            'on_the_way' => 'En Camino',
             'delivered' => 'Entregado',
             'canceled' => 'Cancelado',
             default => ucfirst($this->status),
@@ -189,6 +201,7 @@ class OrderResource extends JsonResource
                     ['value' => 'pending', 'label' => 'Pendiente'],
                     ['value' => 'preparing', 'label' => 'En Preparación'],
                     ['value' => 'ready', 'label' => 'Listo'],
+                    ['value' => 'on_the_way', 'label' => 'En Camino'],
                     ['value' => 'delivered', 'label' => 'Entregado'],
                     ['value' => 'canceled', 'label' => 'Cancelado'],
                 ],
@@ -234,6 +247,15 @@ class OrderResource extends JsonResource
                 'grid_cols' => 6,
             ],
             [
+                'name' => 'branch_id',
+                'label' => 'Sucursal',
+                'type' => 'select',
+                'placeholder' => 'Seleccione una sucursal (opcional)',
+                'required' => false,
+                'validation' => 'nullable|exists:branches,id',
+                'grid_cols' => 6,
+            ],
+            [
                 'name' => 'assigned_employee_id',
                 'label' => 'Empleado Asignado',
                 'type' => 'select',
@@ -248,12 +270,13 @@ class OrderResource extends JsonResource
                 'type' => 'select',
                 'placeholder' => 'Seleccione el estado',
                 'required' => true,
-                'validation' => 'required|in:pending,preparing,ready,delivered,canceled',
+                'validation' => 'required|in:pending,preparing,ready,on_the_way,delivered,canceled',
                 'grid_cols' => 4,
                 'options' => [
                     ['value' => 'pending', 'label' => 'Pendiente'],
                     ['value' => 'preparing', 'label' => 'En Preparación'],
                     ['value' => 'ready', 'label' => 'Listo'],
+                    ['value' => 'on_the_way', 'label' => 'En Camino'],
                     ['value' => 'delivered', 'label' => 'Entregado'],
                     ['value' => 'canceled', 'label' => 'Cancelado'],
                 ],
@@ -339,11 +362,18 @@ class OrderResource extends JsonResource
             [
                 'name' => 'payment_method',
                 'label' => 'Método de Pago',
-                'type' => 'text',
-                'placeholder' => 'Efectivo, Tarjeta, etc.',
+                'type' => 'select',
+                'placeholder' => 'Seleccione el método de pago',
                 'required' => false,
-                'validation' => 'nullable|string|max:50',
+                'validation' => 'nullable|in:' . implode(',', PaymentMethod::values()),
                 'grid_cols' => 6,
+                'options' => array_map(
+                    fn (PaymentMethod $method): array => [
+                        'value' => $method->value,
+                        'label' => $method->label(),
+                    ],
+                    PaymentMethod::cases()
+                ),
             ],
             [
                 'name' => 'special_notes',

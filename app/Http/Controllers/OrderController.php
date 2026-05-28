@@ -14,7 +14,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'assignedEmployee']);
+        $query = Order::with(['user', 'branch', 'assignedEmployee']);
 
         // Búsqueda general
         if ($request->filled('search') || $request->filled('q')) {
@@ -49,6 +49,11 @@ class OrderController extends Controller
         // Filtro por usuario
         if ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
+        }
+
+        // Filtro por sucursal
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
         }
 
         // Filtro por empleado asignado
@@ -150,7 +155,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['user', 'assignedEmployee']);
+        $order->load(['user', 'branch', 'assignedEmployee', 'orderPayments']);
 
         return response()->json($order);
     }
@@ -160,7 +165,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        $order->load(['user', 'assignedEmployee']);
+        $order->load(['user', 'branch', 'assignedEmployee']);
 
         // Obtener usuarios activos (clientes)
         $users = User::where('status', 'active')
@@ -207,6 +212,9 @@ class OrderController extends Controller
                     break;
                 case 'ready':
                     $validated['ready_date'] = now();
+                    break;
+                case 'on_the_way':
+                    $validated['on_the_way_date'] = now();
                     break;
                 case 'delivered':
                     $validated['delivered_date'] = now();

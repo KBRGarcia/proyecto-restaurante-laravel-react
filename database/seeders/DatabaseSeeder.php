@@ -24,9 +24,8 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ProductSeeder::class,
             OrderSeeder::class,
+            OrderPaymentSeeder::class,
             OrderDetailSeeder::class,
-            PaymentMethodSeeder::class,
-            VenezuelaBankSeeder::class,
             BranchSeeder::class,
             ProductBranchSeeder::class,
         ]);

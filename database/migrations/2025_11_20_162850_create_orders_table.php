@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id()->comment('identificador de la orden');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->comment('identificador del usuario');
-            $table->enum('status', ['pending', 'preparing', 'ready', 'delivered', 'canceled'])->default('pending')->comment('estado de la orden');
+            $table->enum('status', ['pending', 'preparing', 'ready', 'on_the_way', 'delivered', 'canceled'])->default('pending')->comment('estado de la orden');
             $table->enum('service_type', ['delivery', 'pickup'])->comment('tipo de servicio');
             $table->decimal('subtotal', 10, 2)->comment('subtotal de la orden');
             $table->decimal('taxes', 10, 2)->default(0)->comment('impuestos de la orden');
@@ -36,6 +36,10 @@ return new class extends Migration
             $table->timestamp('delivered_date')->nullable()->comment('fecha de entrega');
             $table->timestamp('canceled_date')->nullable()->comment('fecha de cancelación');
             $table->timestamps();
+
+            $table->index(['status', 'order_date'], 'orders_status_order_date_idx');
+            $table->index(['user_id', 'order_date'], 'orders_user_order_date_idx');
+            $table->index(['service_type', 'order_date'], 'orders_service_type_order_date_idx');
         });
     }
 

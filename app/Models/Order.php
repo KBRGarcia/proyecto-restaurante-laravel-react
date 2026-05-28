@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Validation\Rule;
 
 class Order extends Model
 {
@@ -15,6 +17,7 @@ class Order extends Model
     public const STATUS_PENDING = 'pending';
     public const STATUS_PREPARING = 'preparing';
     public const STATUS_READY = 'ready';
+    public const STATUS_ON_THE_WAY = 'on_the_way';
     public const STATUS_DELIVERED = 'delivered';
     public const STATUS_CANCELED = 'canceled';
 
@@ -44,6 +47,7 @@ class Order extends Model
      */
     protected $fillable = [
         'user_id',
+        'branch_id',
         'status',
         'service_type',
         'subtotal',
@@ -106,6 +110,14 @@ class Order extends Model
     }
 
     /**
+     * Get the branch that prepares or dispatches the order.
+     */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    /**
      * Get the employee assigned to the order.
      */
     public function assignedEmployee(): BelongsTo
@@ -138,6 +150,14 @@ class Order extends Model
     }
 
     /**
+     * Get payment records for the order.
+     */
+    public function orderPayments(): HasMany
+    {
+        return $this->hasMany(OrderPayment::class);
+    }
+
+    /**
      * Scope a query to only include pending orders.
      */
     public function scopePending(Builder $query): Builder
@@ -159,6 +179,14 @@ class Order extends Model
     public function scopeReady(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_READY);
+    }
+
+    /**
+     * Scope a query to only include orders on the way.
+     */
+    public function scopeOnTheWay(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_ON_THE_WAY);
     }
 
     /**
@@ -250,6 +278,14 @@ class Order extends Model
     }
 
     /**
+     * Check if the order is on the way.
+     */
+    public function isOnTheWay(): bool
+    {
+        return $this->status === self::STATUS_ON_THE_WAY;
+    }
+
+    /**
      * Check if the order is delivered.
      */
     public function isDelivered(): bool
@@ -291,7 +327,8 @@ class Order extends Model
     {
         return [
             'user_id' => ['required', 'exists:users,id'],
-            'status' => ['required', 'string', 'in:pending,preparing,ready,delivered,canceled'],
+            'branch_id' => ['nullable', 'exists:branches,id'],
+            'status' => ['required', 'string', 'in:pending,preparing,ready,on_the_way,delivered,canceled'],
             'service_type' => ['required', 'string', 'in:delivery,pickup'],
             'subtotal' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'taxes' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
@@ -299,7 +336,7 @@ class Order extends Model
             'delivery_address' => ['nullable', 'string', 'required_if:service_type,delivery'],
             'contact_phone' => ['nullable', 'string', 'max:20'],
             'special_notes' => ['nullable', 'string'],
-            'payment_method' => ['nullable', 'string', 'max:50'],
+            'payment_method' => ['nullable', 'string', 'max:50', Rule::in(PaymentMethod::values())],
             'currency' => ['required', 'string', 'in:nacional,internacional'],
             'national_payment_data' => ['nullable', 'array'],
             'estimated_delivery_date' => ['nullable', 'date'],
@@ -317,6 +354,7 @@ class Order extends Model
         return [
             'user_id.required' => 'El usuario es obligatorio.',
             'user_id.exists' => 'El usuario seleccionado no existe.',
+            'branch_id.exists' => 'La sucursal seleccionada no existe.',
             'status.required' => 'El estado es obligatorio.',
             'status.in' => 'El estado seleccionado no es válido.',
             'service_type.required' => 'El tipo de servicio es obligatorio.',
@@ -339,6 +377,7 @@ class Order extends Model
             'special_notes.string' => 'Las notas especiales deben ser una cadena de texto.',
             'payment_method.string' => 'El método de pago debe ser una cadena de texto.',
             'payment_method.max' => 'El método de pago no debe exceder los 50 caracteres.',
+            'payment_method.in' => 'El método de pago seleccionado no es válido.',
             'currency.required' => 'La moneda es obligatoria.',
             'currency.in' => 'La moneda seleccionada no es válida.',
             'national_payment_data.array' => 'Los datos de pago nacional deben ser un arreglo.',

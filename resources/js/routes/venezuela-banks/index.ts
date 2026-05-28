@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::store
-* @see app/Http/Controllers/VenezuelaBankController.php:75
+* @see app/Http/Controllers/VenezuelaBankController.php:63
 * @route '/api/venezuela-banks'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +97,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::store
-* @see app/Http/Controllers/VenezuelaBankController.php:75
+* @see app/Http/Controllers/VenezuelaBankController.php:63
 * @route '/api/venezuela-banks'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::store
-* @see app/Http/Controllers/VenezuelaBankController.php:75
+* @see app/Http/Controllers/VenezuelaBankController.php:63
 * @route '/api/venezuela-banks'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +116,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::store
-* @see app/Http/Controllers/VenezuelaBankController.php:75
+* @see app/Http/Controllers/VenezuelaBankController.php:63
 * @route '/api/venezuela-banks'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +126,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::store
-* @see app/Http/Controllers/VenezuelaBankController.php:75
+* @see app/Http/Controllers/VenezuelaBankController.php:63
 * @route '/api/venezuela-banks'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,10 +138,10 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::show
-* @see app/Http/Controllers/VenezuelaBankController.php:108
+* @see app/Http/Controllers/VenezuelaBankController.php:73
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-export const show = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -153,16 +153,12 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::show
-* @see app/Http/Controllers/VenezuelaBankController.php:108
+* @see app/Http/Controllers/VenezuelaBankController.php:73
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-show.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+show.url = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { venezuela_bank: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { venezuela_bank: args.id }
     }
 
     if (Array.isArray(args)) {
@@ -174,9 +170,7 @@ show.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank:
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        venezuela_bank: typeof args.venezuela_bank === 'object'
-        ? args.venezuela_bank.id
-        : args.venezuela_bank,
+        venezuela_bank: args.venezuela_bank,
     }
 
     return show.definition.url
@@ -186,50 +180,50 @@ show.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank:
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::show
-* @see app/Http/Controllers/VenezuelaBankController.php:108
+* @see app/Http/Controllers/VenezuelaBankController.php:73
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-show.get = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::show
-* @see app/Http/Controllers/VenezuelaBankController.php:108
+* @see app/Http/Controllers/VenezuelaBankController.php:73
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-show.head = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::show
-* @see app/Http/Controllers/VenezuelaBankController.php:108
+* @see app/Http/Controllers/VenezuelaBankController.php:73
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-const showForm = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::show
-* @see app/Http/Controllers/VenezuelaBankController.php:108
+* @see app/Http/Controllers/VenezuelaBankController.php:73
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-showForm.get = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::show
-* @see app/Http/Controllers/VenezuelaBankController.php:108
+* @see app/Http/Controllers/VenezuelaBankController.php:73
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-showForm.head = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -243,10 +237,10 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::update
-* @see app/Http/Controllers/VenezuelaBankController.php:124
+* @see app/Http/Controllers/VenezuelaBankController.php:93
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-export const update = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -258,16 +252,12 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::update
-* @see app/Http/Controllers/VenezuelaBankController.php:124
+* @see app/Http/Controllers/VenezuelaBankController.php:93
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-update.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+update.url = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { venezuela_bank: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { venezuela_bank: args.id }
     }
 
     if (Array.isArray(args)) {
@@ -279,9 +269,7 @@ update.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_ban
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        venezuela_bank: typeof args.venezuela_bank === 'object'
-        ? args.venezuela_bank.id
-        : args.venezuela_bank,
+        venezuela_bank: args.venezuela_bank,
     }
 
     return update.definition.url
@@ -291,30 +279,30 @@ update.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_ban
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::update
-* @see app/Http/Controllers/VenezuelaBankController.php:124
+* @see app/Http/Controllers/VenezuelaBankController.php:93
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-update.put = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::update
-* @see app/Http/Controllers/VenezuelaBankController.php:124
+* @see app/Http/Controllers/VenezuelaBankController.php:93
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-update.patch = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::update
-* @see app/Http/Controllers/VenezuelaBankController.php:124
+* @see app/Http/Controllers/VenezuelaBankController.php:93
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-const updateForm = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -326,10 +314,10 @@ const updateForm = (args: { venezuela_bank: number | { id: number } } | [venezue
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::update
-* @see app/Http/Controllers/VenezuelaBankController.php:124
+* @see app/Http/Controllers/VenezuelaBankController.php:93
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-updateForm.put = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -341,10 +329,10 @@ updateForm.put = (args: { venezuela_bank: number | { id: number } } | [venezuela
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::update
-* @see app/Http/Controllers/VenezuelaBankController.php:124
+* @see app/Http/Controllers/VenezuelaBankController.php:93
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-updateForm.patch = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -358,10 +346,10 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::destroy
-* @see app/Http/Controllers/VenezuelaBankController.php:157
+* @see app/Http/Controllers/VenezuelaBankController.php:103
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-export const destroy = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -373,16 +361,12 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::destroy
-* @see app/Http/Controllers/VenezuelaBankController.php:157
+* @see app/Http/Controllers/VenezuelaBankController.php:103
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-destroy.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { venezuela_bank: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { venezuela_bank: args.id }
     }
 
     if (Array.isArray(args)) {
@@ -394,9 +378,7 @@ destroy.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_ba
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        venezuela_bank: typeof args.venezuela_bank === 'object'
-        ? args.venezuela_bank.id
-        : args.venezuela_bank,
+        venezuela_bank: args.venezuela_bank,
     }
 
     return destroy.definition.url
@@ -406,20 +388,20 @@ destroy.url = (args: { venezuela_bank: number | { id: number } } | [venezuela_ba
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::destroy
-* @see app/Http/Controllers/VenezuelaBankController.php:157
+* @see app/Http/Controllers/VenezuelaBankController.php:103
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-destroy.delete = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::destroy
-* @see app/Http/Controllers/VenezuelaBankController.php:157
+* @see app/Http/Controllers/VenezuelaBankController.php:103
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-const destroyForm = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -431,10 +413,10 @@ const destroyForm = (args: { venezuela_bank: number | { id: number } } | [venezu
 
 /**
 * @see \App\Http\Controllers\VenezuelaBankController::destroy
-* @see app/Http/Controllers/VenezuelaBankController.php:157
+* @see app/Http/Controllers/VenezuelaBankController.php:103
 * @route '/api/venezuela-banks/{venezuela_bank}'
 */
-destroyForm.delete = (args: { venezuela_bank: number | { id: number } } | [venezuela_bank: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { venezuela_bank: string | number } | [venezuela_bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

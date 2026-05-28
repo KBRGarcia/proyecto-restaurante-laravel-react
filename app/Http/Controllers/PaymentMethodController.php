@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PaymentMethodResource;
-use App\Models\PaymentMethod;
+use App\Enums\PaymentMethod;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Validator;
 
 class PaymentMethodController extends Controller
 {
@@ -16,28 +13,25 @@ class PaymentMethodController extends Controller
      */
     public function index(Request $request)
     {
-        $query = PaymentMethod::query();
+        $paymentMethods = collect(PaymentMethod::toArrayList());
 
-        // Búsqueda
         if ($request->filled('search') || $request->filled('q')) {
-            $search = $request->get('search', $request->get('q'));
-            $query->where(function ($q) use ($search) {
-                $q->where('code', 'like', "%{$search}%")
-                    ->orWhere('name', 'like', "%{$search}%");
-            });
+            $search = mb_strtolower($request->get('search', $request->get('q')));
+            $paymentMethods = $paymentMethods->filter(
+                fn (array $method): bool => str_contains(mb_strtolower($method['code']), $search)
+                    || str_contains(mb_strtolower($method['name']), $search)
+            );
         }
 
-        // Filtro por tipo de moneda
         if ($request->has('currency_type') && !empty($request->currency_type)) {
-            $query->where('currency_type', $request->currency_type);
+            $paymentMethods = $paymentMethods->where('currency_type', $request->currency_type);
         }
 
-        // Filtro por estado
         if ($request->has('active') && $request->active !== '') {
-            $query->where('active', $request->active);
+            $active = filter_var($request->active, FILTER_VALIDATE_BOOLEAN);
+            $paymentMethods = $paymentMethods->where('active', $active);
         }
 
-        // Ordenamiento
         $sortBy = $request->get('sort_by');
         $sortOrder = $request->get('sort_order');
         if (!$sortBy && $request->filled('_sort')) {
@@ -46,22 +40,14 @@ class PaymentMethodController extends Controller
         }
         $sortBy = $sortBy ?: 'id';
         $sortOrder = $sortOrder ?: 'asc';
-        if (str_contains($sortBy, ',')) {
-            $sortFields = explode(',', $sortBy);
-            $sortOrders = explode(',', (string) $sortOrder);
-            foreach ($sortFields as $index => $field) {
-                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
-                $query->orderBy($field, $order);
-            }
-        } else {
-            $query->orderBy($sortBy, $sortOrder);
-        }
+        $paymentMethods = $paymentMethods
+            ->sortBy($sortBy, SORT_REGULAR, strtolower((string) $sortOrder) === 'desc')
+            ->values();
 
-        // Paginación para Refine
         $start = $request->get('_start', 0);
         $end = $request->get('_end', 10);
-        $total = $query->count();
-        $paymentMethods = $query->offset($start)->limit($end - $start)->get();
+        $total = $paymentMethods->count();
+        $paymentMethods = $paymentMethods->slice($start, $end - $start)->values();
 
         return response()->json($paymentMethods)->header('x-total-count', $total);
     }
@@ -79,42 +65,27 @@ class PaymentMethodController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make(
-            $request->all(),
-            PaymentMethod::rules(),
-            PaymentMethod::messages()
-        );
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Error de validación',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Procesar configuración JSON si viene como string
-        $data = $validator->validated();
-        if (isset($data['configuration']) && is_string($data['configuration'])) {
-            $data['configuration'] = json_decode($data['configuration'], true);
-        }
-
-        $paymentMethod = PaymentMethod::create($data);
-
-        return response()->json($paymentMethod, 201);
+        return response()->json([
+            'message' => 'Los metodos de pago son un catalogo estatico definido en App\\Enums\\PaymentMethod.',
+        ], 405);
     }
 
     /**
      * Display the specified payment method.
      */
-    public function show(PaymentMethod $paymentMethod)
+    public function show(string|int $payment_method): JsonResponse
     {
-        return response()->json($paymentMethod);
+        $method = PaymentMethod::tryFromIdentifier($payment_method);
+
+        abort_if($method === null, 404, 'Metodo de pago no encontrado.');
+
+        return response()->json(PaymentMethod::toArrayList()[$method->id() - 1] ?? null);
     }
 
     /**
      * Show the form for editing the specified payment method.
      */
-    public function edit(PaymentMethod $paymentMethod)
+    public function edit(string|int $payment_method)
     {
         return response()->json(['message' => 'Not used in API']);
     }
@@ -122,63 +93,40 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified payment method in storage.
      */
-    public function update(Request $request, PaymentMethod $paymentMethod): JsonResponse
+    public function update(Request $request, string|int $payment_method): JsonResponse
     {
-        $validator = Validator::make(
-            $request->all(),
-            PaymentMethod::rules(true, $paymentMethod->id),
-            PaymentMethod::messages()
-        );
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Error de validación',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Procesar configuración JSON si viene como string
-        $data = $validator->validated();
-        if (isset($data['configuration']) && is_string($data['configuration'])) {
-            $data['configuration'] = json_decode($data['configuration'], true);
-        }
-
-        $paymentMethod->update($data);
-
-        return response()->json($paymentMethod, 200);
+        return response()->json([
+            'message' => 'Los metodos de pago son un catalogo estatico definido en App\\Enums\\PaymentMethod.',
+        ], 405);
     }
 
     /**
      * Remove the specified payment method from storage.
      */
-    public function destroy(PaymentMethod $paymentMethod): JsonResponse
+    public function destroy(string|int $payment_method): JsonResponse
     {
-        $paymentMethod->delete();
-
         return response()->json([
-            'message' => 'Método de pago eliminado exitosamente',
-        ], 200);
+            'message' => 'Los metodos de pago son un catalogo estatico definido en App\\Enums\\PaymentMethod.',
+        ], 405);
     }
 
     /**
      * Get all active payment methods.
      */
-    public function getActive(): AnonymousResourceCollection
+    public function getActive(): JsonResponse
     {
-        $paymentMethods = PaymentMethod::active()->get();
-
-        return PaymentMethodResource::collection($paymentMethods);
+        return response()->json(PaymentMethod::toArrayList());
     }
 
     /**
      * Get payment methods by currency type.
      */
-    public function getByCurrencyType(string $currencyType): AnonymousResourceCollection
+    public function getByCurrencyType(string $currencyType): JsonResponse
     {
-        $paymentMethods = PaymentMethod::where('currency_type', $currencyType)
-            ->active()
-            ->get();
+        $paymentMethods = collect(PaymentMethod::toArrayList())
+            ->where('currency_type', $currencyType)
+            ->values();
 
-        return PaymentMethodResource::collection($paymentMethods);
+        return response()->json($paymentMethods);
     }
 }

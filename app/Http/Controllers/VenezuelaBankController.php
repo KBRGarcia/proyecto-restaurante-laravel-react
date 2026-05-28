@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\VenezuelaBankResource;
-use App\Models\VenezuelaBank;
+use App\Enums\VenezuelaBank;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VenezuelaBankController extends Controller
@@ -13,25 +13,22 @@ class VenezuelaBankController extends Controller
      */
     public function index(Request $request)
     {
-        $query = VenezuelaBank::query();
+        $venezuelaBanks = collect(VenezuelaBank::toArrayList());
 
-        // Búsqueda general
         if ($request->filled('search') || $request->filled('q')) {
-            $search = $request->get('search', $request->get('q'));
-            $query->search($search);
+            $search = mb_strtolower($request->get('search', $request->get('q')));
+            $venezuelaBanks = $venezuelaBanks->filter(
+                fn (array $bank): bool => str_contains(mb_strtolower($bank['code']), $search)
+                    || str_contains(mb_strtolower($bank['name']), $search)
+                    || str_contains(mb_strtolower($bank['system_data']['slug']), $search)
+            );
         }
 
-        // Filtro por estado activo
         if ($request->filled('active')) {
             $active = filter_var($request->active, FILTER_VALIDATE_BOOLEAN);
-            if ($active) {
-                $query->active();
-            } else {
-                $query->inactive();
-            }
+            $venezuelaBanks = $venezuelaBanks->where('active', $active);
         }
 
-        // Ordenamiento
         $sortBy = $request->get('sort_by');
         $sortOrder = $request->get('sort_order');
         if (!$sortBy && $request->filled('_sort')) {
@@ -40,23 +37,14 @@ class VenezuelaBankController extends Controller
         }
         $sortBy = $sortBy ?: 'code';
         $sortOrder = $sortOrder ?: 'asc';
-        if (str_contains($sortBy, ',')) {
-            $sortFields = explode(',', $sortBy);
-            $sortOrders = explode(',', (string) $sortOrder);
-            foreach ($sortFields as $index => $field) {
-                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
-                $query->orderBy($field, $order);
-            }
-        } else {
-            $query->orderBy($sortBy, $sortOrder);
-        }
+        $venezuelaBanks = $venezuelaBanks
+            ->sortBy($sortBy, SORT_REGULAR, strtolower((string) $sortOrder) === 'desc')
+            ->values();
 
-        // Paginación
-        // Paginación para Refine
         $start = $request->get('_start', 0);
         $end = $request->get('_end', 10);
-        $total = $query->count();
-        $venezuelaBanks = $query->offset($start)->limit($end - $start)->get();
+        $total = $venezuelaBanks->count();
+        $venezuelaBanks = $venezuelaBanks->slice($start, $end - $start)->values();
 
         return response()->json($venezuelaBanks)->header('x-total-count', $total);
     }
@@ -74,46 +62,27 @@ class VenezuelaBankController extends Controller
      */
     public function store(Request $request)
     {
-        // Decodificar system_data si es un string JSON válido
-        if ($request->has('system_data') && is_string($request->input('system_data'))) {
-            $decoded = json_decode($request->input('system_data'), true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $request->merge(['system_data' => $decoded]);
-            }
-        }
-
-        $validated = $request->validate(
-            VenezuelaBank::rules(),
-            VenezuelaBank::messages()
-        );
-
-        // Convertir active a boolean si viene como string
-        if (isset($validated['active'])) {
-            $validated['active'] = filter_var($validated['active'], FILTER_VALIDATE_BOOLEAN);
-        }
-
-        // Convertir creation_date a timestamp si viene
-        if (isset($validated['creation_date'])) {
-            $validated['creation_date'] = \Carbon\Carbon::parse($validated['creation_date']);
-        }
-
-        $venezuelaBank = VenezuelaBank::create($validated);
-
-        return response()->json($venezuelaBank, 201);
+        return response()->json([
+            'message' => 'Los bancos de Venezuela son un catalogo estatico definido en App\\Enums\\VenezuelaBank.',
+        ], 405);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(VenezuelaBank $venezuelaBank)
+    public function show(string|int $venezuela_bank): JsonResponse
     {
-        return response()->json($venezuelaBank);
+        $bank = VenezuelaBank::tryFromIdentifier($venezuela_bank);
+
+        abort_if($bank === null, 404, 'Banco no encontrado.');
+
+        return response()->json(VenezuelaBank::toArrayList()[$bank->id() - 1] ?? null);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(VenezuelaBank $venezuelaBank)
+    public function edit(string|int $venezuela_bank)
     {
         return response()->json(['message' => 'Not used in API']);
     }
@@ -121,43 +90,20 @@ class VenezuelaBankController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, VenezuelaBank $venezuelaBank)
+    public function update(Request $request, string|int $venezuela_bank)
     {
-        // Decodificar system_data si es un string JSON válido
-        if ($request->has('system_data') && is_string($request->input('system_data'))) {
-            $decoded = json_decode($request->input('system_data'), true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $request->merge(['system_data' => $decoded]);
-            }
-        }
-
-        $validated = $request->validate(
-            VenezuelaBank::rules($venezuelaBank->id),
-            VenezuelaBank::messages()
-        );
-
-        // Convertir active a boolean si viene como string
-        if (isset($validated['active'])) {
-            $validated['active'] = filter_var($validated['active'], FILTER_VALIDATE_BOOLEAN);
-        }
-
-        // Convertir creation_date a timestamp si viene
-        if (isset($validated['creation_date'])) {
-            $validated['creation_date'] = \Carbon\Carbon::parse($validated['creation_date']);
-        }
-
-        $venezuelaBank->update($validated);
-
-        return response()->json($venezuelaBank, 200);
+        return response()->json([
+            'message' => 'Los bancos de Venezuela son un catalogo estatico definido en App\\Enums\\VenezuelaBank.',
+        ], 405);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VenezuelaBank $venezuelaBank)
+    public function destroy(string|int $venezuela_bank)
     {
-        $venezuelaBank->delete();
-
-        return response()->json(null, 204);
+        return response()->json([
+            'message' => 'Los bancos de Venezuela son un catalogo estatico definido en App\\Enums\\VenezuelaBank.',
+        ], 405);
     }
 }

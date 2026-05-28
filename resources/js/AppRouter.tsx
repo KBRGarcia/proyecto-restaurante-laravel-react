@@ -1,5 +1,5 @@
 import { Refine, AuthProvider } from "@refinedev/core";
-import { AuthPage, ThemedLayout, ThemedSider, useNotificationProvider } from "@refinedev/antd";
+import { ThemedLayout, ThemedSider, useNotificationProvider } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { Header } from "./components/header";
@@ -38,8 +38,6 @@ import { OrdersCreate } from "./pages/orders/create";
 import { OrdersEdit } from "./pages/orders/edit";
 import { OrdersShow } from "./pages/orders/show";
 import { PaymentMethodsList } from "./pages/payment-methods/list";
-import { PaymentMethodsCreate } from "./pages/payment-methods/create";
-import { PaymentMethodsEdit } from "./pages/payment-methods/edit";
 import { PaymentMethodsShow } from "./pages/payment-methods/show";
 import { PhysicalPaymentOrdersList } from "./pages/physical-payment-orders/list";
 import { PhysicalPaymentOrdersCreate } from "./pages/physical-payment-orders/create";
@@ -50,8 +48,6 @@ import { ProductsCreate } from "./pages/products/create";
 import { ProductsEdit } from "./pages/products/edit";
 import { ProductsShow } from "./pages/products/show";
 import { VenezuelaBanksList } from "./pages/venezuela-banks/list";
-import { VenezuelaBanksCreate } from "./pages/venezuela-banks/create";
-import { VenezuelaBanksEdit } from "./pages/venezuela-banks/edit";
 import { VenezuelaBanksShow } from "./pages/venezuela-banks/show";
 import { ProfilePage } from "./pages/profile";
 
@@ -82,7 +78,7 @@ const authProvider: AuthProvider = {
                     redirectTo: "/",
                 };
             }
-        } catch (error) {
+        } catch {
             return {
                 success: false,
                 error: {
@@ -116,12 +112,16 @@ const authProvider: AuthProvider = {
                     redirectTo: "/",
                 };
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = axios.isAxiosError<{ message?: string }>(error)
+                ? error.response?.data?.message
+                : undefined;
+
             return {
                 success: false,
                 error: {
                     message: "Error de registro",
-                    name: error.response?.data?.message || "Falló el registro",
+                    name: message || "Falló el registro",
                 },
             };
         }
@@ -136,7 +136,7 @@ const authProvider: AuthProvider = {
     logout: async () => {
         try {
             await axiosInstance.post(`${API_URL}/logout`);
-        } catch (e) {
+        } catch {
             // Ignorar errores al desloguearse (ej. token ya expiró)
         }
         localStorage.removeItem("auth_token");
@@ -172,14 +172,14 @@ const authProvider: AuthProvider = {
 
                 const response = await axiosInstance.get(`${API_URL}/me`);
                 return response.data;
-            } catch (error) {
+            } catch {
                 return null;
             }
         }
         return null;
     },
     onError: async (error: unknown) => {
-        const err = error as any;
+        const err = error as { response?: { status?: number }; message?: string };
         if (err.response?.status === 401) {
             return {
                 logout: true,
@@ -271,10 +271,8 @@ export default function AppRouter() {
                         {
                             name: "payment-methods",
                             list: "/payment-methods",
-                            create: "/payment-methods/create",
-                            edit: "/payment-methods/edit/:id",
                             show: "/payment-methods/show/:id",
-                            meta: { canDelete: true, icon: <CreditCardOutlined /> },
+                            meta: { canDelete: false, icon: <CreditCardOutlined /> },
                         },
                         {
                             name: "physical-payment-orders",
@@ -295,10 +293,8 @@ export default function AppRouter() {
                         {
                             name: "venezuela-banks",
                             list: "/venezuela-banks",
-                            create: "/venezuela-banks/create",
-                            edit: "/venezuela-banks/edit/:id",
                             show: "/venezuela-banks/show/:id",
-                            meta: { canDelete: true, icon: <BankOutlined /> },
+                            meta: { canDelete: false, icon: <BankOutlined /> },
                         },
                     ]}
                     options={{
@@ -373,8 +369,6 @@ export default function AppRouter() {
                             </Route>
                             <Route path="/payment-methods">
                                 <Route index element={<PaymentMethodsList />} />
-                                <Route path="create" element={<PaymentMethodsCreate />} />
-                                <Route path="edit/:id" element={<PaymentMethodsEdit />} />
                                 <Route path="show/:id" element={<PaymentMethodsShow />} />
                             </Route>
                             <Route path="/physical-payment-orders">
@@ -391,8 +385,6 @@ export default function AppRouter() {
                             </Route>
                             <Route path="/venezuela-banks">
                                 <Route index element={<VenezuelaBanksList />} />
-                                <Route path="create" element={<VenezuelaBanksCreate />} />
-                                <Route path="edit/:id" element={<VenezuelaBanksEdit />} />
                                 <Route path="show/:id" element={<VenezuelaBanksShow />} />
                             </Route>
 

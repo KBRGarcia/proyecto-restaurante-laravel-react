@@ -6,7 +6,22 @@ import { Header } from "./components/header";
 import { CustomRegister } from "./components/auth/CustomRegister";
 import { CustomLogin } from "./components/auth/CustomLogin";
 import { CustomDashboard } from "./components/dashboard/CustomDashboard";
-import { UserOutlined, BranchesOutlined, ProductOutlined, StarOutlined, CreditCardOutlined, BankOutlined, FileDoneOutlined, FileOutlined, DollarOutlined, InboxOutlined, DashboardOutlined, TeamOutlined, IdcardOutlined } from "@ant-design/icons";
+import {
+    UserOutlined, 
+    BranchesOutlined,
+    ProductOutlined,
+    StarOutlined,
+    CreditCardOutlined,
+    BankOutlined,
+    FileDoneOutlined,
+    FileOutlined,
+    DollarOutlined,
+    InboxOutlined,
+    DashboardOutlined,
+    TeamOutlined,
+    IdcardOutlined,
+    ShopOutlined,
+    GoldOutlined } from "@ant-design/icons";
 import dataProvider from "@refinedev/simple-rest";
 import routerProvider, { NavigateToResource, CatchAllNavigate, UnsavedChangesNotifier, DocumentTitleHandler } from "@refinedev/react-router";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
@@ -223,34 +238,56 @@ export default function AppRouter() {
                     authProvider={authProvider}
                     notificationProvider={useNotificationProvider}
                     resources={[
+                        // Dashboard de la pagina principal
                         {
                             name: "dashboard",
                             list: "/dashboard",
                             meta: { canDelete: true, icon: <DashboardOutlined /> },
                         },
+
+                        // Menus padre de la pagina principal
+                        {
+                            name:"personas",
+                            meta: {
+                                label: "Personas",
+                                icon: <TeamOutlined />,
+                            },
+                        },
+                        {
+                            name:"tiendas",
+                            meta: {
+                                label: "Tiendas",
+                                icon: <ShopOutlined />,
+                            },
+                        },
+                        {
+                            name:"productos",
+                            meta: {
+                                label: "Productos",
+                                icon: <GoldOutlined />,
+                            },
+                        },
+                        {
+                            name:"pagos",
+                            meta: {
+                                label: "Pagos",
+                                icon: <DollarOutlined />,
+                            },
+                        },
+
+                        // Menus Hijos de la pagina principal
+                        // Personas
                         {
                             name: "users",
                             list: "/users",
                             create: "/users/create",
                             edit: "/users/edit/:id",
                             show: "/users/show/:id",
-                            meta: { canDelete: true, icon: <UserOutlined /> },
-                        },
-                        {
-                            name: "branches",
-                            list: "/branches",
-                            create: "/branches/create",
-                            edit: "/branches/edit/:id",
-                            show: "/branches/show/:id",
-                            meta: { canDelete: true, icon: <BranchesOutlined /> },
-                        },
-                        {
-                            name: "categories",
-                            list: "/categories",
-                            create: "/categories/create",
-                            edit: "/categories/edit/:id",
-                            show: "/categories/show/:id",
-                            meta: { canDelete: true, icon: <ProductOutlined /> },
+                            meta: {
+                                label: "Usuarios",
+                                parent: "personas",
+                                canDelete: true, 
+                                icon: <UserOutlined /> },
                         },
                         {
                             name: "clients",
@@ -258,7 +295,11 @@ export default function AppRouter() {
                             create: "/clients/create",
                             edit: "/clients/edit/:id",
                             show: "/clients/show/:id",
-                            meta: { canDelete: true, icon: <IdcardOutlined /> },
+                            meta: {
+                                label: "Clientes",
+                                parent: "personas",
+                                canDelete: true,
+                                icon: <IdcardOutlined /> },
                         },
                         {
                             name: "employees",
@@ -266,7 +307,25 @@ export default function AppRouter() {
                             create: "/employees/create",
                             edit: "/employees/edit/:id",
                             show: "/employees/show/:id",
-                            meta: { canDelete: true, icon: <TeamOutlined /> },
+                            meta: {
+                                label: "Empleados",
+                                parent: "personas",
+                                canDelete: true,
+                                icon: <TeamOutlined /> },
+                        },
+                        
+                        // Tiendas
+                        {
+                            name: "branches",
+                            list: "/branches",
+                            create: "/branches/create",
+                            edit: "/branches/edit/:id",
+                            show: "/branches/show/:id",
+                            meta: {
+                                label: "Sucursales",
+                                parent: "tiendas",
+                                canDelete: true,
+                                icon: <BranchesOutlined /> },
                         },
                         {
                             name: "evaluations",
@@ -274,15 +333,51 @@ export default function AppRouter() {
                             create: "/evaluations/create",
                             edit: "/evaluations/edit/:id",
                             show: "/evaluations/show/:id",
-                            meta: { canDelete: true, icon: <StarOutlined /> },
+                            meta: {
+                                label: "Evaluaciones",
+                                parent: "tiendas",
+                                canDelete: true,
+                                icon: <StarOutlined /> },
                         },
+
+                        // Productos
+                        {
+                            name: "products",
+                            list: "/products",
+                            create: "/products/create",
+                            edit: "/products/edit/:id",
+                            show: "/products/show/:id",
+                            meta: {
+                                label: "Productos",
+                                parent: "productos",
+                                canDelete: true,
+                                icon: <InboxOutlined /> },
+                        },
+                        {
+                            name: "categories",
+                            list: "/categories",
+                            create: "/categories/create",
+                            edit: "/categories/edit/:id",
+                            show: "/categories/show/:id",
+                            meta: {
+                                label: "Categorías",
+                                parent: "productos",
+                                canDelete: true,
+                                icon: <ProductOutlined /> },
+                        },
+
+                        // Pagos
                         {
                             name: "orders",
                             list: "/orders",
                             create: "/orders/create",
                             edit: "/orders/edit/:id",
                             show: "/orders/show/:id",
-                            meta: { canDelete: true, icon: <FileOutlined /> },
+                            meta: {
+                                label: "Ordenes",
+                                parent: "pagos",
+                                canDelete: true,
+                                icon: <FileOutlined /> },
                         },
                         {
                             name: "order-details",
@@ -290,7 +385,11 @@ export default function AppRouter() {
                             create: "/order-details/create",
                             edit: "/order-details/edit/:id",
                             show: "/order-details/show/:id",
-                            meta: { canDelete: true, icon: <FileDoneOutlined /> },
+                            meta: {
+                                label: "Detalles de Ordenes",
+                                parent: "pagos",
+                                canDelete: true,
+                                icon: <FileDoneOutlined /> },
                         },
                         {
                             name: "order-payments",
@@ -298,27 +397,31 @@ export default function AppRouter() {
                             create: "/order-payments/create",
                             edit: "/order-payments/edit/:id",
                             show: "/order-payments/show/:id",
-                            meta: { canDelete: true, icon: <DollarOutlined /> },
+                            meta: {
+                                label: "Pagos de Ordenes",
+                                parent: "pagos",
+                                canDelete: true,
+                                icon: <DollarOutlined /> },
                         },
                         {
                             name: "payment-methods",
                             list: "/payment-methods",
                             show: "/payment-methods/show/:id",
-                            meta: { canDelete: false, icon: <CreditCardOutlined /> },
-                        },
-                        {
-                            name: "products",
-                            list: "/products",
-                            create: "/products/create",
-                            edit: "/products/edit/:id",
-                            show: "/products/show/:id",
-                            meta: { canDelete: true, icon: <InboxOutlined /> },
+                            meta: {
+                                label: "Metodos de Pago",
+                                parent: "pagos",
+                                canDelete: false,
+                                icon: <CreditCardOutlined /> },
                         },
                         {
                             name: "banks",
                             list: "/banks",
                             show: "/banks/show/:id",
-                            meta: { canDelete: false, icon: <BankOutlined /> },
+                            meta: {
+                                label: "Bancos",
+                                parent: "pagos",
+                                canDelete: false,
+                                icon: <BankOutlined /> },
                         },
                     ]}
                     options={{
@@ -340,7 +443,20 @@ export default function AppRouter() {
                         {/* Rutas Protegidas */}
                         <Route
                             element={
-                                <ThemedLayout Header={Header} Sider={(props) => <ThemedSider {...props} Title={({ collapsed }) => <CustomTitle collapsed={collapsed} />} />}>
+                                <ThemedLayout
+                                    Header={Header}
+                                    Sider={(props) =>
+                                        <ThemedSider
+                                            {...props}
+                                            Title={({ collapsed }) => <CustomTitle collapsed={collapsed} />}
+                                            render={({ items }) => (
+                                                <>
+                                                    {items}
+                                                    {/* Sin {Logout} — el cierre de sesión queda en el Header */}
+                                                </>
+                                            )}
+                                        />
+                                    }>
                                     <Outlet />
                                 </ThemedLayout>
                             }

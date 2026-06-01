@@ -33,7 +33,6 @@ export const OrderPaymentsList = () => {
     return (
         <List headerButtons={() => <CustomCreateButton />}>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="ID" render={(value) => <Text strong>#{value}</Text>} />
                 <Table.Column
                     dataIndex="order_id"
                     title="Orden"

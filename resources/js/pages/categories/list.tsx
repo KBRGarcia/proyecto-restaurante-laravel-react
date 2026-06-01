@@ -34,7 +34,6 @@ export const CategoriesList = () => {
                         <Avatar src={value} shape="square" size={50} icon={<PictureOutlined />} />
                     )}
                 />
-                <Table.Column dataIndex="id" title="ID" />
                 <Table.Column dataIndex="name" title="Categoría" render={(value) => <Text strong>{value}</Text>} />
                 <Table.Column dataIndex="order_show" title="Orden de Mostrar" />
                 <Table.Column dataIndex="status" title="Estado" render={(value: string) => getStatusTag(value)} />

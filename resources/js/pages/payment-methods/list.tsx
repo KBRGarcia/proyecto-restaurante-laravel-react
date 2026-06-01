@@ -28,7 +28,6 @@ export const PaymentMethodsList = () => {
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="ID" />
                 <Table.Column dataIndex="code" title="Código" render={(value) => <Text code>{value}</Text>} />
                 <Table.Column dataIndex="name" title="Método de Pago" render={(value) => <Text strong>{value}</Text>} />
                 <Table.Column dataIndex="currency_type" title="Moneda" render={(value: string) => getCurrencyTypeTag(value)} />

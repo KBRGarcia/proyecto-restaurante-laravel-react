@@ -39,7 +39,6 @@ export const ProductsList = () => {
                         <Avatar src={value} shape="square" size={50} icon={<CoffeeOutlined />} />
                     )}
                 />
-                <Table.Column dataIndex="id" title="ID" />
                 <Table.Column 
                     dataIndex="name" 
                     title="Producto" 

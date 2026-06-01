@@ -12,13 +12,12 @@ export const BanksList = () => {
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="ID" width={80} />
+                <Table.Column dataIndex="name" title="Nombre del Banco" />
                 <Table.Column
                     dataIndex="code"
                     title="Codigo"
                     render={(value: string) => <Text code>{value}</Text>}
                 />
-                <Table.Column dataIndex="name" title="Nombre del Banco" />
                 <Table.Column
                     dataIndex="active"
                     title="Estado"

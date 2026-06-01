@@ -166,6 +166,24 @@ class Branch extends Model
     }
 
     /**
+     * Get the employee assignments for this branch.
+     */
+    public function employeeAssignments(): HasMany
+    {
+        return $this->hasMany(EmployeeBranchAssignment::class);
+    }
+
+    /**
+     * Get employees assigned to this branch.
+     */
+    public function employees(): BelongsToMany
+    {
+        return $this->belongsToMany(Employee::class, 'employee_branch_assignments')
+            ->withPivot('position', 'start_date', 'end_date', 'active')
+            ->withTimestamps();
+    }
+
+    /**
      * Check if the branch is active.
      */
     public function isActive(): bool

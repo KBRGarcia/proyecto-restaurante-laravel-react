@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
-use App\Enums\VenezuelaBank;
+use App\Enums\Banks;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Validation\Rule;
@@ -60,7 +60,7 @@ class OrderPayment extends Model
             'currency' => [$required, 'string', 'in:nacional,internacional'],
             'amount' => [$required, 'numeric', 'min:0.01', 'regex:/^\d+(\.\d{1,2})?$/'],
             'exchange_rate' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,4})?$/'],
-            'bank_code' => ['nullable', Rule::in(VenezuelaBank::values())],
+            'bank_code' => ['nullable', Rule::in(Banks::values())],
             'reference_number' => ['nullable', 'string', 'max:100'],
             'payer_identification' => ['nullable', 'string', 'max:30'],
             'payer_phone' => ['nullable', 'string', 'max:20'],

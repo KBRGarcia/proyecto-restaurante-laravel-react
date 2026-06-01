@@ -4,7 +4,7 @@ import { CustomShowButton } from "@/components/buttons/CustomActionButtons";
 
 const { Text } = Typography;
 
-export const VenezuelaBanksList = () => {
+export const BanksList = () => {
     const { tableProps } = useTable({
         syncWithLocation: true,
     });
@@ -13,15 +13,15 @@ export const VenezuelaBanksList = () => {
         <List>
             <Table {...tableProps} rowKey="id">
                 <Table.Column dataIndex="id" title="ID" width={80} />
-                <Table.Column 
-                    dataIndex="code" 
-                    title="Código" 
+                <Table.Column
+                    dataIndex="code"
+                    title="Codigo"
                     render={(value: string) => <Text code>{value}</Text>}
                 />
                 <Table.Column dataIndex="name" title="Nombre del Banco" />
-                <Table.Column 
-                    dataIndex="active" 
-                    title="Estado" 
+                <Table.Column
+                    dataIndex="active"
+                    title="Estado"
                     render={(value: boolean) => (
                         <Tag color={value ? "success" : "error"}>
                             {value ? "Activo" : "Inactivo"}

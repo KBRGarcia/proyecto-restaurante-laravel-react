@@ -4,7 +4,7 @@ import { useShow } from "@refinedev/core";
 
 const { Title, Text } = Typography;
 
-export const VenezuelaBanksShow = () => {
+export const BanksShow = () => {
     const { query } = useShow();
     const { data, isLoading } = query;
     const record = data?.data;
@@ -34,11 +34,11 @@ export const VenezuelaBanksShow = () => {
 
             <Row gutter={[16, 16]}>
                 <Col xs={24} md={12}>
-                    <Card size="small" title="Información General" style={{ height: "100%" }}>
-                        <Title level={5}>Código de Banco</Title>
+                    <Card size="small" title="Informacion General" style={{ height: "100%" }}>
+                        <Title level={5}>Codigo de Banco</Title>
                         <Text code style={{ fontSize: "16px" }}>{record?.code}</Text>
 
-                        <Title level={5} style={{ marginTop: "16px" }}>Fecha del Sistema (Creación)</Title>
+                        <Title level={5} style={{ marginTop: "16px" }}>Fecha del Sistema</Title>
                         {record?.creation_date ? (
                             <DateField format="LL" value={record.creation_date} />
                         ) : record?.created_at ? (
@@ -51,13 +51,13 @@ export const VenezuelaBanksShow = () => {
 
                 <Col xs={24} md={12}>
                     <Card size="small" title="Datos del Sistema (JSON)" style={{ height: "100%" }}>
-                        <pre style={{ 
-                            padding: "12px", 
-                            backgroundColor: "#f5f5f5", 
+                        <pre style={{
+                            padding: "12px",
+                            backgroundColor: "#f5f5f5",
                             borderRadius: "6px",
                             overflowX: "auto",
                             fontSize: "12px",
-                            margin: 0
+                            margin: 0,
                         }}>
                             {record?.system_data ? JSON.stringify(record.system_data, null, 2) : "{}"}
                         </pre>

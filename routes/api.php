@@ -1,16 +1,18 @@
 <?php
 
 use App\Http\Controllers\ApiAuthController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PhysicalPaymentOrdersController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\VenezuelaBankController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,11 +28,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('branches', BranchController::class);
     Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('clients', ClientController::class);
+    Route::apiResource('employees', EmployeeController::class);
     Route::apiResource('evaluations', EvaluationController::class);
     Route::apiResource('order-details', OrderDetailController::class);
     Route::apiResource('orders', OrderController::class);
     Route::apiResource('payment-methods', PaymentMethodController::class);
     Route::apiResource('physical-payment-orders', PhysicalPaymentOrdersController::class);
     Route::apiResource('products', ProductController::class);
-    Route::apiResource('venezuela-banks', VenezuelaBankController::class);
+    Route::apiResource('banks', BankController::class);
 });

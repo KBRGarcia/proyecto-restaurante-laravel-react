@@ -54,6 +54,69 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface EmployeeAssignment {
+    id: number;
+    branch_id: number;
+    branch_name: string | null;
+    position: 'general_manager' | 'branch_manager' | 'chef' | 'sous_chef' | 'cook' | 'kitchen_assistant' | 'waiter' | 'cashier' | 'delivery_driver' | 'host' | 'cleaner' | 'inventory_manager';
+    position_label: string;
+    start_date: string | null;
+    end_date: string | null;
+    active: boolean;
+}
+
+export interface Employee {
+    id: number;
+    user_id: number | null;
+    first_name: string;
+    last_name: string;
+    full_name: string;
+    identity_document: string | null;
+    email: string | null;
+    phone: string | null;
+    address: string | null;
+    birth_date: string | null;
+    birth_date_formatted: string | null;
+    hire_date: string;
+    hire_date_formatted: string | null;
+    status: 'active' | 'inactive';
+    status_label: string;
+    notes: string | null;
+    assignments?: EmployeeAssignment[];
+    branches_summary?: string | null;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown;
+}
+
+export interface Client {
+    id: number;
+    user_id: number | null;
+    first_name: string;
+    last_name: string;
+    full_name: string;
+    identity_document: string | null;
+    email: string | null;
+    phone: string | null;
+    address: string | null;
+    birth_date: string | null;
+    birth_date_formatted: string | null;
+    origin: 'online' | 'physical' | 'mixed';
+    origin_label: string;
+    first_purchase_at: string | null;
+    first_purchase_at_formatted: string | null;
+    last_purchase_at: string | null;
+    last_purchase_at_formatted: string | null;
+    total_orders: number;
+    total_spent: string | number;
+    status: 'active' | 'inactive';
+    status_label: string;
+    notes: string | null;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown;
+}
+
 export interface TableColumn {
     key: string;
     label: string;
@@ -248,7 +311,7 @@ export interface PaymentMethod {
     [key: string]: unknown;
 }
 
-export interface VenezuelaBank {
+export interface Bank {
     id: number;
     code: string;
     name: string;

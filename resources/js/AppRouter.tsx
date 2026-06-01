@@ -6,7 +6,7 @@ import { Header } from "./components/header";
 import { CustomRegister } from "./components/auth/CustomRegister";
 import { CustomLogin } from "./components/auth/CustomLogin";
 import { CustomDashboard } from "./components/dashboard/CustomDashboard";
-import { UserOutlined, BranchesOutlined, ProductOutlined, StarOutlined, CreditCardOutlined, BankOutlined, FileDoneOutlined, FileOutlined, DollarOutlined, InboxOutlined, DashboardOutlined } from "@ant-design/icons";
+import { UserOutlined, BranchesOutlined, ProductOutlined, StarOutlined, CreditCardOutlined, BankOutlined, FileDoneOutlined, FileOutlined, DollarOutlined, InboxOutlined, DashboardOutlined, TeamOutlined, IdcardOutlined } from "@ant-design/icons";
 import dataProvider from "@refinedev/simple-rest";
 import routerProvider, { NavigateToResource, CatchAllNavigate, UnsavedChangesNotifier, DocumentTitleHandler } from "@refinedev/react-router";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
@@ -17,6 +17,8 @@ import { UserList } from "./pages/users/list";
 import { UserCreate } from "./pages/users/create";
 import { UserEdit } from "./pages/users/edit";
 import { UserShow } from "./pages/users/show";
+import { BanksList } from "./pages/banks/list";
+import { BanksShow } from "./pages/banks/show";
 import { BranchesList } from "./pages/branches/list";
 import { BranchesCreate } from "./pages/branches/create";
 import { BranchesEdit } from "./pages/branches/edit";
@@ -25,6 +27,14 @@ import { CategoriesList } from "./pages/categories/list";
 import { CategoriesCreate } from "./pages/categories/create";
 import { CategoriesEdit } from "./pages/categories/edit";
 import { CategoriesShow } from "./pages/categories/show";
+import { ClientsList } from "./pages/clients/list";
+import { ClientsCreate } from "./pages/clients/create";
+import { ClientsEdit } from "./pages/clients/edit";
+import { ClientsShow } from "./pages/clients/show";
+import { EmployeesList } from "./pages/employees/list";
+import { EmployeesCreate } from "./pages/employees/create";
+import { EmployeesEdit } from "./pages/employees/edit";
+import { EmployeesShow } from "./pages/employees/show";
 import { EvaluationsList } from "./pages/evaluations/list";
 import { EvaluationsCreate } from "./pages/evaluations/create";
 import { EvaluationsEdit } from "./pages/evaluations/edit";
@@ -47,8 +57,6 @@ import { ProductsList } from "./pages/products/list";
 import { ProductsCreate } from "./pages/products/create";
 import { ProductsEdit } from "./pages/products/edit";
 import { ProductsShow } from "./pages/products/show";
-import { VenezuelaBanksList } from "./pages/venezuela-banks/list";
-import { VenezuelaBanksShow } from "./pages/venezuela-banks/show";
 import { ProfilePage } from "./pages/profile";
 
 // Proveedor de datos apuntando a la API de Laravel
@@ -245,6 +253,22 @@ export default function AppRouter() {
                             meta: { canDelete: true, icon: <ProductOutlined /> },
                         },
                         {
+                            name: "clients",
+                            list: "/clients",
+                            create: "/clients/create",
+                            edit: "/clients/edit/:id",
+                            show: "/clients/show/:id",
+                            meta: { canDelete: true, icon: <IdcardOutlined /> },
+                        },
+                        {
+                            name: "employees",
+                            list: "/employees",
+                            create: "/employees/create",
+                            edit: "/employees/edit/:id",
+                            show: "/employees/show/:id",
+                            meta: { canDelete: true, icon: <TeamOutlined /> },
+                        },
+                        {
                             name: "evaluations",
                             list: "/evaluations",
                             create: "/evaluations/create",
@@ -291,9 +315,9 @@ export default function AppRouter() {
                             meta: { canDelete: true, icon: <InboxOutlined /> },
                         },
                         {
-                            name: "venezuela-banks",
-                            list: "/venezuela-banks",
-                            show: "/venezuela-banks/show/:id",
+                            name: "banks",
+                            list: "/banks",
+                            show: "/banks/show/:id",
                             meta: { canDelete: false, icon: <BankOutlined /> },
                         },
                     ]}
@@ -349,6 +373,18 @@ export default function AppRouter() {
                                 <Route path="edit/:id" element={<CategoriesEdit />} />
                                 <Route path="show/:id" element={<CategoriesShow />} />
                             </Route>
+                            <Route path="/clients">
+                                <Route index element={<ClientsList />} />
+                                <Route path="create" element={<ClientsCreate />} />
+                                <Route path="edit/:id" element={<ClientsEdit />} />
+                                <Route path="show/:id" element={<ClientsShow />} />
+                            </Route>
+                            <Route path="/employees">
+                                <Route index element={<EmployeesList />} />
+                                <Route path="create" element={<EmployeesCreate />} />
+                                <Route path="edit/:id" element={<EmployeesEdit />} />
+                                <Route path="show/:id" element={<EmployeesShow />} />
+                            </Route>
                             <Route path="/evaluations">
                                 <Route index element={<EvaluationsList />} />
                                 <Route path="create" element={<EvaluationsCreate />} />
@@ -383,9 +419,9 @@ export default function AppRouter() {
                                 <Route path="edit/:id" element={<ProductsEdit />} />
                                 <Route path="show/:id" element={<ProductsShow />} />
                             </Route>
-                            <Route path="/venezuela-banks">
-                                <Route index element={<VenezuelaBanksList />} />
-                                <Route path="show/:id" element={<VenezuelaBanksShow />} />
+                            <Route path="/banks">
+                                <Route index element={<BanksList />} />
+                                <Route path="show/:id" element={<BanksShow />} />
                             </Route>
 
                             <Route path="/profile" element={<ProfilePage />} />

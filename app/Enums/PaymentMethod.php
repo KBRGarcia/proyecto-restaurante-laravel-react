@@ -54,7 +54,7 @@ enum PaymentMethod: string
             self::BankTransfer => [
                 'requires_identification' => true,
                 'requires_reference' => true,
-                'available_banks' => VenezuelaBank::values(),
+                'available_banks' => Banks::values(),
             ],
             self::NationalCard => [
                 'types' => ['debit', 'credit'],

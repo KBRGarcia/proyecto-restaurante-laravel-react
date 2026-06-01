@@ -17,11 +17,11 @@ Se modificaron los métodos `store` y `update` de los siguientes controladores p
 - `EvaluationController.php`
 - `PaymentMethodController.php`
 - `PhysicalPaymentOrdersController.php` (se corrigió también una variable indefinida `$physicalPaymentOrders` en el retorno de `store`).
-- `VenezuelaBankController.php` (se corrigió también una variable incorrecta en el método `store` donde se usaba `$bank` en vez de `$venezuelaBank`).
+- `BankController.php` (se corrigió también una variable incorrecta en el método `store` donde se usaba `$bank` de forma inconsistente).
 
 #### 3. Soporte para Carga Base64 de Imágenes
 - Se modificaron los controladores `UserController.php`, `CategoryController.php` y `ProductController.php` para aceptar cargas directas de imágenes serializadas en formato Base64 en el cuerpo JSON de la petición HTTP, además de soportar cargas mediante `multipart/form-data`.
-- Se actualizó `VenezuelaBankController.php` para pre-procesar y decodificar el campo JSON `system_data` antes de llamar a las reglas de validación (las cuales exigen un array).
+- Se actualizó `BankController.php` para pre-procesar y decodificar el campo JSON `system_data` antes de llamar a las reglas de validación (las cuales exigen un array).
 
 ---
 
@@ -64,7 +64,7 @@ Se expandieron y mejoraron las interfaces CRUD de los 10 recursos principales de
 - **`orders` & `order-details`:** Listado y detalles exhaustivos que muestran las relaciones de cliente, repartidor y productos asociados.
 - **`payment-methods` & `physical-payment-orders`:** Formularios para configuraciones JSON avanzadas de pasarelas y límites de efectivo.
 - **`evaluations`:** Mapeo de ratings interactivos de estrellas, relaciones de productos y pedidos.
-- **`venezuela-banks`:** Vistas completas implementadas con soporte para códigos, estados y un editor de texto JSON para metadata.
+- **`banks`:** Vistas completas implementadas con soporte para códigos, estados y un editor de texto JSON para metadata.
 
 Todos los listados ahora hacen uso de los botones estandarizados del sistema:
 - `CustomCreateButton` (creación)

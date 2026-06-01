@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum VenezuelaBank: string
+enum Banks: string
 {
     case BancoDeVenezuela = '0102';
     case VenezolanoDeCredito = '0104';

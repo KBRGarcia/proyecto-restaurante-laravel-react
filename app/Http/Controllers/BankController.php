@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\VenezuelaBank;
+use App\Enums\Banks;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class VenezuelaBankController extends Controller
+class BankController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $venezuelaBanks = collect(VenezuelaBank::toArrayList());
+        $banks = collect(Banks::toArrayList());
 
         if ($request->filled('search') || $request->filled('q')) {
             $search = mb_strtolower($request->get('search', $request->get('q')));
-            $venezuelaBanks = $venezuelaBanks->filter(
+            $banks = $banks->filter(
                 fn (array $bank): bool => str_contains(mb_strtolower($bank['code']), $search)
                     || str_contains(mb_strtolower($bank['name']), $search)
                     || str_contains(mb_strtolower($bank['system_data']['slug']), $search)
@@ -26,7 +26,7 @@ class VenezuelaBankController extends Controller
 
         if ($request->filled('active')) {
             $active = filter_var($request->active, FILTER_VALIDATE_BOOLEAN);
-            $venezuelaBanks = $venezuelaBanks->where('active', $active);
+            $banks = $banks->where('active', $active);
         }
 
         $sortBy = $request->get('sort_by');
@@ -37,16 +37,16 @@ class VenezuelaBankController extends Controller
         }
         $sortBy = $sortBy ?: 'code';
         $sortOrder = $sortOrder ?: 'asc';
-        $venezuelaBanks = $venezuelaBanks
+        $banks = $banks
             ->sortBy($sortBy, SORT_REGULAR, strtolower((string) $sortOrder) === 'desc')
             ->values();
 
         $start = $request->get('_start', 0);
         $end = $request->get('_end', 10);
-        $total = $venezuelaBanks->count();
-        $venezuelaBanks = $venezuelaBanks->slice($start, $end - $start)->values();
+        $total = $banks->count();
+        $banks = $banks->slice($start, $end - $start)->values();
 
-        return response()->json($venezuelaBanks)->header('x-total-count', $total);
+        return response()->json($banks)->header('x-total-count', $total);
     }
 
     /**
@@ -63,26 +63,26 @@ class VenezuelaBankController extends Controller
     public function store(Request $request)
     {
         return response()->json([
-            'message' => 'Los bancos de Venezuela son un catalogo estatico definido en App\\Enums\\VenezuelaBank.',
+            'message' => 'Los bancos son un catalogo estatico definido en App\\Enums\\Banks.',
         ], 405);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string|int $venezuela_bank): JsonResponse
+    public function show(string|int $bank): JsonResponse
     {
-        $bank = VenezuelaBank::tryFromIdentifier($venezuela_bank);
+        $bankEnum = Banks::tryFromIdentifier($bank);
 
-        abort_if($bank === null, 404, 'Banco no encontrado.');
+        abort_if($bankEnum === null, 404, 'Banco no encontrado.');
 
-        return response()->json(VenezuelaBank::toArrayList()[$bank->id() - 1] ?? null);
+        return response()->json(Banks::toArrayList()[$bankEnum->id() - 1] ?? null);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string|int $venezuela_bank)
+    public function edit(string|int $bank)
     {
         return response()->json(['message' => 'Not used in API']);
     }
@@ -90,20 +90,20 @@ class VenezuelaBankController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string|int $venezuela_bank)
+    public function update(Request $request, string|int $bank)
     {
         return response()->json([
-            'message' => 'Los bancos de Venezuela son un catalogo estatico definido en App\\Enums\\VenezuelaBank.',
+            'message' => 'Los bancos son un catalogo estatico definido en App\\Enums\\Banks.',
         ], 405);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string|int $venezuela_bank)
+    public function destroy(string|int $bank)
     {
         return response()->json([
-            'message' => 'Los bancos de Venezuela son un catalogo estatico definido en App\\Enums\\VenezuelaBank.',
+            'message' => 'Los bancos son un catalogo estatico definido en App\\Enums\\Banks.',
         ], 405);
     }
 }

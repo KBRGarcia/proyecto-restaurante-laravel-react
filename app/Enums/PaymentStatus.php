@@ -9,6 +9,16 @@ enum PaymentStatus: string
     case Rejected = 'rejected';
     case Refunded = 'refunded';
 
+    public function label(): string
+    {
+        return match ($this) {
+            self::Pending => 'Pendiente',
+            self::Confirmed => 'Confirmado',
+            self::Rejected => 'Rechazado',
+            self::Refunded => 'Reembolsado',
+        };
+    }
+
     /**
      * @return list<string>
      */

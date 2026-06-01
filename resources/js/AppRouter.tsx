@@ -47,12 +47,12 @@ import { OrdersList } from "./pages/orders/list";
 import { OrdersCreate } from "./pages/orders/create";
 import { OrdersEdit } from "./pages/orders/edit";
 import { OrdersShow } from "./pages/orders/show";
+import { OrderPaymentsList } from "./pages/order-payments/list";
+import { OrderPaymentsCreate } from "./pages/order-payments/create";
+import { OrderPaymentsEdit } from "./pages/order-payments/edit";
+import { OrderPaymentsShow } from "./pages/order-payments/show";
 import { PaymentMethodsList } from "./pages/payment-methods/list";
 import { PaymentMethodsShow } from "./pages/payment-methods/show";
-import { PhysicalPaymentOrdersList } from "./pages/physical-payment-orders/list";
-import { PhysicalPaymentOrdersCreate } from "./pages/physical-payment-orders/create";
-import { PhysicalPaymentOrdersEdit } from "./pages/physical-payment-orders/edit";
-import { PhysicalPaymentOrdersShow } from "./pages/physical-payment-orders/show";
 import { ProductsList } from "./pages/products/list";
 import { ProductsCreate } from "./pages/products/create";
 import { ProductsEdit } from "./pages/products/edit";
@@ -293,18 +293,18 @@ export default function AppRouter() {
                             meta: { canDelete: true, icon: <FileDoneOutlined /> },
                         },
                         {
+                            name: "order-payments",
+                            list: "/order-payments",
+                            create: "/order-payments/create",
+                            edit: "/order-payments/edit/:id",
+                            show: "/order-payments/show/:id",
+                            meta: { canDelete: true, icon: <DollarOutlined /> },
+                        },
+                        {
                             name: "payment-methods",
                             list: "/payment-methods",
                             show: "/payment-methods/show/:id",
                             meta: { canDelete: false, icon: <CreditCardOutlined /> },
-                        },
-                        {
-                            name: "physical-payment-orders",
-                            list: "/physical-payment-orders",
-                            create: "/physical-payment-orders/create",
-                            edit: "/physical-payment-orders/edit/:id",
-                            show: "/physical-payment-orders/show/:id",
-                            meta: { canDelete: true, icon: <DollarOutlined /> },
                         },
                         {
                             name: "products",
@@ -407,11 +407,11 @@ export default function AppRouter() {
                                 <Route index element={<PaymentMethodsList />} />
                                 <Route path="show/:id" element={<PaymentMethodsShow />} />
                             </Route>
-                            <Route path="/physical-payment-orders">
-                                <Route index element={<PhysicalPaymentOrdersList />} />
-                                <Route path="create" element={<PhysicalPaymentOrdersCreate />} />
-                                <Route path="edit/:id" element={<PhysicalPaymentOrdersEdit />} />
-                                <Route path="show/:id" element={<PhysicalPaymentOrdersShow />} />
+                            <Route path="/order-payments">
+                                <Route index element={<OrderPaymentsList />} />
+                                <Route path="create" element={<OrderPaymentsCreate />} />
+                                <Route path="edit/:id" element={<OrderPaymentsEdit />} />
+                                <Route path="show/:id" element={<OrderPaymentsShow />} />
                             </Route>
                             <Route path="/products">
                                 <Route index element={<ProductsList />} />

@@ -4,85 +4,112 @@ namespace App\Enums;
 
 enum PaymentMethod: string
 {
+    case BankTransfer = 'transferencia_bancaria';
     case MobilePayment = 'pago_movil';
+    case NationalCash = 'efectivo_nacional';
     case NationalCard = 'tarjeta_nacional';
-    case Cash = 'efectivo';
-    case BankTransfer = 'transferencia';
+    case Paypal = 'paypal';
+    case Zelle = 'zelle';
+    case Zinli = 'zinli';
+    case Wally = 'wally';
     case CreditCard = 'tarjeta_credito';
     case Binance = 'binance';
-    case Paypal = 'paypal';
-    case Zinli = 'zinli';
-    case Zelle = 'zelle';
-    case Wally = 'wally';
+    case InternationalCash = 'efectivo_internacional';
 
     public function label(): string
     {
         return match ($this) {
-            self::MobilePayment => 'Pago Movil',
-            self::NationalCard => 'Tarjeta',
-            self::Cash => 'Efectivo',
             self::BankTransfer => 'Transferencia Bancaria',
+            self::MobilePayment => 'Pago Movil',
+            self::NationalCash => 'Efectivo Nacional',
+            self::NationalCard => 'Tarjeta Nacional',
+            self::Paypal => 'PayPal',
+            self::Zelle => 'Zelle',
+            self::Zinli => 'Zinli',
+            self::Wally => 'Wally',
             self::CreditCard => 'Tarjeta de Credito',
             self::Binance => 'Binance',
-            self::Paypal => 'PayPal',
-            self::Zinli => 'Zinli',
-            self::Zelle => 'Zelle',
-            self::Wally => 'Wally',
+            self::InternationalCash => 'Efectivo Internacional',
+        };
+    }
+
+    public function currency(): PaymentCurrency
+    {
+        return match ($this) {
+            self::BankTransfer,
+            self::NationalCard,
+            self::NationalCash,
+            self::MobilePayment => PaymentCurrency::National,
+            self::Paypal,
+            self::Zelle,
+            self::Zinli,
+            self::Wally,
+            self::CreditCard,
+            self::Binance,
+            self::InternationalCash => PaymentCurrency::International,
         };
     }
 
     public function currencyType(): string
     {
-        return match ($this) {
-            self::MobilePayment,
-            self::NationalCard,
-            self::Cash,
-            self::BankTransfer => 'nacional',
-            self::CreditCard,
-            self::Binance,
-            self::Paypal,
-            self::Zinli,
-            self::Zelle,
-            self::Wally => 'internacional',
-        };
+        return $this->currency()->value;
     }
 
     public function configuration(): array
     {
         return match ($this) {
-            self::MobilePayment,
             self::BankTransfer => [
-                'requires_identification' => true,
-                'requires_reference' => true,
-                'available_banks' => Banks::values(),
+                'required_fields' => [
+                    'payer_identification',
+                    'reference_number',
+                    'source_bank_code',
+                    'destination_bank_code',
+                    'paid_at',
+                    'amount',
+                ],
+                'optional_fields' => ['proof_image_path', 'notes'],
+                'bank_fields' => ['source_bank_code', 'destination_bank_code'],
+            ],
+            self::MobilePayment => [
+                'required_fields' => [
+                    'payer_identification',
+                    'payer_phone',
+                    'source_bank_code',
+                    'reference_number',
+                    'amount',
+                ],
+                'optional_fields' => ['proof_image_path', 'paid_at', 'notes'],
+                'bank_fields' => ['source_bank_code'],
+            ],
+            self::NationalCash,
+            self::InternationalCash => [
+                'required_fields' => ['amount'],
+                'optional_fields' => ['paid_at', 'notes'],
             ],
             self::NationalCard => [
-                'types' => ['debit', 'credit'],
-                'requires_terminal' => true,
-            ],
-            self::Cash => [
-                'requires_admin_confirmation' => true,
+                'required_fields' => ['amount', 'reference_number'],
+                'optional_fields' => ['card_last_four', 'card_network', 'paid_at', 'notes'],
             ],
             self::CreditCard => [
-                'types' => ['visa', 'mastercard'],
-                'requires_cvv' => true,
-            ],
-            self::Binance => [
-                'requires_transaction_id' => true,
+                'required_fields' => ['amount', 'reference_number'],
+                'optional_fields' => ['payer_email', 'card_last_four', 'card_network', 'paid_at', 'notes'],
             ],
             self::Paypal => [
-                'redirect' => true,
-                'requires_password' => true,
-            ],
-            self::Zinli => [
-                'requires_pin' => true,
-                'pin_length' => 4,
+                'required_fields' => ['amount', 'payer_email', 'reference_number'],
+                'optional_fields' => ['paid_at', 'proof_image_path', 'notes'],
             ],
             self::Zelle => [
-                'requires_full_name' => true,
+                'required_fields' => ['amount', 'payer_email', 'reference_number'],
+                'optional_fields' => ['account_holder_name', 'paid_at', 'proof_image_path', 'notes'],
             ],
+            self::Zinli,
             self::Wally => [
-                'requires_account_identifier' => true,
+                'required_fields' => ['amount', 'account_identifier', 'reference_number'],
+                'optional_fields' => ['payer_phone', 'payer_email', 'paid_at', 'proof_image_path', 'notes'],
+            ],
+            self::Binance => [
+                'required_fields' => ['amount', 'transaction_id'],
+                'optional_fields' => ['account_identifier', 'paid_at', 'proof_image_path', 'notes'],
             ],
         };
     }
@@ -111,7 +138,7 @@ enum PaymentMethod: string
                 'code' => $method->value,
                 'name' => $method->label(),
                 'currency_type' => $method->currencyType(),
-                'currency_type_label' => $method->currencyType() === 'nacional' ? 'Nacional' : 'Internacional',
+                'currency_type_label' => $method->currency()->label(),
                 'active' => true,
                 'active_label' => 'Activo',
                 'configuration' => $method->configuration(),

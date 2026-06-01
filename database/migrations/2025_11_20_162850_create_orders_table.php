@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PaymentCurrency;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->string('contact_phone', 20)->nullable()->comment('teléfono de contacto');
             $table->text('special_notes')->nullable()->comment('notas especiales');
             $table->string('payment_method', 50)->nullable()->comment('método de pago');
-            $table->enum('currency', ['nacional', 'internacional'])->default('internacional')->comment('moneda de la orden');
+            $table->enum('currency', PaymentCurrency::values())->default(PaymentCurrency::International->value)->comment('moneda de la orden');
             $table->json('national_payment_data')->nullable()->comment('datos de pago nacional');
             $table->timestamp('order_date')->useCurrent()->comment('fecha de la orden');
             $table->timestamp('estimated_delivery_date')->nullable()->comment('fecha de entrega estimada');

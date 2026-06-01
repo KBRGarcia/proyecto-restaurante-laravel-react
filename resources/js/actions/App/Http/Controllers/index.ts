@@ -7,8 +7,8 @@ import EmployeeController from './EmployeeController'
 import EvaluationController from './EvaluationController'
 import OrderDetailController from './OrderDetailController'
 import OrderController from './OrderController'
+import OrderPaymentController from './OrderPaymentController'
 import PaymentMethodController from './PaymentMethodController'
-import PhysicalPaymentOrdersController from './PhysicalPaymentOrdersController'
 import ProductController from './ProductController'
 import BankController from './BankController'
 
@@ -22,8 +22,8 @@ const Controllers = {
     EvaluationController: Object.assign(EvaluationController, EvaluationController),
     OrderDetailController: Object.assign(OrderDetailController, OrderDetailController),
     OrderController: Object.assign(OrderController, OrderController),
+    OrderPaymentController: Object.assign(OrderPaymentController, OrderPaymentController),
     PaymentMethodController: Object.assign(PaymentMethodController, PaymentMethodController),
-    PhysicalPaymentOrdersController: Object.assign(PhysicalPaymentOrdersController, PhysicalPaymentOrdersController),
     ProductController: Object.assign(ProductController, ProductController),
     BankController: Object.assign(BankController, BankController),
 }

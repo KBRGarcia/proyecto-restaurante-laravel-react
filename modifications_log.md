@@ -16,7 +16,7 @@ Este archivo contiene el historial completo de modificaciones realizadas en el b
 Se modificaron los métodos `store` y `update` de los siguientes controladores para remover envolturas innecesarias del tipo `{ message: '...', data: ... }` y retornar directamente el modelo guardado. Esto resolvió los conflictos de sincronización con el proveedor de datos `@refinedev/simple-rest`:
 - `EvaluationController.php`
 - `PaymentMethodController.php`
-- `PhysicalPaymentOrdersController.php` (se corrigió también una variable indefinida `$physicalPaymentOrders` en el retorno de `store`).
+- `OrderPaymentController.php` centraliza ahora el registro de pagos por orden.
 - `BankController.php` (se corrigió también una variable incorrecta en el método `store` donde se usaba `$bank` de forma inconsistente).
 
 #### 3. Soporte para Carga Base64 de Imágenes
@@ -62,7 +62,7 @@ Se expandieron y mejoraron las interfaces CRUD de los 10 recursos principales de
 - **`categories`:** Soporte de imágenes en base64, orden de visualización y estado.
 - **`products`:** Menú desplegable para asociar categorías dinámicas, tiempo de preparación, descripción de ingredientes e imagen del plato.
 - **`orders` & `order-details`:** Listado y detalles exhaustivos que muestran las relaciones de cliente, repartidor y productos asociados.
-- **`payment-methods` & `physical-payment-orders`:** Formularios para configuraciones JSON avanzadas de pasarelas y límites de efectivo.
+- **`payment-methods` & `order-payments`:** Catálogo estático de métodos por moneda y CRUD único para registrar los datos del pago por orden.
 - **`evaluations`:** Mapeo de ratings interactivos de estrellas, relaciones de productos y pedidos.
 - **`banks`:** Vistas completas implementadas con soporte para códigos, estados y un editor de texto JSON para metadata.
 

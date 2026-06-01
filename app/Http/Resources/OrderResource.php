@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Enums\PaymentMethod;
+use App\Enums\PaymentCurrency;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -301,7 +302,7 @@ class OrderResource extends JsonResource
                 'type' => 'select',
                 'placeholder' => 'Seleccione la moneda',
                 'required' => true,
-                'validation' => 'required|in:nacional,internacional',
+                'validation' => 'required|in:' . implode(',', PaymentCurrency::values()),
                 'grid_cols' => 4,
                 'options' => [
                     ['value' => 'nacional', 'label' => 'Nacional'],

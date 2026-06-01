@@ -330,50 +330,38 @@ export interface Bank {
 export interface OrderPayment {
     id: number;
     order_id: number;
-    method: 'pago_movil' | 'tarjeta_nacional' | 'efectivo' | 'transferencia' | 'tarjeta_credito' | 'binance' | 'paypal' | 'zinli' | 'zelle' | 'wally';
+    order_number: number | null;
+    method: 'transferencia_bancaria' | 'pago_movil' | 'efectivo_nacional' | 'tarjeta_nacional' | 'paypal' | 'zelle' | 'zinli' | 'wally' | 'tarjeta_credito' | 'binance' | 'efectivo_internacional';
+    method_label: string;
     status: 'pending' | 'confirmed' | 'rejected' | 'refunded';
+    status_label: string;
     currency: 'nacional' | 'internacional';
+    currency_label: string;
+    currency_symbol: string;
     amount: string | number;
     exchange_rate: string | number | null;
-    bank_code: string | null;
+    source_bank_code: string | null;
+    source_bank_name: string | null;
+    destination_bank_code: string | null;
+    destination_bank_name: string | null;
     reference_number: string | null;
     payer_identification: string | null;
     payer_phone: string | null;
+    payer_email: string | null;
+    account_identifier: string | null;
+    account_holder_name: string | null;
+    transaction_id: string | null;
+    card_last_four: string | null;
+    card_network: string | null;
     proof_image_path: string | null;
+    payment_details: Record<string, unknown> | null;
     paid_at: string | null;
+    paid_at_formatted: string | null;
     confirmed_at: string | null;
+    confirmed_at_formatted: string | null;
     notes: string | null;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown;
-}
-
-export interface PhysicalPaymentOrder {
-    id: number;
-    order_id: number;
-    order_number: number | null;
-    order?: {
-        id: number;
-        user_name: string;
-        status: string;
-        service_type: string;
-        total: string | number;
-        currency: string;
-        order_date: string;
-    };
-    limit_date: string;
-    limit_date_formatted: string | null;
-    status: string;
-    status_label: string;
-    is_expired: boolean;
-    creation_date: string;
-    creation_date_formatted: string | null;
-    update_date: string;
-    update_date_formatted: string | null;
-    created_at: string;
-    created_at_formatted: string | null;
-    updated_at: string;
-    updated_at_formatted: string | null;
     [key: string]: unknown;
 }
 

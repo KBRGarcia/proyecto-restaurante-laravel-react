@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\PaymentStatus;
+use App\Enums\PaymentMethod;
 use App\Models\Order;
 use App\Models\OrderPayment;
 use Illuminate\Database\Seeder;
@@ -21,7 +22,10 @@ class OrderPaymentSeeder extends Seeder
                     'reference_number' => 'seed-' . $order->id,
                 ],
                 [
-                    'method' => $order->payment_method ?? 'efectivo',
+                    'method' => $order->payment_method
+                        ?? ($order->currency === Order::CURRENCY_NACIONAL
+                            ? PaymentMethod::NationalCash->value
+                            : PaymentMethod::InternationalCash->value),
                     'status' => $order->status === Order::STATUS_CANCELED
                         ? PaymentStatus::Rejected->value
                         : PaymentStatus::Confirmed->value,

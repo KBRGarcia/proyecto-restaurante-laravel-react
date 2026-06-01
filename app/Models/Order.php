@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PaymentMethod;
+use App\Enums\PaymentCurrency;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -139,14 +140,6 @@ class Order extends Model
     public function evaluations(): HasMany
     {
         return $this->hasMany(Evaluation::class);
-    }
-
-    /**
-     * Get the physical payment orders for the order.
-     */
-    public function physicalPaymentOrders(): HasMany
-    {
-        return $this->hasMany(PhysicalPaymentOrders::class, 'order_id');
     }
 
     /**
@@ -337,7 +330,7 @@ class Order extends Model
             'contact_phone' => ['nullable', 'string', 'max:20'],
             'special_notes' => ['nullable', 'string'],
             'payment_method' => ['nullable', 'string', 'max:50', Rule::in(PaymentMethod::values())],
-            'currency' => ['required', 'string', 'in:nacional,internacional'],
+            'currency' => ['required', 'string', Rule::in(PaymentCurrency::values())],
             'national_payment_data' => ['nullable', 'array'],
             'estimated_delivery_date' => ['nullable', 'date'],
             'assigned_employee_id' => ['nullable', 'exists:users,id'],

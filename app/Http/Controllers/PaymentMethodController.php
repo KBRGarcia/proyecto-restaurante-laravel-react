@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentMethod;
+use App\Support\CatalogActiveRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -95,9 +96,23 @@ class PaymentMethodController extends Controller
      */
     public function update(Request $request, string|int $payment_method): JsonResponse
     {
-        return response()->json([
-            'message' => 'Los metodos de pago son un catalogo estatico definido en App\\Enums\\PaymentMethod.',
-        ], 405);
+        $method = PaymentMethod::tryFromIdentifier($payment_method);
+
+        abort_if($method === null, 404, 'Metodo de pago no encontrado.');
+
+        $validated = $request->validate([
+            'active' => ['required', 'boolean'],
+        ]);
+
+        CatalogActiveRegistry::setActive(
+            'payment_methods',
+            $method->value,
+            filter_var($validated['active'], FILTER_VALIDATE_BOOLEAN),
+        );
+
+        $item = collect(PaymentMethod::toArrayList())->firstWhere('id', $method->id());
+
+        return response()->json($item);
     }
 
     /**

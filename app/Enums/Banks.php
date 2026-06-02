@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use App\Support\CatalogActiveRegistry;
+
 enum Banks: string
 {
     case BancoDeVenezuela = '0102';
@@ -58,8 +60,8 @@ enum Banks: string
                 'id' => $bank->id(),
                 'code' => $bank->value,
                 'name' => $bank->label(),
-                'active' => true,
-                'active_label' => 'Activo',
+                'active' => CatalogActiveRegistry::isActive('banks', $bank->value),
+                'active_label' => CatalogActiveRegistry::isActive('banks', $bank->value) ? 'Activo' : 'Inactivo',
                 'system_data' => [
                     'slug' => $bank->slug(),
                 ],

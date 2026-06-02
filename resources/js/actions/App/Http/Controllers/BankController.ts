@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\BankController::index
-* @see app/Http/Controllers/BankController.php:14
+* @see app/Http/Controllers/BankController.php:15
 * @route '/api/banks'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\BankController::index
-* @see app/Http/Controllers/BankController.php:14
+* @see app/Http/Controllers/BankController.php:15
 * @route '/api/banks'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\BankController::index
-* @see app/Http/Controllers/BankController.php:14
+* @see app/Http/Controllers/BankController.php:15
 * @route '/api/banks'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\BankController::index
-* @see app/Http/Controllers/BankController.php:14
+* @see app/Http/Controllers/BankController.php:15
 * @route '/api/banks'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\BankController::index
-* @see app/Http/Controllers/BankController.php:14
+* @see app/Http/Controllers/BankController.php:15
 * @route '/api/banks'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\BankController::index
-* @see app/Http/Controllers/BankController.php:14
+* @see app/Http/Controllers/BankController.php:15
 * @route '/api/banks'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\BankController::index
-* @see app/Http/Controllers/BankController.php:14
+* @see app/Http/Controllers/BankController.php:15
 * @route '/api/banks'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\BankController::store
-* @see app/Http/Controllers/BankController.php:63
+* @see app/Http/Controllers/BankController.php:64
 * @route '/api/banks'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +97,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\BankController::store
-* @see app/Http/Controllers/BankController.php:63
+* @see app/Http/Controllers/BankController.php:64
 * @route '/api/banks'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\BankController::store
-* @see app/Http/Controllers/BankController.php:63
+* @see app/Http/Controllers/BankController.php:64
 * @route '/api/banks'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +116,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\BankController::store
-* @see app/Http/Controllers/BankController.php:63
+* @see app/Http/Controllers/BankController.php:64
 * @route '/api/banks'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +126,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\BankController::store
-* @see app/Http/Controllers/BankController.php:63
+* @see app/Http/Controllers/BankController.php:64
 * @route '/api/banks'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,7 +138,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\BankController::show
-* @see app/Http/Controllers/BankController.php:73
+* @see app/Http/Controllers/BankController.php:74
 * @route '/api/banks/{bank}'
 */
 export const show = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -153,7 +153,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\BankController::show
-* @see app/Http/Controllers/BankController.php:73
+* @see app/Http/Controllers/BankController.php:74
 * @route '/api/banks/{bank}'
 */
 show.url = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -180,7 +180,7 @@ show.url = (args: { bank: string | number } | [bank: string | number ] | string 
 
 /**
 * @see \App\Http\Controllers\BankController::show
-* @see app/Http/Controllers/BankController.php:73
+* @see app/Http/Controllers/BankController.php:74
 * @route '/api/banks/{bank}'
 */
 show.get = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -190,7 +190,7 @@ show.get = (args: { bank: string | number } | [bank: string | number ] | string 
 
 /**
 * @see \App\Http\Controllers\BankController::show
-* @see app/Http/Controllers/BankController.php:73
+* @see app/Http/Controllers/BankController.php:74
 * @route '/api/banks/{bank}'
 */
 show.head = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -200,7 +200,7 @@ show.head = (args: { bank: string | number } | [bank: string | number ] | string
 
 /**
 * @see \App\Http\Controllers\BankController::show
-* @see app/Http/Controllers/BankController.php:73
+* @see app/Http/Controllers/BankController.php:74
 * @route '/api/banks/{bank}'
 */
 const showForm = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -210,7 +210,7 @@ const showForm = (args: { bank: string | number } | [bank: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\BankController::show
-* @see app/Http/Controllers/BankController.php:73
+* @see app/Http/Controllers/BankController.php:74
 * @route '/api/banks/{bank}'
 */
 showForm.get = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -220,7 +220,7 @@ showForm.get = (args: { bank: string | number } | [bank: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\BankController::show
-* @see app/Http/Controllers/BankController.php:73
+* @see app/Http/Controllers/BankController.php:74
 * @route '/api/banks/{bank}'
 */
 showForm.head = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -237,7 +237,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\BankController::update
-* @see app/Http/Controllers/BankController.php:93
+* @see app/Http/Controllers/BankController.php:94
 * @route '/api/banks/{bank}'
 */
 export const update = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -252,7 +252,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\BankController::update
-* @see app/Http/Controllers/BankController.php:93
+* @see app/Http/Controllers/BankController.php:94
 * @route '/api/banks/{bank}'
 */
 update.url = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -279,7 +279,7 @@ update.url = (args: { bank: string | number } | [bank: string | number ] | strin
 
 /**
 * @see \App\Http\Controllers\BankController::update
-* @see app/Http/Controllers/BankController.php:93
+* @see app/Http/Controllers/BankController.php:94
 * @route '/api/banks/{bank}'
 */
 update.put = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -289,7 +289,7 @@ update.put = (args: { bank: string | number } | [bank: string | number ] | strin
 
 /**
 * @see \App\Http\Controllers\BankController::update
-* @see app/Http/Controllers/BankController.php:93
+* @see app/Http/Controllers/BankController.php:94
 * @route '/api/banks/{bank}'
 */
 update.patch = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -299,7 +299,7 @@ update.patch = (args: { bank: string | number } | [bank: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\BankController::update
-* @see app/Http/Controllers/BankController.php:93
+* @see app/Http/Controllers/BankController.php:94
 * @route '/api/banks/{bank}'
 */
 const updateForm = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -314,7 +314,7 @@ const updateForm = (args: { bank: string | number } | [bank: string | number ] |
 
 /**
 * @see \App\Http\Controllers\BankController::update
-* @see app/Http/Controllers/BankController.php:93
+* @see app/Http/Controllers/BankController.php:94
 * @route '/api/banks/{bank}'
 */
 updateForm.put = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -329,7 +329,7 @@ updateForm.put = (args: { bank: string | number } | [bank: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\BankController::update
-* @see app/Http/Controllers/BankController.php:93
+* @see app/Http/Controllers/BankController.php:94
 * @route '/api/banks/{bank}'
 */
 updateForm.patch = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -346,7 +346,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\BankController::destroy
-* @see app/Http/Controllers/BankController.php:103
+* @see app/Http/Controllers/BankController.php:118
 * @route '/api/banks/{bank}'
 */
 export const destroy = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -361,7 +361,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\BankController::destroy
-* @see app/Http/Controllers/BankController.php:103
+* @see app/Http/Controllers/BankController.php:118
 * @route '/api/banks/{bank}'
 */
 destroy.url = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -388,7 +388,7 @@ destroy.url = (args: { bank: string | number } | [bank: string | number ] | stri
 
 /**
 * @see \App\Http\Controllers\BankController::destroy
-* @see app/Http/Controllers/BankController.php:103
+* @see app/Http/Controllers/BankController.php:118
 * @route '/api/banks/{bank}'
 */
 destroy.delete = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -398,7 +398,7 @@ destroy.delete = (args: { bank: string | number } | [bank: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\BankController::destroy
-* @see app/Http/Controllers/BankController.php:103
+* @see app/Http/Controllers/BankController.php:118
 * @route '/api/banks/{bank}'
 */
 const destroyForm = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -413,7 +413,7 @@ const destroyForm = (args: { bank: string | number } | [bank: string | number ] 
 
 /**
 * @see \App\Http\Controllers\BankController::destroy
-* @see app/Http/Controllers/BankController.php:103
+* @see app/Http/Controllers/BankController.php:118
 * @route '/api/banks/{bank}'
 */
 destroyForm.delete = (args: { bank: string | number } | [bank: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

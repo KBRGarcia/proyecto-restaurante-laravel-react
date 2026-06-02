@@ -2,40 +2,53 @@ import { List, useTable, DateField } from "@refinedev/antd";
 import { Table, Space, Tag, Avatar, Typography } from "antd";
 import { CoffeeOutlined, StarOutlined } from "@ant-design/icons";
 import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
+import { StatusSwitch } from "@/components/table/StatusSwitch";
+import { useInlineUpdate } from "@/hooks/useInlineUpdate";
 
 const { Text } = Typography;
 
+type ProductRow = {
+    id: number;
+    name: string;
+    price: number | string;
+    category_id: number;
+    preparation_time: number;
+    ingredients?: string | null;
+    description?: string | null;
+    status: "active" | "inactive" | "out of stock";
+    is_special?: boolean;
+    image?: string | null;
+    created_at?: string;
+    category?: { name?: string };
+};
+
 export const ProductsList = () => {
-    const { tableProps } = useTable({
+    const { tableProps } = useTable<ProductRow>({
         syncWithLocation: true,
     });
 
-    const getStatusTag = (status: string) => {
-        switch (status) {
-            case "active":
-                return <Tag color="success">Activo</Tag>;
-            case "inactive":
-                return <Tag color="error">Inactivo</Tag>;
-            case "out of stock":
-                return <Tag color="warning">Agotado</Tag>;
-            default:
-                return <Tag>{status}</Tag>;
-        }
+    const { update, isUpdating } = useInlineUpdate();
+
+    const handleStatusChange = (checked: boolean, record: ProductRow) => {
+        update("products", record.id, {
+            name: record.name,
+            price: record.price,
+            category_id: record.category_id,
+            preparation_time: record.preparation_time,
+            ingredients: record.ingredients ?? null,
+            description: record.description ?? null,
+            is_special: record.is_special ?? false,
+            status: checked ? "active" : "inactive",
+        });
     };
 
     return (
-        <List
-            headerButtons={({ defaultButtons }) => (
-                <>
-                    <CustomCreateButton />
-                </>
-            )}
-        >
+        <List headerButtons={() => <CustomCreateButton />}>
             <Table {...tableProps} rowKey="id">
                 <Table.Column
                     dataIndex="image"
                     title="Imagen"
-                    render={(value: string, record: { name?: string }) => (
+                    render={(value: string, record: ProductRow) => (
                         <Avatar
                             src={value || undefined}
                             shape="square"
@@ -45,10 +58,10 @@ export const ProductsList = () => {
                         />
                     )}
                 />
-                <Table.Column 
-                    dataIndex="name" 
-                    title="Producto" 
-                    render={(value, record: any) => (
+                <Table.Column
+                    dataIndex="name"
+                    title="Producto"
+                    render={(value, record: ProductRow) => (
                         <div>
                             <Text strong>{value}</Text>
                             {record.is_special && (
@@ -59,22 +72,32 @@ export const ProductsList = () => {
                         </div>
                     )}
                 />
-                <Table.Column 
-                    dataIndex="price" 
-                    title="Precio" 
+                <Table.Column
+                    dataIndex="price"
+                    title="Precio"
                     render={(value) => (
-                        <Text strong color="green">
+                        <Text strong style={{ color: "#3f8600" }}>
                             $ {Number(value).toFixed(2)}
                         </Text>
                     )}
                 />
-                <Table.Column 
-                    dataIndex={["category", "name"]} 
-                    title="Categoría" 
+                <Table.Column
+                    dataIndex={["category", "name"]}
+                    title="Categoría"
                     render={(value) => value || "Sin Categoría"}
                 />
                 <Table.Column dataIndex="preparation_time" title="Tiempo Prep." render={(value) => `${value} min`} />
-                <Table.Column dataIndex="status" title="Estado" render={(value: string) => getStatusTag(value)} />
+                <Table.Column<ProductRow>
+                    dataIndex="status"
+                    title="Estado"
+                    render={(_, record) => (
+                        <StatusSwitch
+                            checked={record.status === "active"}
+                            loading={isUpdating(record.id)}
+                            onToggle={(checked) => handleStatusChange(checked, record)}
+                        />
+                    )}
+                />
                 <Table.Column
                     dataIndex="created_at"
                     title="Creado"
@@ -84,7 +107,7 @@ export const ProductsList = () => {
                     title="Acciones"
                     dataIndex="actions"
                     align="center"
-                    render={(_, record: { id: number }) => (
+                    render={(_, record: ProductRow) => (
                         <Space>
                             <CustomShowButton recordItemId={record.id} />
                             <CustomEditButton recordItemId={record.id} />

@@ -1,36 +1,45 @@
 import { List, useTable, DateField } from "@refinedev/antd";
-import { Table, Space, Tag, Avatar, Typography } from "antd";
+import { Table, Space, Avatar, Typography } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
+import { StatusSwitch } from "@/components/table/StatusSwitch";
+import { useInlineUpdate } from "@/hooks/useInlineUpdate";
 
 const { Text } = Typography;
 
+type CategoryRow = {
+    id: number;
+    name: string;
+    description?: string | null;
+    order_show: number;
+    status: "active" | "inactive";
+    image?: string | null;
+    created_at?: string;
+};
+
 export const CategoriesList = () => {
-    const { tableProps } = useTable({
+    const { tableProps } = useTable<CategoryRow>({
         syncWithLocation: true,
     });
 
-    const getStatusTag = (status: string) => {
-        return status === "active" ? (
-            <Tag color="success">Activo</Tag>
-        ) : (
-            <Tag color="error">Inactivo</Tag>
-        );
+    const { update, isUpdating } = useInlineUpdate();
+
+    const handleStatusChange = (checked: boolean, record: CategoryRow) => {
+        update("categories", record.id, {
+            name: record.name,
+            description: record.description ?? null,
+            order_show: record.order_show,
+            status: checked ? "active" : "inactive",
+        });
     };
 
     return (
-        <List
-            headerButtons={({ defaultButtons }) => (
-                <>
-                    <CustomCreateButton />
-                </>
-            )}
-        >
+        <List headerButtons={() => <CustomCreateButton />}>
             <Table {...tableProps} rowKey="id">
                 <Table.Column
                     dataIndex="image"
                     title="Imagen"
-                    render={(value: string, record: { name?: string }) => (
+                    render={(value: string, record: CategoryRow) => (
                         <Avatar
                             src={value || undefined}
                             shape="square"
@@ -42,7 +51,17 @@ export const CategoriesList = () => {
                 />
                 <Table.Column dataIndex="name" title="Categoría" render={(value) => <Text strong>{value}</Text>} />
                 <Table.Column dataIndex="order_show" title="Orden de Mostrar" />
-                <Table.Column dataIndex="status" title="Estado" render={(value: string) => getStatusTag(value)} />
+                <Table.Column<CategoryRow>
+                    dataIndex="status"
+                    title="Estado"
+                    render={(_, record) => (
+                        <StatusSwitch
+                            checked={record.status === "active"}
+                            loading={isUpdating(record.id)}
+                            onToggle={(checked) => handleStatusChange(checked, record)}
+                        />
+                    )}
+                />
                 <Table.Column
                     dataIndex="created_at"
                     title="Creado"
@@ -52,7 +71,7 @@ export const CategoriesList = () => {
                     title="Acciones"
                     dataIndex="actions"
                     align="center"
-                    render={(_, record: { id: number }) => (
+                    render={(_, record: CategoryRow) => (
                         <Space>
                             <CustomShowButton recordItemId={record.id} />
                             <CustomEditButton recordItemId={record.id} />

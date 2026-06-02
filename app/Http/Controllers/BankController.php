@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Banks;
+use App\Support\CatalogActiveRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -90,11 +91,25 @@ class BankController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string|int $bank)
+    public function update(Request $request, string|int $bank): JsonResponse
     {
-        return response()->json([
-            'message' => 'Los bancos son un catalogo estatico definido en App\\Enums\\Banks.',
-        ], 405);
+        $bankEnum = Banks::tryFromIdentifier($bank);
+
+        abort_if($bankEnum === null, 404, 'Banco no encontrado.');
+
+        $validated = $request->validate([
+            'active' => ['required', 'boolean'],
+        ]);
+
+        CatalogActiveRegistry::setActive(
+            'banks',
+            $bankEnum->value,
+            filter_var($validated['active'], FILTER_VALIDATE_BOOLEAN),
+        );
+
+        $item = collect(Banks::toArrayList())->firstWhere('id', $bankEnum->id());
+
+        return response()->json($item);
     }
 
     /**

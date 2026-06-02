@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use App\Support\CatalogActiveRegistry;
+
 enum PaymentMethod: string
 {
     case BankTransfer = 'transferencia_bancaria';
@@ -139,8 +141,8 @@ enum PaymentMethod: string
                 'name' => $method->label(),
                 'currency_type' => $method->currencyType(),
                 'currency_type_label' => $method->currency()->label(),
-                'active' => true,
-                'active_label' => 'Activo',
+                'active' => CatalogActiveRegistry::isActive('payment_methods', $method->value),
+                'active_label' => CatalogActiveRegistry::isActive('payment_methods', $method->value) ? 'Activo' : 'Inactivo',
                 'configuration' => $method->configuration(),
                 'creation_date' => null,
                 'update_date' => null,

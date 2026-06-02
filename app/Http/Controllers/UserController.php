@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -82,9 +81,6 @@ class UserController extends Controller
     {
         $validated = $request->validate(User::rules(), User::messages());
 
-        // Hash de la contraseña
-        $validated['password'] = Hash::make($validated['password']);
-
         // Manejar la foto de perfil si se proporciona
         if ($request->hasFile('profile_picture')) {
             $image = $request->file('profile_picture');
@@ -130,11 +126,7 @@ class UserController extends Controller
 
         $validated = $request->validate($rules, User::messages());
 
-        // Si se proporciona contraseña, hashearla
-        if (!empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-        } else {
-            // Si no se proporciona, remover del array
+        if (empty($validated['password'])) {
             unset($validated['password']);
         }
 

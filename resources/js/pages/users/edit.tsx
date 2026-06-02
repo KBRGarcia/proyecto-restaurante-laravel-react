@@ -5,6 +5,8 @@ import { useState } from "react";
 
 const { useToken } = theme;
 
+const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/;
+
 export const UserEdit = () => {
     const { formProps, saveButtonProps, query } = useForm();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -96,11 +98,66 @@ export const UserEdit = () => {
                             label="Contraseña (Opcional)"
                             name={["password"]}
                             help="Déjalo en blanco si no deseas cambiar la contraseña."
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!value) {
+                                            return Promise.resolve();
+                                        }
+                                        if (value.length < 8 || value.length > 16) {
+                                            return Promise.reject(
+                                                new Error("La contraseña debe tener entre 8 y 16 caracteres"),
+                                            );
+                                        }
+                                        if (!passwordPattern.test(value)) {
+                                            return Promise.reject(
+                                                new Error(
+                                                    "Debe incluir mayúscula, número y carácter especial (@$!%*?&#-_.)",
+                                                ),
+                                            );
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
                         >
                             <Input.Password />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={12}>
+                        <Form.Item
+                            label="Confirmar contraseña"
+                            name={["password_confirmation"]}
+                            dependencies={["password"]}
+                            rules={[
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        const password = getFieldValue("password");
+                                        if (!password) {
+                                            return Promise.resolve();
+                                        }
+                                        if (!value) {
+                                            return Promise.reject(
+                                                new Error("Confirma la contraseña"),
+                                            );
+                                        }
+                                        if (password === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(
+                                            new Error("La confirmación de la contraseña no coincide"),
+                                        );
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                    </Col>
+                </Row>
+
+                <Row gutter={16}>
+                    <Col xs={24}>
                         <Form.Item
                             label="Dirección"
                             name={["address"]}

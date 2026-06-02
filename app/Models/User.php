@@ -101,7 +101,7 @@ class User extends Authenticatable
             'last_name' => ['required', 'string', 'max:255'],
             'phone_number' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string'],
-            'profile_picture' => ['nullable', 'image', 'max:2048'], // 2MB max
+            'profile_picture' => ['nullable', 'string'],
             'role' => ['required', 'string', 'in:admin,employee,client'],
             'status' => ['required', 'string', 'in:active,inactive'],
         ];
@@ -165,8 +165,7 @@ class User extends Authenticatable
             'phone_number.string' => 'El número de teléfono debe ser una cadena de texto.',
             'phone_number.max' => 'El número de teléfono no debe exceder los 20 caracteres.',
             'address.string' => 'La dirección debe ser una cadena de texto.',
-            'profile_picture.image' => 'La foto de perfil debe ser una imagen.',
-            'profile_picture.max' => 'La foto de perfil no debe exceder los 2MB.',
+            'profile_picture.string' => 'La foto de perfil debe ser una cadena de texto válida.',
             'role.required' => 'El rol es obligatorio.',
             'role.in' => 'El rol seleccionado no es válido.',
             'status.required' => 'El estado es obligatorio.',

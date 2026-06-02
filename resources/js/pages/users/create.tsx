@@ -1,14 +1,13 @@
 import { Create, useForm } from "@refinedev/antd";
-import { Form, Input, Select, Upload, Button, Avatar, Row, Col, theme } from "antd";
+import { Form, Input, Select, Upload, Button, Avatar, Row, Col } from "antd";
 import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
-const { useToken } = theme;
+const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/;
 
 export const UserCreate = () => {
     const { formProps, saveButtonProps } = useForm();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const { token } = useToken();
 
     const getBase64 = (file: File): Promise<string> =>
         new Promise((resolve, reject) => {
@@ -94,13 +93,46 @@ export const UserCreate = () => {
                             name={["password"]}
                             rules={[
                                 { required: true, message: "La contraseña es obligatoria" },
-                                { min: 8, message: "Mínimo 8 caracteres" }
+                                { min: 8, message: "Mínimo 8 caracteres" },
+                                { max: 16, message: "Máximo 16 caracteres" },
+                                {
+                                    pattern: passwordPattern,
+                                    message:
+                                        "Debe incluir mayúscula, número y carácter especial (@$!%*?&#-_.)",
+                                },
                             ]}
+                            hasFeedback
                         >
                             <Input.Password />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={12}>
+                        <Form.Item
+                            label="Confirmar contraseña"
+                            name={["password_confirmation"]}
+                            dependencies={["password"]}
+                            rules={[
+                                { required: true, message: "Confirma la contraseña" },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue("password") === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(
+                                            new Error("La confirmación de la contraseña no coincide"),
+                                        );
+                                    },
+                                }),
+                            ]}
+                            hasFeedback
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                    </Col>
+                </Row>
+
+                <Row gutter={16}>
+                    <Col xs={24}>
                         <Form.Item
                             label="Dirección"
                             name={["address"]}

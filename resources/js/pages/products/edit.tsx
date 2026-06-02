@@ -1,7 +1,8 @@
 import { Edit, useForm, useSelect } from "@refinedev/antd";
-import { Form, Input, Select, InputNumber, Checkbox, Upload, Button, Avatar, Row, Col } from "antd";
-import { UploadOutlined, CoffeeOutlined } from "@ant-design/icons";
+import { Form, Input, Select, InputNumber, Checkbox, Row, Col } from "antd";
+import { CoffeeOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { ImageUploadField } from "@/components/form/ImageUploadField";
 
 export const ProductsEdit = () => {
     const { formProps, saveButtonProps, query } = useForm();
@@ -15,39 +16,18 @@ export const ProductsEdit = () => {
         defaultValue: product?.category_id,
     });
 
-    const getBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-
-    const handleBeforeUpload = async (file: File) => {
-        try {
-            const base64Url = await getBase64(file);
-            setImageUrl(base64Url);
-            formProps.form?.setFieldsValue({ image: base64Url });
-        } catch (err) {
-            console.error(err);
-        }
-        return false;
-    };
-
     return (
         <Edit saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={16}>
-                    <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
-                        <Form.Item name="image" label="Imagen del Plato">
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-                                <Avatar size={100} shape="square" src={resolvedImageUrl} icon={<CoffeeOutlined />} />
-                                <Upload beforeUpload={handleBeforeUpload} showUploadList={false} maxCount={1}>
-                                    <Button icon={<UploadOutlined />} size="small">Cambiar Imagen</Button>
-                                </Upload>
-                            </div>
-                        </Form.Item>
-                    </Col>
+                    <ImageUploadField
+                        form={formProps.form}
+                        label="Imagen del Plato"
+                        previewUrl={resolvedImageUrl}
+                        onPreviewChange={setImageUrl}
+                        uploadLabel="Cambiar Imagen"
+                        icon={<CoffeeOutlined />}
+                    />
                     <Col xs={24} md={18}>
                         <Row gutter={16}>
                             <Col xs={24} sm={12}>

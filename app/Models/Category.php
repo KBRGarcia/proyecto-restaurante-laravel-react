@@ -113,7 +113,7 @@ class Category extends Model
         return [
             'name' => ['required', 'string', 'max:100'],
             'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'max:2048'], // 2MB max
+            'image' => ['nullable', 'string'],
             'status' => ['required', 'string', 'in:active,inactive'],
             'order_show' => ['required', 'integer', 'min:0'],
         ];
@@ -131,8 +131,7 @@ class Category extends Model
             'name.string' => 'El nombre debe ser una cadena de texto.',
             'name.max' => 'El nombre no debe exceder los 100 caracteres.',
             'description.string' => 'La descripción debe ser una cadena de texto.',
-            'image.image' => 'La imagen debe ser un archivo de imagen válido.',
-            'image.max' => 'La imagen no debe exceder los 2MB.',
+            'image.string' => 'La imagen debe ser una cadena de texto válida.',
             'status.required' => 'El estado es obligatorio.',
             'status.in' => 'El estado seleccionado no es válido.',
             'order_show.required' => 'El orden de visualización es obligatorio.',

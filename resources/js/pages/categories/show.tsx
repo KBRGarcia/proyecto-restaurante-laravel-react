@@ -22,7 +22,13 @@ export const CategoriesShow = () => {
         <Show isLoading={isLoading}>
             <Row gutter={[24, 24]} align="middle" style={{ marginBottom: "24px" }}>
                 <Col xs={24} sm={6} style={{ textAlign: "center" }}>
-                    <Avatar shape="square" size={120} src={record?.image} icon={<PictureOutlined />} />
+                    <Avatar
+                        shape="square"
+                        size={120}
+                        src={record?.image || undefined}
+                        icon={<PictureOutlined />}
+                        alt={record?.name}
+                    />
                 </Col>
                 <Col xs={24} sm={18}>
                     <Title level={2} style={{ margin: 0 }}>

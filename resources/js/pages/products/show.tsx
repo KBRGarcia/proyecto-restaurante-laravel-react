@@ -27,7 +27,13 @@ export const ProductsShow = () => {
         <Show isLoading={isLoading}>
             <Row gutter={[24, 24]} align="middle" style={{ marginBottom: "24px" }}>
                 <Col xs={24} sm={6} style={{ textAlign: "center" }}>
-                    <Avatar shape="square" size={120} src={record?.image} icon={<CoffeeOutlined />} />
+                    <Avatar
+                        shape="square"
+                        size={120}
+                        src={record?.image || undefined}
+                        icon={<CoffeeOutlined />}
+                        alt={record?.name}
+                    />
                 </Col>
                 <Col xs={24} sm={18}>
                     <Title level={2} style={{ margin: 0 }}>

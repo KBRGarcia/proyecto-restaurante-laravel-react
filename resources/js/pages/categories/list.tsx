@@ -30,8 +30,14 @@ export const CategoriesList = () => {
                 <Table.Column
                     dataIndex="image"
                     title="Imagen"
-                    render={(value: string) => (
-                        <Avatar src={value} shape="square" size={50} icon={<PictureOutlined />} />
+                    render={(value: string, record: { name?: string }) => (
+                        <Avatar
+                            src={value || undefined}
+                            shape="square"
+                            size={50}
+                            icon={<PictureOutlined />}
+                            alt={record.name}
+                        />
                     )}
                 />
                 <Table.Column dataIndex="name" title="Categoría" render={(value) => <Text strong>{value}</Text>} />

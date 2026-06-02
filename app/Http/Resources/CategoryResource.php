@@ -111,7 +111,7 @@ class CategoryResource extends JsonResource
                 'type' => 'file',
                 'placeholder' => 'Seleccione una imagen',
                 'required' => false,
-                'validation' => 'nullable|image|max:2048',
+                'validation' => 'nullable|string',
                 'grid_cols' => 6,
             ],
             [

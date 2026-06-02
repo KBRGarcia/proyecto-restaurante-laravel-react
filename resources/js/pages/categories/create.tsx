@@ -1,45 +1,24 @@
 import { Create, useForm } from "@refinedev/antd";
-import { Form, Input, Select, InputNumber, Upload, Button, Avatar, Row, Col } from "antd";
-import { UploadOutlined, PictureOutlined } from "@ant-design/icons";
+import { Form, Input, Select, InputNumber, Row, Col } from "antd";
+import { PictureOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { ImageUploadField } from "@/components/form/ImageUploadField";
 
 export const CategoriesCreate = () => {
     const { formProps, saveButtonProps } = useForm();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-    const getBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-
-    const handleBeforeUpload = async (file: File) => {
-        try {
-            const base64Url = await getBase64(file);
-            setImageUrl(base64Url);
-            formProps.form?.setFieldsValue({ image: base64Url });
-        } catch (err) {
-            console.error(err);
-        }
-        return false;
-    };
-
     return (
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={16}>
-                    <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
-                        <Form.Item name="image" label="Imagen de Categoría">
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-                                <Avatar size={100} shape="square" src={imageUrl} icon={<PictureOutlined />} />
-                                <Upload beforeUpload={handleBeforeUpload} showUploadList={false} maxCount={1}>
-                                    <Button icon={<UploadOutlined />} size="small">Subir Imagen</Button>
-                                </Upload>
-                            </div>
-                        </Form.Item>
-                    </Col>
+                    <ImageUploadField
+                        form={formProps.form}
+                        label="Imagen de Categoría"
+                        previewUrl={imageUrl}
+                        onPreviewChange={setImageUrl}
+                        icon={<PictureOutlined />}
+                    />
                     <Col xs={24} md={18}>
                         <Row gutter={16}>
                             <Col xs={24} sm={12}>

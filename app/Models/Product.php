@@ -208,7 +208,7 @@ class Product extends Model
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'category_id' => ['nullable', 'exists:categories,id'],
-            'image' => ['nullable', 'image', 'max:2048'], // 2MB max
+            'image' => ['nullable', 'string'],
             'status' => ['required', 'string', 'in:active,inactive,out of stock'],
             'preparation_time' => ['required', 'integer', 'min:1'],
             'ingredients' => ['nullable', 'string'],
@@ -233,8 +233,7 @@ class Product extends Model
             'price.min' => 'El precio debe ser mayor o igual a 0.',
             'price.regex' => 'El precio debe tener como máximo 2 decimales.',
             'category_id.exists' => 'La categoría seleccionada no existe.',
-            'image.image' => 'La imagen debe ser un archivo de imagen válido.',
-            'image.max' => 'La imagen no debe exceder los 2MB.',
+            'image.string' => 'La imagen debe ser una cadena de texto válida.',
             'status.required' => 'El estado es obligatorio.',
             'status.in' => 'El estado seleccionado no es válido.',
             'preparation_time.required' => 'El tiempo de preparación es obligatorio.',

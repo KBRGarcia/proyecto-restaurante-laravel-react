@@ -35,8 +35,14 @@ export const ProductsList = () => {
                 <Table.Column
                     dataIndex="image"
                     title="Imagen"
-                    render={(value: string) => (
-                        <Avatar src={value} shape="square" size={50} icon={<CoffeeOutlined />} />
+                    render={(value: string, record: { name?: string }) => (
+                        <Avatar
+                            src={value || undefined}
+                            shape="square"
+                            size={50}
+                            icon={<CoffeeOutlined />}
+                            alt={record.name}
+                        />
                     )}
                 />
                 <Table.Column 

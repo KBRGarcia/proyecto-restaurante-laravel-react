@@ -198,7 +198,7 @@ class ProductResource extends JsonResource
                 'type' => 'file',
                 'placeholder' => 'Seleccione una imagen',
                 'required' => false,
-                'validation' => 'nullable|image|max:2048',
+                'validation' => 'nullable|string',
                 'help_text' => 'Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB',
                 'accept' => 'image/*',
                 'grid_cols' => 12,

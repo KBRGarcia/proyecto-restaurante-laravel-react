@@ -155,7 +155,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['user', 'branch', 'assignedEmployee', 'orderPayments']);
+        $order->load(['user', 'branch', 'assignedEmployee', 'orderPayments', 'orderDetails.product']);
 
         return response()->json($order);
     }

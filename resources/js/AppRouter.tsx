@@ -1,88 +1,98 @@
-import { Refine, AuthProvider } from "@refinedev/core";
-import { ThemedLayout, ThemedSider, useNotificationProvider } from "@refinedev/antd";
-import "@refinedev/antd/dist/reset.css";
-import { ColorModeContextProvider } from "./contexts/color-mode";
-import { Header } from "./components/header";
-import { CustomRegister } from "./components/auth/CustomRegister";
-import { CustomLogin } from "./components/auth/CustomLogin";
-import { CustomDashboard } from "./components/dashboard/CustomDashboard";
 import {
-    UserOutlined, 
-    BranchesOutlined,
-    ProductOutlined,
-    StarOutlined,
-    CreditCardOutlined,
     BankOutlined,
+    BranchesOutlined,
+    CreditCardOutlined,
+    DashboardOutlined,
+    DollarOutlined,
     FileDoneOutlined,
     FileOutlined,
-    DollarOutlined,
-    InboxOutlined,
-    DashboardOutlined,
-    TeamOutlined,
+    GoldOutlined,
     IdcardOutlined,
+    InboxOutlined,
+    ProductOutlined,
     ShopOutlined,
-    GoldOutlined } from "@ant-design/icons";
-import dataProvider from "@refinedev/simple-rest";
-import routerProvider, { NavigateToResource, CatchAllNavigate, UnsavedChangesNotifier, DocumentTitleHandler } from "@refinedev/react-router";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import axios from "axios";
-import { Link } from "@refinedev/core";
+    StarOutlined,
+    TeamOutlined,
+    UserOutlined,
+} from '@ant-design/icons';
+import {
+    ThemedLayout,
+    ThemedSider,
+    useNotificationProvider,
+} from '@refinedev/antd';
+import '@refinedev/antd/dist/reset.css';
+import { AuthProvider, Link, Refine } from '@refinedev/core';
+import routerProvider, {
+    DocumentTitleHandler,
+    UnsavedChangesNotifier,
+} from '@refinedev/react-router';
+import dataProvider from '@refinedev/simple-rest';
+import axios from 'axios';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { CustomLogin } from './components/auth/CustomLogin';
+import { CustomRegister } from './components/auth/CustomRegister';
+import { CustomDashboard } from './components/dashboard/CustomDashboard';
+import { Header } from './components/header';
+import { AppSystemShell } from './components/layout/AppSystemShell';
+import { ColorModeContextProvider } from './contexts/color-mode';
+import { ComingSoonPage } from './pages/coming-soon';
+import { HomePage } from './pages/home';
 // Resources
-import { UserList } from "./pages/users/list";
-import { UserCreate } from "./pages/users/create";
-import { UserEdit } from "./pages/users/edit";
-import { UserShow } from "./pages/users/show";
-import { BanksList } from "./pages/banks/list";
-import { BanksShow } from "./pages/banks/show";
-import { BranchesList } from "./pages/branches/list";
-import { BranchesCreate } from "./pages/branches/create";
-import { BranchesEdit } from "./pages/branches/edit";
-import { BranchesShow } from "./pages/branches/show";
-import { CategoriesList } from "./pages/categories/list";
-import { CategoriesCreate } from "./pages/categories/create";
-import { CategoriesEdit } from "./pages/categories/edit";
-import { CategoriesShow } from "./pages/categories/show";
-import { ClientsList } from "./pages/clients/list";
-import { ClientsCreate } from "./pages/clients/create";
-import { ClientsEdit } from "./pages/clients/edit";
-import { ClientsShow } from "./pages/clients/show";
-import { EmployeesList } from "./pages/employees/list";
-import { EmployeesCreate } from "./pages/employees/create";
-import { EmployeesEdit } from "./pages/employees/edit";
-import { EmployeesShow } from "./pages/employees/show";
-import { EvaluationsList } from "./pages/evaluations/list";
-import { EvaluationsCreate } from "./pages/evaluations/create";
-import { EvaluationsEdit } from "./pages/evaluations/edit";
-import { EvaluationsShow } from "./pages/evaluations/show";
-import { OrderDetailsList } from "./pages/order-details/list";
-import { OrderDetailsCreate } from "./pages/order-details/create";
-import { OrderDetailsEdit } from "./pages/order-details/edit";
-import { OrderDetailsShow } from "./pages/order-details/show";
-import { OrdersList } from "./pages/orders/list";
-import { OrdersCreate } from "./pages/orders/create";
-import { OrdersEdit } from "./pages/orders/edit";
-import { OrdersShow } from "./pages/orders/show";
-import { OrderPaymentsList } from "./pages/order-payments/list";
-import { OrderPaymentsCreate } from "./pages/order-payments/create";
-import { OrderPaymentsEdit } from "./pages/order-payments/edit";
-import { OrderPaymentsShow } from "./pages/order-payments/show";
-import { PaymentMethodsList } from "./pages/payment-methods/list";
-import { PaymentMethodsShow } from "./pages/payment-methods/show";
-import { ProductsList } from "./pages/products/list";
-import { ProductsCreate } from "./pages/products/create";
-import { ProductsEdit } from "./pages/products/edit";
-import { ProductsShow } from "./pages/products/show";
-import { ProfilePage } from "./pages/profile";
+import { BanksList } from './pages/banks/list';
+import { BanksShow } from './pages/banks/show';
+import { BranchesCreate } from './pages/branches/create';
+import { BranchesEdit } from './pages/branches/edit';
+import { BranchesList } from './pages/branches/list';
+import { BranchesShow } from './pages/branches/show';
+import { CategoriesCreate } from './pages/categories/create';
+import { CategoriesEdit } from './pages/categories/edit';
+import { CategoriesList } from './pages/categories/list';
+import { CategoriesShow } from './pages/categories/show';
+import { ClientsCreate } from './pages/clients/create';
+import { ClientsEdit } from './pages/clients/edit';
+import { ClientsList } from './pages/clients/list';
+import { ClientsShow } from './pages/clients/show';
+import { EmployeesCreate } from './pages/employees/create';
+import { EmployeesEdit } from './pages/employees/edit';
+import { EmployeesList } from './pages/employees/list';
+import { EmployeesShow } from './pages/employees/show';
+import { EvaluationsCreate } from './pages/evaluations/create';
+import { EvaluationsEdit } from './pages/evaluations/edit';
+import { EvaluationsList } from './pages/evaluations/list';
+import { EvaluationsShow } from './pages/evaluations/show';
+import { OrderDetailsCreate } from './pages/order-details/create';
+import { OrderDetailsEdit } from './pages/order-details/edit';
+import { OrderDetailsList } from './pages/order-details/list';
+import { OrderDetailsShow } from './pages/order-details/show';
+import { OrderPaymentsCreate } from './pages/order-payments/create';
+import { OrderPaymentsEdit } from './pages/order-payments/edit';
+import { OrderPaymentsList } from './pages/order-payments/list';
+import { OrderPaymentsShow } from './pages/order-payments/show';
+import { OrdersCreate } from './pages/orders/create';
+import { OrdersEdit } from './pages/orders/edit';
+import { OrdersList } from './pages/orders/list';
+import { OrdersShow } from './pages/orders/show';
+import { PaymentMethodsList } from './pages/payment-methods/list';
+import { PaymentMethodsShow } from './pages/payment-methods/show';
+import { ProductsCreate } from './pages/products/create';
+import { ProductsEdit } from './pages/products/edit';
+import { ProductsList } from './pages/products/list';
+import { ProductsShow } from './pages/products/show';
+import { ProfilePage } from './pages/profile';
+import { UserCreate } from './pages/users/create';
+import { UserEdit } from './pages/users/edit';
+import { UserList } from './pages/users/list';
+import { UserShow } from './pages/users/show';
 
 // Proveedor de datos apuntando a la API de Laravel
-const API_URL = "/api";
+const API_URL = '/api';
 const axiosInstance = axios.create();
 
 // Interceptor para agregar el Bearer Token automáticamente a las peticiones
 axiosInstance.interceptors.request.use((request) => {
-    const token = localStorage.getItem("auth_token");
+    const token = localStorage.getItem('auth_token');
     if (token) {
-        request.headers["Authorization"] = `Bearer ${token}`;
+        request.headers['Authorization'] = `Bearer ${token}`;
     }
     return request;
 });
@@ -91,34 +101,45 @@ axiosInstance.interceptors.request.use((request) => {
 const authProvider: AuthProvider = {
     login: async ({ email, password }: Record<string, string>) => {
         try {
-            const response = await axiosInstance.post(`${API_URL}/login`, { email, password });
+            const response = await axiosInstance.post(`${API_URL}/login`, {
+                email,
+                password,
+            });
 
             if (response.data?.token) {
-                localStorage.setItem("auth_token", response.data.token);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
+                localStorage.setItem('auth_token', response.data.token);
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify(response.data.user),
+                );
                 return {
                     success: true,
-                    redirectTo: "/",
+                    redirectTo: '/dashboard',
                 };
             }
         } catch {
             return {
                 success: false,
                 error: {
-                    name: "Error",
-                    message: "Credenciales inválidas",
+                    name: 'Error',
+                    message: 'Credenciales inválidas',
                 },
             };
         }
         return {
             success: false,
             error: {
-                message: "Error de inicio de sesión",
-                name: "Inicio de sesión fallido",
+                message: 'Error de inicio de sesión',
+                name: 'Inicio de sesión fallido',
             },
         };
     },
-    register: async ({ name, last_name, email, password }: Record<string, string>) => {
+    register: async ({
+        name,
+        last_name,
+        email,
+        password,
+    }: Record<string, string>) => {
         try {
             const response = await axiosInstance.post(`${API_URL}/register`, {
                 name,
@@ -128,11 +149,14 @@ const authProvider: AuthProvider = {
             });
 
             if (response.data?.token) {
-                localStorage.setItem("auth_token", response.data.token);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
+                localStorage.setItem('auth_token', response.data.token);
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify(response.data.user),
+                );
                 return {
                     success: true,
-                    redirectTo: "/",
+                    redirectTo: '/dashboard',
                 };
             }
         } catch (error: unknown) {
@@ -143,16 +167,16 @@ const authProvider: AuthProvider = {
             return {
                 success: false,
                 error: {
-                    message: "Error de registro",
-                    name: message || "Falló el registro",
+                    message: 'Error de registro',
+                    name: message || 'Falló el registro',
                 },
             };
         }
         return {
             success: false,
             error: {
-                message: "Error de registro",
-                name: "Falló el registro",
+                message: 'Error de registro',
+                name: 'Falló el registro',
             },
         };
     },
@@ -162,15 +186,15 @@ const authProvider: AuthProvider = {
         } catch {
             // Ignorar errores al desloguearse (ej. token ya expiró)
         }
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("user");
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user');
         return {
             success: true,
-            redirectTo: "/login",
+            redirectTo: '/',
         };
     },
     check: async () => {
-        const token = localStorage.getItem("auth_token");
+        const token = localStorage.getItem('auth_token');
         if (token) {
             return {
                 authenticated: true,
@@ -180,15 +204,15 @@ const authProvider: AuthProvider = {
         return {
             authenticated: false,
             logout: true,
-            redirectTo: "/login",
+            redirectTo: '/login',
         };
     },
     getPermissions: async () => null,
     getIdentity: async () => {
-        const token = localStorage.getItem("auth_token");
+        const token = localStorage.getItem('auth_token');
         if (token) {
             try {
-                const userString = localStorage.getItem("user");
+                const userString = localStorage.getItem('user');
                 if (userString) {
                     return JSON.parse(userString);
                 }
@@ -202,27 +226,44 @@ const authProvider: AuthProvider = {
         return null;
     },
     onError: async (error: unknown) => {
-        const err = error as { response?: { status?: number }; message?: string };
+        const err = error as {
+            response?: { status?: number };
+            message?: string;
+        };
         if (err.response?.status === 401) {
             return {
                 logout: true,
             };
         }
-        return { error: new Error(err?.message || "Unknown error") };
+        return { error: new Error(err?.message || 'Unknown error') };
     },
 };
-
-
 
 // Manejo del titulo del proyecto
 const CustomTitle = ({ collapsed }: { collapsed: boolean }) => (
     <Link to="/dashboard">
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "12px", textDecoration: "none" }}>
-            <img src="/logo.png" alt="Logo" style={{ maxHeight: "40px" }} />
-            {!collapsed &&
-                <span style={{ fontSize: "18px", fontWeight: "bold", color: "#ef4444", whiteSpace: "nowrap" }}>
+        <div
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px',
+                textDecoration: 'none',
+            }}
+        >
+            <img src="/logo.png" alt="Logo" style={{ maxHeight: '40px' }} />
+            {!collapsed && (
+                <span
+                    style={{
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        color: '#ef4444',
+                        whiteSpace: 'nowrap',
+                    }}
+                >
                     Sabor & Tradición
-                </span>}
+                </span>
+            )}
         </div>
     </Link>
 );
@@ -231,6 +272,7 @@ const CustomTitle = ({ collapsed }: { collapsed: boolean }) => (
 export default function AppRouter() {
     return (
         <BrowserRouter>
+            <AppSystemShell>
             <ColorModeContextProvider>
                 <Refine
                     dataProvider={dataProvider(API_URL, axiosInstance)}
@@ -240,37 +282,40 @@ export default function AppRouter() {
                     resources={[
                         // Dashboard de la pagina principal
                         {
-                            name: "dashboard",
-                            list: "/dashboard",
-                            meta: { canDelete: true, icon: <DashboardOutlined /> },
+                            name: 'dashboard',
+                            list: '/dashboard',
+                            meta: {
+                                canDelete: true,
+                                icon: <DashboardOutlined />,
+                            },
                         },
 
                         // Menus padre de la pagina principal
                         {
-                            name:"personas",
+                            name: 'personas',
                             meta: {
-                                label: "Personas",
+                                label: 'Personas',
                                 icon: <TeamOutlined />,
                             },
                         },
                         {
-                            name:"tiendas",
+                            name: 'tiendas',
                             meta: {
-                                label: "Tiendas",
+                                label: 'Tiendas',
                                 icon: <ShopOutlined />,
                             },
                         },
                         {
-                            name:"productos",
+                            name: 'productos',
                             meta: {
-                                label: "Productos",
+                                label: 'Productos',
                                 icon: <GoldOutlined />,
                             },
                         },
                         {
-                            name:"pagos",
+                            name: 'pagos',
                             meta: {
-                                label: "Pagos",
+                                label: 'Pagos',
                                 icon: <DollarOutlined />,
                             },
                         },
@@ -278,150 +323,162 @@ export default function AppRouter() {
                         // Menus Hijos de la pagina principal
                         // Personas
                         {
-                            name: "users",
-                            list: "/users",
-                            create: "/users/create",
-                            edit: "/users/edit/:id",
-                            show: "/users/show/:id",
+                            name: 'users',
+                            list: '/users',
+                            create: '/users/create',
+                            edit: '/users/edit/:id',
+                            show: '/users/show/:id',
                             meta: {
-                                label: "Usuarios",
-                                parent: "personas",
-                                canDelete: true, 
-                                icon: <UserOutlined /> },
+                                label: 'Usuarios',
+                                parent: 'personas',
+                                canDelete: true,
+                                icon: <UserOutlined />,
+                            },
                         },
                         {
-                            name: "clients",
-                            list: "/clients",
-                            create: "/clients/create",
-                            edit: "/clients/edit/:id",
-                            show: "/clients/show/:id",
+                            name: 'clients',
+                            list: '/clients',
+                            create: '/clients/create',
+                            edit: '/clients/edit/:id',
+                            show: '/clients/show/:id',
                             meta: {
-                                label: "Clientes",
-                                parent: "personas",
+                                label: 'Clientes',
+                                parent: 'personas',
                                 canDelete: true,
-                                icon: <IdcardOutlined /> },
+                                icon: <IdcardOutlined />,
+                            },
                         },
                         {
-                            name: "employees",
-                            list: "/employees",
-                            create: "/employees/create",
-                            edit: "/employees/edit/:id",
-                            show: "/employees/show/:id",
+                            name: 'employees',
+                            list: '/employees',
+                            create: '/employees/create',
+                            edit: '/employees/edit/:id',
+                            show: '/employees/show/:id',
                             meta: {
-                                label: "Empleados",
-                                parent: "personas",
+                                label: 'Empleados',
+                                parent: 'personas',
                                 canDelete: true,
-                                icon: <TeamOutlined /> },
+                                icon: <TeamOutlined />,
+                            },
                         },
-                        
+
                         // Tiendas
                         {
-                            name: "branches",
-                            list: "/branches",
-                            create: "/branches/create",
-                            edit: "/branches/edit/:id",
-                            show: "/branches/show/:id",
+                            name: 'branches',
+                            list: '/branches',
+                            create: '/branches/create',
+                            edit: '/branches/edit/:id',
+                            show: '/branches/show/:id',
                             meta: {
-                                label: "Sucursales",
-                                parent: "tiendas",
+                                label: 'Sucursales',
+                                parent: 'tiendas',
                                 canDelete: true,
-                                icon: <BranchesOutlined /> },
+                                icon: <BranchesOutlined />,
+                            },
                         },
                         {
-                            name: "evaluations",
-                            list: "/evaluations",
-                            create: "/evaluations/create",
-                            edit: "/evaluations/edit/:id",
-                            show: "/evaluations/show/:id",
+                            name: 'evaluations',
+                            list: '/evaluations',
+                            create: '/evaluations/create',
+                            edit: '/evaluations/edit/:id',
+                            show: '/evaluations/show/:id',
                             meta: {
-                                label: "Evaluaciones",
-                                parent: "tiendas",
+                                label: 'Evaluaciones',
+                                parent: 'tiendas',
                                 canDelete: true,
-                                icon: <StarOutlined /> },
+                                icon: <StarOutlined />,
+                            },
                         },
 
                         // Productos
                         {
-                            name: "products",
-                            list: "/products",
-                            create: "/products/create",
-                            edit: "/products/edit/:id",
-                            show: "/products/show/:id",
+                            name: 'products',
+                            list: '/products',
+                            create: '/products/create',
+                            edit: '/products/edit/:id',
+                            show: '/products/show/:id',
                             meta: {
-                                label: "Productos",
-                                parent: "productos",
+                                label: 'Productos',
+                                parent: 'productos',
                                 canDelete: true,
-                                icon: <InboxOutlined /> },
+                                icon: <InboxOutlined />,
+                            },
                         },
                         {
-                            name: "categories",
-                            list: "/categories",
-                            create: "/categories/create",
-                            edit: "/categories/edit/:id",
-                            show: "/categories/show/:id",
+                            name: 'categories',
+                            list: '/categories',
+                            create: '/categories/create',
+                            edit: '/categories/edit/:id',
+                            show: '/categories/show/:id',
                             meta: {
-                                label: "Categorías",
-                                parent: "productos",
+                                label: 'Categorías',
+                                parent: 'productos',
                                 canDelete: true,
-                                icon: <ProductOutlined /> },
+                                icon: <ProductOutlined />,
+                            },
                         },
 
                         // Pagos
                         {
-                            name: "orders",
-                            list: "/orders",
-                            create: "/orders/create",
-                            edit: "/orders/edit/:id",
-                            show: "/orders/show/:id",
+                            name: 'orders',
+                            list: '/orders',
+                            create: '/orders/create',
+                            edit: '/orders/edit/:id',
+                            show: '/orders/show/:id',
                             meta: {
-                                label: "Ordenes",
-                                parent: "pagos",
+                                label: 'Ordenes',
+                                parent: 'pagos',
                                 canDelete: true,
-                                icon: <FileOutlined /> },
+                                icon: <FileOutlined />,
+                            },
                         },
                         {
-                            name: "order-details",
-                            list: "/order-details",
-                            create: "/order-details/create",
-                            edit: "/order-details/edit/:id",
-                            show: "/order-details/show/:id",
+                            name: 'order-details',
+                            list: '/order-details',
+                            create: '/order-details/create',
+                            edit: '/order-details/edit/:id',
+                            show: '/order-details/show/:id',
                             meta: {
-                                label: "Detalles de Ordenes",
-                                parent: "pagos",
+                                label: 'Detalles de Ordenes',
+                                parent: 'pagos',
                                 canDelete: true,
-                                icon: <FileDoneOutlined /> },
+                                icon: <FileDoneOutlined />,
+                            },
                         },
                         {
-                            name: "order-payments",
-                            list: "/order-payments",
-                            create: "/order-payments/create",
-                            edit: "/order-payments/edit/:id",
-                            show: "/order-payments/show/:id",
+                            name: 'order-payments',
+                            list: '/order-payments',
+                            create: '/order-payments/create',
+                            edit: '/order-payments/edit/:id',
+                            show: '/order-payments/show/:id',
                             meta: {
-                                label: "Pagos de Ordenes",
-                                parent: "pagos",
+                                label: 'Pagos de Ordenes',
+                                parent: 'pagos',
                                 canDelete: true,
-                                icon: <DollarOutlined /> },
+                                icon: <DollarOutlined />,
+                            },
                         },
                         {
-                            name: "payment-methods",
-                            list: "/payment-methods",
-                            show: "/payment-methods/show/:id",
+                            name: 'payment-methods',
+                            list: '/payment-methods',
+                            show: '/payment-methods/show/:id',
                             meta: {
-                                label: "Metodos de Pago",
-                                parent: "pagos",
+                                label: 'Metodos de Pago',
+                                parent: 'pagos',
                                 canDelete: false,
-                                icon: <CreditCardOutlined /> },
+                                icon: <CreditCardOutlined />,
+                            },
                         },
                         {
-                            name: "banks",
-                            list: "/banks",
-                            show: "/banks/show/:id",
+                            name: 'banks',
+                            list: '/banks',
+                            show: '/banks/show/:id',
                             meta: {
-                                label: "Bancos",
-                                parent: "pagos",
+                                label: 'Bancos',
+                                parent: 'pagos',
                                 canDelete: false,
-                                icon: <BankOutlined /> },
+                                icon: <BankOutlined />,
+                            },
                         },
                     ]}
                     options={{
@@ -431,24 +488,27 @@ export default function AppRouter() {
                 >
                     {/* Rutas de la página principal */}
                     <Routes>
+                        <Route index element={<HomePage />} />
                         <Route
-                            path="/login"
-                            element={<CustomLogin />}
+                            path="/proximamente"
+                            element={<ComingSoonPage />}
                         />
-                        <Route
-                            path="/register"
-                            element={<CustomRegister />}
-                        />
+                        <Route path="/login" element={<CustomLogin />} />
+                        <Route path="/register" element={<CustomRegister />} />
 
                         {/* Rutas Protegidas */}
                         <Route
                             element={
                                 <ThemedLayout
                                     Header={Header}
-                                    Sider={(props) =>
+                                    Sider={(props) => (
                                         <ThemedSider
                                             {...props}
-                                            Title={({ collapsed }) => <CustomTitle collapsed={collapsed} />}
+                                            Title={({ collapsed }) => (
+                                                <CustomTitle
+                                                    collapsed={collapsed}
+                                                />
+                                            )}
                                             render={({ items }) => (
                                                 <>
                                                     {items}
@@ -456,19 +516,15 @@ export default function AppRouter() {
                                                 </>
                                             )}
                                         />
-                                    }>
+                                    )}
+                                >
                                     <Outlet />
                                 </ThemedLayout>
                             }
                         >
                             <Route
-                                index
-                                element={<NavigateToResource resource="dashboard" />}
-                            />
-
-                            <Route
                                 path="/dashboard"
-                                element={< CustomDashboard />}
+                                element={<CustomDashboard />}
                             />
 
                             <Route path="/users">
@@ -479,78 +535,165 @@ export default function AppRouter() {
                             </Route>
                             <Route path="/branches">
                                 <Route index element={<BranchesList />} />
-                                <Route path="create" element={<BranchesCreate />} />
-                                <Route path="edit/:id" element={<BranchesEdit />} />
-                                <Route path="show/:id" element={<BranchesShow />} />
+                                <Route
+                                    path="create"
+                                    element={<BranchesCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<BranchesEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<BranchesShow />}
+                                />
                             </Route>
                             <Route path="/categories">
                                 <Route index element={<CategoriesList />} />
-                                <Route path="create" element={<CategoriesCreate />} />
-                                <Route path="edit/:id" element={<CategoriesEdit />} />
-                                <Route path="show/:id" element={<CategoriesShow />} />
+                                <Route
+                                    path="create"
+                                    element={<CategoriesCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<CategoriesEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<CategoriesShow />}
+                                />
                             </Route>
                             <Route path="/clients">
                                 <Route index element={<ClientsList />} />
-                                <Route path="create" element={<ClientsCreate />} />
-                                <Route path="edit/:id" element={<ClientsEdit />} />
-                                <Route path="show/:id" element={<ClientsShow />} />
+                                <Route
+                                    path="create"
+                                    element={<ClientsCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<ClientsEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<ClientsShow />}
+                                />
                             </Route>
                             <Route path="/employees">
                                 <Route index element={<EmployeesList />} />
-                                <Route path="create" element={<EmployeesCreate />} />
-                                <Route path="edit/:id" element={<EmployeesEdit />} />
-                                <Route path="show/:id" element={<EmployeesShow />} />
+                                <Route
+                                    path="create"
+                                    element={<EmployeesCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<EmployeesEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<EmployeesShow />}
+                                />
                             </Route>
                             <Route path="/evaluations">
                                 <Route index element={<EvaluationsList />} />
-                                <Route path="create" element={<EvaluationsCreate />} />
-                                <Route path="edit/:id" element={<EvaluationsEdit />} />
-                                <Route path="show/:id" element={<EvaluationsShow />} />
+                                <Route
+                                    path="create"
+                                    element={<EvaluationsCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<EvaluationsEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<EvaluationsShow />}
+                                />
                             </Route>
                             <Route path="/order-details">
                                 <Route index element={<OrderDetailsList />} />
-                                <Route path="create" element={<OrderDetailsCreate />} />
-                                <Route path="edit/:id" element={<OrderDetailsEdit />} />
-                                <Route path="show/:id" element={<OrderDetailsShow />} />
+                                <Route
+                                    path="create"
+                                    element={<OrderDetailsCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<OrderDetailsEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<OrderDetailsShow />}
+                                />
                             </Route>
                             <Route path="/orders">
                                 <Route index element={<OrdersList />} />
-                                <Route path="create" element={<OrdersCreate />} />
-                                <Route path="edit/:id" element={<OrdersEdit />} />
-                                <Route path="show/:id" element={<OrdersShow />} />
+                                <Route
+                                    path="create"
+                                    element={<OrdersCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<OrdersEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<OrdersShow />}
+                                />
                             </Route>
                             <Route path="/payment-methods">
                                 <Route index element={<PaymentMethodsList />} />
-                                <Route path="show/:id" element={<PaymentMethodsShow />} />
+                                <Route
+                                    path="show/:id"
+                                    element={<PaymentMethodsShow />}
+                                />
                             </Route>
                             <Route path="/order-payments">
                                 <Route index element={<OrderPaymentsList />} />
-                                <Route path="create" element={<OrderPaymentsCreate />} />
-                                <Route path="edit/:id" element={<OrderPaymentsEdit />} />
-                                <Route path="show/:id" element={<OrderPaymentsShow />} />
+                                <Route
+                                    path="create"
+                                    element={<OrderPaymentsCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<OrderPaymentsEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<OrderPaymentsShow />}
+                                />
                             </Route>
                             <Route path="/products">
                                 <Route index element={<ProductsList />} />
-                                <Route path="create" element={<ProductsCreate />} />
-                                <Route path="edit/:id" element={<ProductsEdit />} />
-                                <Route path="show/:id" element={<ProductsShow />} />
+                                <Route
+                                    path="create"
+                                    element={<ProductsCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<ProductsEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<ProductsShow />}
+                                />
                             </Route>
                             <Route path="/banks">
                                 <Route index element={<BanksList />} />
-                                <Route path="show/:id" element={<BanksShow />} />
+                                <Route
+                                    path="show/:id"
+                                    element={<BanksShow />}
+                                />
                             </Route>
 
                             <Route path="/profile" element={<ProfilePage />} />
-
                         </Route>
 
-                        <Route path="*" element={<CatchAllNavigate to="/users" />} />
+                        <Route path="*" element={<ComingSoonPage />} />
                     </Routes>
 
                     <UnsavedChangesNotifier />
                     <DocumentTitleHandler />
                 </Refine>
             </ColorModeContextProvider>
+            </AppSystemShell>
         </BrowserRouter>
     );
 }

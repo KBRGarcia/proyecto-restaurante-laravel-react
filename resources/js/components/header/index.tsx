@@ -30,7 +30,7 @@ export const Header: React.FC = () => {
         display: "flex",
         justifyContent: "flex-end",
         alignItems: "center",
-        padding: "0px 24px",
+        padding: "0 clamp(12px, 2vw, 24px)",
         height: "64px",
         boxShadow: "0 1px 4px rgba(0, 21, 41, 0.08)",
     };

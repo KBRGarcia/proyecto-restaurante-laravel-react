@@ -144,11 +144,12 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->load('client');
+        $user->load(['client', 'employee']);
 
         return response()->json([
             ...$user->toArray(),
-            'identity_document' => $user->client?->identity_document,
+            'identity_document' => $user->client?->identity_document
+                ?? $user->employee?->identity_document,
         ]);
     }
 

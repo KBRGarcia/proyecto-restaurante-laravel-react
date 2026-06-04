@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ClientOrigin;
 use App\Http\Resources\UserResource;
+use App\Models\Client;
+use App\Models\Employee;
 use App\Models\User;
+use App\Services\ClientPurchaseStatsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly ClientPurchaseStatsService $purchaseStatsService,
+    ) {}
     /**
      * Display a listing of the resource.
      */
@@ -93,9 +101,42 @@ class UserController extends Controller
         // Establecer fecha de registro
         $validated['registration_date'] = now();
 
-        $user = User::create($validated);
+        $user = DB::transaction(function () use ($validated) {
+            $user = User::create($validated);
+            $this->createRelatedProfile($user);
+
+            return $user->load(['client', 'employee']);
+        });
 
         return response()->json($user, 201);
+    }
+
+    /**
+     * Crea el perfil de cliente o empleado vinculado al usuario según su rol.
+     */
+    private function createRelatedProfile(User $user): void
+    {
+        $profileData = [
+            'user_id' => $user->id,
+            'first_name' => $user->name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone_number,
+            'address' => $user->address,
+            'status' => $user->status,
+        ];
+
+        match ($user->role) {
+            'client' => tap(Client::create([
+                ...$profileData,
+                'origin' => ClientOrigin::Online->value,
+            ]), fn (Client $client) => $this->purchaseStatsService->sync($client)),
+            'employee' => Employee::create([
+                ...$profileData,
+                'hire_date' => now()->toDateString(),
+            ]),
+            default => null,
+        };
     }
 
     /**
@@ -103,7 +144,12 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return response()->json($user);
+        $user->load('client');
+
+        return response()->json([
+            ...$user->toArray(),
+            'identity_document' => $user->client?->identity_document,
+        ]);
     }
 
     /**

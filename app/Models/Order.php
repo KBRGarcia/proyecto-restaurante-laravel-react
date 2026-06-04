@@ -48,6 +48,7 @@ class Order extends Model
      */
     protected $fillable = [
         'user_id',
+        'client_id',
         'branch_id',
         'status',
         'service_type',
@@ -108,6 +109,14 @@ class Order extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the restaurant client associated with the order.
+     */
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 
     /**
@@ -319,7 +328,8 @@ class Order extends Model
     public static function rules(bool $isUpdate = false): array
     {
         return [
-            'user_id' => ['required', 'exists:users,id'],
+            'user_id' => ['nullable', 'exists:users,id', 'required_without:client_id'],
+            'client_id' => ['nullable', 'exists:clients,id', 'required_without:user_id'],
             'branch_id' => ['nullable', 'exists:branches,id'],
             'status' => ['required', 'string', 'in:pending,preparing,ready,on_the_way,delivered,canceled'],
             'service_type' => ['required', 'string', 'in:delivery,pickup'],
@@ -345,8 +355,10 @@ class Order extends Model
     public static function messages(): array
     {
         return [
-            'user_id.required' => 'El usuario es obligatorio.',
+            'user_id.required_without' => 'Debe indicar un cliente del sistema o un cliente del restaurante.',
             'user_id.exists' => 'El usuario seleccionado no existe.',
+            'client_id.required_without' => 'Debe indicar un cliente del sistema o un cliente del restaurante.',
+            'client_id.exists' => 'El cliente seleccionado no existe.',
             'branch_id.exists' => 'La sucursal seleccionada no existe.',
             'status.required' => 'El estado es obligatorio.',
             'status.in' => 'El estado seleccionado no es válido.',

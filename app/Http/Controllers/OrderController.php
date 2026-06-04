@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\NormalizesOrderClientLinks;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\User;
@@ -9,12 +10,13 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    use NormalizesOrderClientLinks;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'branch', 'assignedEmployee']);
+        $query = Order::with(['user', 'client', 'branch', 'assignedEmployee']);
 
         // Búsqueda general
         if ($request->filled('search') || $request->filled('q')) {
@@ -49,6 +51,11 @@ class OrderController extends Controller
         // Filtro por usuario
         if ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
+        }
+
+        // Filtro por cliente del restaurante
+        if ($request->filled('client_id')) {
+            $query->where('client_id', $request->client_id);
         }
 
         // Filtro por sucursal
@@ -128,7 +135,9 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate(Order::rules(), Order::messages());
+        $validated = $this->normalizeOrderClientLinks(
+            $request->validate(Order::rules(), Order::messages()),
+        );
 
         // Establecer la fecha de orden si no se proporciona
         if (!isset($validated['order_date'])) {
@@ -155,7 +164,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['user', 'branch', 'assignedEmployee', 'orderPayments', 'orderDetails.product']);
+        $order->load(['user', 'client', 'branch', 'assignedEmployee', 'orderPayments', 'orderDetails.product']);
 
         return response()->json($order);
     }
@@ -165,7 +174,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        $order->load(['user', 'branch', 'assignedEmployee']);
+        $order->load(['user', 'client', 'branch', 'assignedEmployee']);
 
         // Obtener usuarios activos (clientes)
         $users = User::where('status', 'active')
@@ -199,7 +208,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        $validated = $request->validate(Order::rules(true), Order::messages());
+        $validated = $this->normalizeOrderClientLinks(
+            $request->validate(Order::rules(true), Order::messages()),
+        );
 
         // Actualizar timestamps según el cambio de estado
         if (isset($validated['status']) && $validated['status'] !== $order->status) {

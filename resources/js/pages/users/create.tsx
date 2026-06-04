@@ -1,7 +1,8 @@
 import { Create, useForm } from "@refinedev/antd";
-import { Form, Input, Select, Upload, Button, Avatar, Row, Col } from "antd";
+import { Form, Input, Select, Upload, Button, Avatar, Row, Col, Card } from "antd";
 import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
 
 const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/;
 
@@ -31,148 +32,155 @@ export const UserCreate = () => {
     return (
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
-                <Row gutter={16}>
-                    <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
-                        <Form.Item name="profile_picture" label="Foto de Perfil">
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-                                <Avatar size={100} src={imageUrl} icon={<UserOutlined />} />
-                                <Upload beforeUpload={handleBeforeUpload} showUploadList={false} maxCount={1}>
-                                    <Button icon={<UploadOutlined />} size="small">Subir Foto</Button>
-                                </Upload>
-                            </div>
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} md={18}>
-                        <Row gutter={16}>
-                            <Col xs={24} sm={12}>
-                                <Form.Item
-                                    label="Nombre"
-                                    name={["name"]}
-                                    rules={[{ required: true, message: "El nombre es obligatorio" }]}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} sm={12}>
-                                <Form.Item
-                                    label="Apellido"
-                                    name={["last_name"]}
-                                    rules={[{ required: true, message: "El apellido es obligatorio" }]}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                <Row gutter={[16, 16]} align="stretch">
+                    <Col xs={24} lg={16}>
+                        <Card title="Datos del usuario" style={{ height: "100%" }}>
+                            <Row gutter={16}>
+                                <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
+                                    <Form.Item name="profile_picture" label="Foto de Perfil">
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                gap: "12px",
+                                            }}
+                                        >
+                                            <Avatar size={100} src={imageUrl} icon={<UserOutlined />} />
+                                            <Upload beforeUpload={handleBeforeUpload} showUploadList={false} maxCount={1}>
+                                                <Button icon={<UploadOutlined />} size="small">
+                                                    Subir Foto
+                                                </Button>
+                                            </Upload>
+                                        </div>
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} md={18}>
+                                    <Row gutter={16}>
+                                        <Col xs={24} sm={12}>
+                                            <Form.Item
+                                                label="Nombre"
+                                                name={["name"]}
+                                                rules={[{ required: true, message: "El nombre es obligatorio" }]}
+                                            >
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={24} sm={12}>
+                                            <Form.Item
+                                                label="Apellido"
+                                                name={["last_name"]}
+                                                rules={[{ required: true, message: "El apellido es obligatorio" }]}
+                                            >
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                    </Row>
 
-                        <Row gutter={16}>
-                            <Col xs={24} sm={12}>
-                                <Form.Item
-                                    label="Email"
-                                    name={["email"]}
-                                    rules={[{ required: true, type: "email", message: "Introduce un email válido" }]}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} sm={12}>
-                                <Form.Item
-                                    label="Número de Teléfono"
-                                    name={["phone_number"]}
-                                >
-                                    <Input placeholder="+58 414 1234567" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
+                                    <Row gutter={16}>
+                                        <Col xs={24} sm={12}>
+                                            <Form.Item
+                                                label="Email"
+                                                name={["email"]}
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        type: "email",
+                                                        message: "Introduce un email válido",
+                                                    },
+                                                ]}
+                                            >
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={24} sm={12}>
+                                            <Form.Item label="Número de Teléfono" name={["phone_number"]}>
+                                                <Input placeholder="+58 414 1234567" />
+                                            </Form.Item>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
 
-                <Row gutter={16}>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Contraseña"
-                            name={["password"]}
-                            rules={[
-                                { required: true, message: "La contraseña es obligatoria" },
-                                { min: 8, message: "Mínimo 8 caracteres" },
-                                { max: 16, message: "Máximo 16 caracteres" },
-                                {
-                                    pattern: passwordPattern,
-                                    message:
-                                        "Debe incluir mayúscula, número y carácter especial (@$!%*?&#-_.)",
-                                },
-                            ]}
-                            hasFeedback
-                        >
-                            <Input.Password />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Confirmar contraseña"
-                            name={["password_confirmation"]}
-                            dependencies={["password"]}
-                            rules={[
-                                { required: true, message: "Confirma la contraseña" },
-                                ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                        if (!value || getFieldValue("password") === value) {
-                                            return Promise.resolve();
-                                        }
-                                        return Promise.reject(
-                                            new Error("La confirmación de la contraseña no coincide"),
-                                        );
-                                    },
-                                }),
-                            ]}
-                            hasFeedback
-                        >
-                            <Input.Password />
-                        </Form.Item>
-                    </Col>
-                </Row>
+                            <Row gutter={16}>
+                                <Col xs={24} sm={12}>
+                                    <Form.Item
+                                        label="Contraseña"
+                                        name={["password"]}
+                                        rules={[
+                                            { required: true, message: "La contraseña es obligatoria" },
+                                            { min: 8, message: "Mínimo 8 caracteres" },
+                                            { max: 16, message: "Máximo 16 caracteres" },
+                                            {
+                                                pattern: passwordPattern,
+                                                message:
+                                                    "Debe incluir mayúscula, número y carácter especial (@$!%*?&#-_.)",
+                                            },
+                                        ]}
+                                        hasFeedback
+                                    >
+                                        <Input.Password />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={12}>
+                                    <Form.Item
+                                        label="Confirmar contraseña"
+                                        name={["password_confirmation"]}
+                                        dependencies={["password"]}
+                                        rules={[
+                                            { required: true, message: "Confirma la contraseña" },
+                                            ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                    if (!value || getFieldValue("password") === value) {
+                                                        return Promise.resolve();
+                                                    }
+                                                    return Promise.reject(
+                                                        new Error("La confirmación de la contraseña no coincide"),
+                                                    );
+                                                },
+                                            }),
+                                        ]}
+                                        hasFeedback
+                                    >
+                                        <Input.Password />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
 
-                <Row gutter={16}>
-                    <Col xs={24}>
-                        <Form.Item
-                            label="Dirección"
-                            name={["address"]}
-                        >
-                            <Input.TextArea rows={1} />
-                        </Form.Item>
+                            <Row gutter={16}>
+                                <Col xs={24}>
+                                    <Form.Item label="Dirección" name={["address"]}>
+                                        <Input.TextArea rows={2} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
                     </Col>
-                </Row>
 
-                <Row gutter={16}>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Rol"
-                            name={["role"]}
-                            rules={[{ required: true }]}
-                            initialValue="client"
-                        >
-                            <Select
-                                options={[
-                                    { value: "admin", label: "Administrador" },
-                                    { value: "employee", label: "Empleado" },
-                                    { value: "client", label: "Cliente" },
-                                ]}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Estado"
-                            name={["status"]}
-                            rules={[{ required: true }]}
-                            initialValue="active"
-                        >
-                            <Select
-                                options={[
-                                    { value: "active", label: "Activo" },
-                                    { value: "inactive", label: "Inactivo" },
-                                ]}
-                            />
-                        </Form.Item>
+                    <Col xs={24} lg={8}>
+                        <Card title="Rol y Estado" style={{ height: "35 %" }}>
+                            <Row gutter={18}>
+                                <Col xs={24} sm={18}>
+                                    <Form.Item
+                                        label="Rol"
+                                        name={["role"]}
+                                        rules={[{ required: true }]}
+                                        initialValue="client"
+                                    >
+                                        <Select
+                                            options={[
+                                                { value: "admin", label: "Administrador" },
+                                                { value: "employee", label: "Empleado" },
+                                                { value: "client", label: "Cliente" },
+                                            ]}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={6}>
+                                    <StatusFormSwitch name={["status"]} />
+                                </Col>
+                            </Row>
+                        </Card>
                     </Col>
                 </Row>
             </Form>

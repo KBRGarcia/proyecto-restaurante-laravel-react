@@ -7,6 +7,7 @@ use App\Enums\PersonStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Validation\Rule;
 
 class Client extends Model
@@ -23,10 +24,6 @@ class Client extends Model
         'address',
         'birth_date',
         'origin',
-        'first_purchase_at',
-        'last_purchase_at',
-        'total_orders',
-        'total_spent',
         'status',
         'notes',
     ];
@@ -46,6 +43,11 @@ class Client extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function scopeSearch(Builder $query, string $search): Builder
@@ -81,10 +83,6 @@ class Client extends Model
             'address' => ['nullable', 'string'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'origin' => ['required', Rule::in(ClientOrigin::values())],
-            'first_purchase_at' => ['nullable', 'date'],
-            'last_purchase_at' => ['nullable', 'date', 'after_or_equal:first_purchase_at'],
-            'total_orders' => ['nullable', 'integer', 'min:0'],
-            'total_spent' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'status' => ['required', Rule::in(PersonStatus::values())],
             'notes' => ['nullable', 'string'],
         ];

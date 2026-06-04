@@ -4,9 +4,14 @@ import { Form, Input, Select, InputNumber, Row, Col } from "antd";
 export const OrdersCreate = () => {
     const { formProps, saveButtonProps } = useForm();
 
-    const { selectProps: userSelectProps } = useSelect({
-        resource: "users",
-        optionLabel: "name",
+    const { selectProps: clientSelectProps } = useSelect({
+        resource: "clients",
+        optionLabel: (item) => {
+            const client = item as { full_name?: string; identity_document?: string };
+            const name = client.full_name ?? "Cliente";
+            const document = client.identity_document ? ` (${client.identity_document})` : "";
+            return `${name}${document}`;
+        },
         optionValue: "id",
     });
 
@@ -28,8 +33,12 @@ export const OrdersCreate = () => {
             <Form {...formProps} layout="vertical">
                 <Row gutter={16}>
                     <Col xs={24} sm={12}>
-                        <Form.Item label="Cliente" name="user_id" rules={[{ required: true, message: "El cliente es obligatorio" }]}>
-                            <Select {...userSelectProps} placeholder="Selecciona un cliente" />
+                        <Form.Item
+                            label="Cliente"
+                            name="client_id"
+                            rules={[{ required: true, message: "El cliente es obligatorio" }]}
+                        >
+                            <Select {...clientSelectProps} placeholder="Selecciona un cliente del restaurante" showSearch />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={12}>

@@ -4,10 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use App\Services\ClientPurchaseStatsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class ClientController extends Controller
 {
+    /**
+     * @var list<string>
+     */
+    private const PURCHASE_STATS_FIELDS = [
+        'first_purchase_at',
+        'last_purchase_at',
+        'total_orders',
+        'total_spent',
+    ];
+
+    public function __construct(
+        private readonly ClientPurchaseStatsService $purchaseStatsService,
+    ) {}
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function stripPurchaseStats(array $data): array
+    {
+        return Arr::except($data, self::PURCHASE_STATS_FIELDS);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -63,11 +88,12 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate(Client::rules(), Client::messages());
-        $validated['total_orders'] = $validated['total_orders'] ?? 0;
-        $validated['total_spent'] = $validated['total_spent'] ?? 0;
+        $validated = $this->stripPurchaseStats(
+            $request->validate(Client::rules(), Client::messages()),
+        );
 
         $client = Client::create($validated);
+        $this->purchaseStatsService->sync($client);
 
         return response()->json((new ClientResource($client->load('user')))->resolve($request), 201);
     }
@@ -93,8 +119,14 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        $validated = $request->validate(Client::rules(true, $client->id), Client::messages());
+        $validated = $this->stripPurchaseStats(
+            $request->validate(Client::rules(true, $client->id), Client::messages()),
+        );
         $client->update($validated);
+
+        if (array_key_exists('user_id', $validated)) {
+            $this->purchaseStatsService->sync($client);
+        }
 
         return response()->json((new ClientResource($client->load('user')))->resolve($request));
     }

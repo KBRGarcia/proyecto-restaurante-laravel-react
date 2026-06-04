@@ -1,116 +1,166 @@
 import { Edit, useForm, useSelect } from "@refinedev/antd";
-import { Col, Form, Input, InputNumber, Row, Select } from "antd";
+import { Button, Col, Form, Input, Row, Select, Card } from "antd";
+import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
+import { ClientPurchaseStatsFields } from "@/components/clients/ClientPurchaseStatsFields";
+import { useLinkedUserProfileFields } from "@/hooks/useLinkedUserProfileFields";
 
 export const ClientsEdit = () => {
-    const { formProps, saveButtonProps } = useForm();
+    const { formProps, saveButtonProps, query } = useForm();
+    const record = query?.data?.data;
+
     const { selectProps: userSelectProps } = useSelect({
         resource: "users",
-        optionLabel: "email",
+        optionLabel: (item) => {
+            const user = item as { email?: string; name?: string; last_name?: string };
+            return `${user.email ?? ""} (${user.name ?? ""} ${user.last_name ?? ""})`.trim();
+        },
         optionValue: "id",
     });
+
+    const userSelectFieldProps = {
+        options: userSelectProps.options,
+        loading: userSelectProps.loading,
+        showSearch: userSelectProps.showSearch,
+        onSearch: userSelectProps.onSearch,
+        filterOption: userSelectProps.filterOption,
+    };
+
+    const { isUserLinked, clearLinkedFields } = useLinkedUserProfileFields({
+        form: formProps.form,
+    });
+
+    const handleUserIdChange = (value: number | null | undefined) => {
+        formProps.form?.setFieldValue("user_id", value ?? undefined);
+
+        if (value === null || value === undefined) {
+            clearLinkedFields();
+        }
+    };
 
     return (
         <Edit saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
-                <Row gutter={16}>
-                    <Col xs={24} sm={12}>
-                        <Form.Item label="Nombre" name="first_name" rules={[{ required: true, message: "El nombre es obligatorio" }]}>
-                            <Input />
-                        </Form.Item>
+                <Row gutter={[16, 16]} align="stretch">
+                    <Col xs={24} lg={16}>
+                        <Card title="Datos del cliente" style={{ height: "45%" }}>
+                            <Row gutter={16}>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item label="Usuario asociado" name="user_id">
+                                        <Select<number>
+                                            {...userSelectFieldProps}
+                                            allowClear
+                                            placeholder="Opcional"
+                                            onChange={handleUserIdChange}
+                                            onClear={clearLinkedFields}
+                                            dropdownRender={(menu) => (
+                                                <>
+                                                    {isUserLinked && (
+                                                        <div
+                                                            style={{
+                                                                padding: "4px 8px",
+                                                                borderBottom: "1px solid rgba(5, 5, 5, 0.06)",
+                                                            }}
+                                                        >
+                                                            <Button type="link" size="small" block onClick={clearLinkedFields}>
+                                                                Limpiar
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                    {menu}
+                                                </>
+                                            )}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item
+                                        label="Nombre"
+                                        name="first_name"
+                                        rules={[{ required: true, message: "El nombre es obligatorio" }]}
+                                    >
+                                        <Input disabled={isUserLinked} />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item
+                                        label="Apellido"
+                                        name="last_name"
+                                        rules={[{ required: true, message: "El apellido es obligatorio" }]}
+                                    >
+                                        <Input disabled={isUserLinked} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <Row gutter={16}>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item label="Documento" name="identity_document">
+                                        <Input placeholder="V-12345678" disabled={isUserLinked} />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item label="Fecha de nacimiento" name="birth_date">
+                                        <Input type="date" />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item
+                                        label="Email"
+                                        name="email"
+                                        rules={[{ type: "email", message: "Introduce un email valido" }]}
+                                    >
+                                        <Input disabled={isUserLinked} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <Row gutter={16}>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item label="Telefono" name="phone">
+                                        <Input placeholder="+58 414 1234567" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+
+                        <Card title="Datos historicos de compras" style={{ height: "50%", marginTop: "2%" }}>
+                            <ClientPurchaseStatsFields stats={record} />
+
+                            <Row gutter={16}>
+                                <Col xs={24} sm={8}>
+                                    <Form.Item label="Direccion" name="address">
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <Form.Item label="Notas internas" name="notes">
+                                <Input.TextArea rows={3} />
+                            </Form.Item>
+                        </Card>
                     </Col>
-                    <Col xs={24} sm={12}>
-                        <Form.Item label="Apellido" name="last_name" rules={[{ required: true, message: "El apellido es obligatorio" }]}>
-                            <Input />
-                        </Form.Item>
+
+                    <Col xs={24} lg={8}>
+                        <Card title="Origen y Estado" style={{ height: "35 %" }}>
+                            <Row gutter={18}>
+                                <Col xs={24} sm={18}>
+                                    <Form.Item label="Origen" name="origin" rules={[{ required: true }]}>
+                                        <Select
+                                            options={[
+                                                { value: "online", label: "Online" },
+                                                { value: "physical", label: "Fisico" },
+                                                { value: "mixed", label: "Fisico y Online" },
+                                            ]}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={6}>
+                                    <StatusFormSwitch name={["status"]} />
+                                </Col>
+                            </Row>
+                        </Card>
                     </Col>
                 </Row>
-
-                <Row gutter={16}>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Usuario asociado" name="user_id">
-                            <Select {...userSelectProps} allowClear placeholder="Opcional" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Documento" name="identity_document">
-                            <Input placeholder="V-12345678" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Estado" name="status" rules={[{ required: true }]}>
-                            <Select
-                                options={[
-                                    { value: "active", label: "Activo" },
-                                    { value: "inactive", label: "Inactivo" },
-                                ]}
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Email" name="email" rules={[{ type: "email", message: "Introduce un email valido" }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Telefono" name="phone">
-                            <Input placeholder="+58 414 1234567" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Origen" name="origin" rules={[{ required: true }]}>
-                            <Select
-                                options={[
-                                    { value: "online", label: "Online" },
-                                    { value: "physical", label: "Fisico" },
-                                    { value: "mixed", label: "Fisico y Online" },
-                                ]}
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Fecha de nacimiento" name="birth_date">
-                            <Input type="date" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Primera compra" name="first_purchase_at">
-                            <Input type="datetime-local" />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Ultima compra" name="last_purchase_at">
-                            <Input type="datetime-local" />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Total de ordenes" name="total_orders">
-                            <InputNumber min={0} style={{ width: "100%" }} />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Total comprado" name="total_spent">
-                            <InputNumber min={0} step={0.01} style={{ width: "100%" }} />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={8}>
-                        <Form.Item label="Direccion" name="address">
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Form.Item label="Notas internas" name="notes">
-                    <Input.TextArea rows={3} />
-                </Form.Item>
             </Form>
         </Edit>
     );

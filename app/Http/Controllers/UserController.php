@@ -150,6 +150,9 @@ class UserController extends Controller
             ...$user->toArray(),
             'identity_document' => $user->client?->identity_document
                 ?? $user->employee?->identity_document,
+            'purchase_stats' => $this->purchaseStatsService->formatForApi(
+                $this->purchaseStatsService->calculateForUserId($user->id),
+            ),
         ]);
     }
 

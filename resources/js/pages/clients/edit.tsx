@@ -25,9 +25,13 @@ export const ClientsEdit = () => {
         filterOption: userSelectProps.filterOption,
     };
 
-    const { isUserLinked, clearLinkedFields } = useLinkedUserProfileFields({
+    const { isUserLinked, clearLinkedFields, purchaseStats, isPurchaseStatsLoading } = useLinkedUserProfileFields({
         form: formProps.form,
+        withPurchaseStats: true,
     });
+
+    const displayPurchaseStats = isUserLinked ? purchaseStats : record;
+    const displayPurchaseStatsLoading = isUserLinked && isPurchaseStatsLoading;
 
     const handleUserIdChange = (value: number | null | undefined) => {
         formProps.form?.setFieldValue("user_id", value ?? undefined);
@@ -124,7 +128,7 @@ export const ClientsEdit = () => {
                         </Card>
 
                         <Card title="Datos historicos de compras" style={{ height: "50%", marginTop: "2%" }}>
-                            <ClientPurchaseStatsFields stats={record} />
+                            <ClientPurchaseStatsFields stats={displayPurchaseStats} loading={displayPurchaseStatsLoading} />
 
                             <Row gutter={16}>
                                 <Col xs={24} sm={8}>

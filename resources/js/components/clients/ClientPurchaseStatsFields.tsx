@@ -1,21 +1,16 @@
-import { Col, Form, Input, InputNumber, Row, Typography } from "antd";
-
-type ClientPurchaseStats = {
-    first_purchase_at_formatted?: string | null;
-    last_purchase_at_formatted?: string | null;
-    total_orders?: number;
-    total_spent?: string | number;
-};
+import type { ClientPurchaseStatsDisplay } from "@/hooks/useLinkedUserProfileFields";
+import { Col, Form, Input, InputNumber, Row, Spin, Typography } from "antd";
 
 type ClientPurchaseStatsFieldsProps = {
-    stats?: ClientPurchaseStats | null;
+    stats?: ClientPurchaseStatsDisplay | null;
+    loading?: boolean;
 };
 
 const emptyValue = "Sin compras registradas";
 
-export const ClientPurchaseStatsFields = ({ stats }: ClientPurchaseStatsFieldsProps) => {
+export const ClientPurchaseStatsFields = ({ stats, loading = false }: ClientPurchaseStatsFieldsProps) => {
     return (
-        <>
+        <Spin spinning={loading}>
             <Typography.Paragraph type="secondary" style={{ marginBottom: 16 }}>
                 Estos datos se calculan automaticamente desde las ordenes entregadas y no pueden editarse manualmente.
             </Typography.Paragraph>
@@ -39,9 +34,6 @@ export const ClientPurchaseStatsFields = ({ stats }: ClientPurchaseStatsFieldsPr
                         />
                     </Form.Item>
                 </Col>
-            </Row>
-
-            <Row gutter={16}>
                 <Col xs={24} sm={8}>
                     <Form.Item label="Total de ordenes">
                         <InputNumber
@@ -53,6 +45,9 @@ export const ClientPurchaseStatsFields = ({ stats }: ClientPurchaseStatsFieldsPr
                         />
                     </Form.Item>
                 </Col>
+            </Row>
+
+            <Row gutter={16}>
                 <Col xs={24} sm={8}>
                     <Form.Item label="Total comprado">
                         <InputNumber
@@ -67,6 +62,6 @@ export const ClientPurchaseStatsFields = ({ stats }: ClientPurchaseStatsFieldsPr
                     </Form.Item>
                 </Col>
             </Row>
-        </>
+        </Spin>
     );
 };

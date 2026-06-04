@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Client;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -44,7 +45,74 @@ class ClientPurchaseStatsService
      */
     public function calculateForClient(Client $client): array
     {
-        $stats = $this->ordersQueryForClient($client)
+        return $this->aggregateOrderStats($this->ordersQueryForClient($client));
+    }
+
+    /**
+     * Calcula estadísticas desde orders por user_id (y perfil cliente si existe).
+     *
+     * @return array{
+     *     first_purchase_at: ?\Illuminate\Support\Carbon,
+     *     last_purchase_at: ?\Illuminate\Support\Carbon,
+     *     total_orders: int,
+     *     total_spent: string
+     * }
+     */
+    public function calculateForUserId(int $userId): array
+    {
+        $client = Client::query()->where('user_id', $userId)->first();
+
+        if ($client !== null) {
+            return $this->calculateForClient($client);
+        }
+
+        return $this->aggregateOrderStats(
+            Order::query()
+                ->where('user_id', $userId)
+                ->whereIn('status', self::COUNTABLE_STATUSES),
+        );
+    }
+
+    /**
+     * @return array{
+     *     first_purchase_at_formatted: string|null,
+     *     last_purchase_at_formatted: string|null,
+     *     total_orders: int,
+     *     total_spent: string
+     * }
+     */
+    public function formatForApi(array $stats): array
+    {
+        $firstPurchaseAt = $stats['first_purchase_at'] ?? null;
+        $lastPurchaseAt = $stats['last_purchase_at'] ?? null;
+
+        if ($firstPurchaseAt !== null && ! $firstPurchaseAt instanceof Carbon) {
+            $firstPurchaseAt = Carbon::parse($firstPurchaseAt);
+        }
+
+        if ($lastPurchaseAt !== null && ! $lastPurchaseAt instanceof Carbon) {
+            $lastPurchaseAt = Carbon::parse($lastPurchaseAt);
+        }
+
+        return [
+            'first_purchase_at_formatted' => $firstPurchaseAt?->format('d/m/Y H:i'),
+            'last_purchase_at_formatted' => $lastPurchaseAt?->format('d/m/Y H:i'),
+            'total_orders' => (int) ($stats['total_orders'] ?? 0),
+            'total_spent' => (string) ($stats['total_spent'] ?? '0.00'),
+        ];
+    }
+
+    /**
+     * @return array{
+     *     first_purchase_at: ?\Illuminate\Support\Carbon,
+     *     last_purchase_at: ?\Illuminate\Support\Carbon,
+     *     total_orders: int,
+     *     total_spent: string
+     * }
+     */
+    private function aggregateOrderStats(Builder $query): array
+    {
+        $stats = (clone $query)
             ->selectRaw('COUNT(*) as total_orders')
             ->selectRaw('COALESCE(SUM(total), 0) as total_spent')
             ->selectRaw('MIN(order_date) as first_purchase_at')

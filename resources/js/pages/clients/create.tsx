@@ -23,8 +23,9 @@ export const ClientsCreate = () => {
         filterOption: userSelectProps.filterOption,
     };
 
-    const { isUserLinked, clearLinkedFields } = useLinkedUserProfileFields({
+    const { isUserLinked, clearLinkedFields, purchaseStats, isPurchaseStatsLoading } = useLinkedUserProfileFields({
         form: formProps.form,
+        withPurchaseStats: true,
     });
 
     const handleUserIdChange = (value: number | null | undefined) => {
@@ -40,7 +41,7 @@ export const ClientsCreate = () => {
             <Form {...formProps} layout="vertical">
                 <Row gutter={[16, 16]} align="stretch">
                     <Col xs={24} lg={16}>
-                        <Card title="Datos del cliente" style={{ height: "38%" }}>
+                        <Card title="Datos del cliente" style={{ height: "40%" }}>
                             <Row gutter={16}>
                                 <Col xs={24} sm={8}>
                                     <Form.Item label="Usuario asociado" name="user_id">
@@ -118,19 +119,16 @@ export const ClientsCreate = () => {
                                         <Input placeholder="+58 414 1234567" />
                                     </Form.Item>
                                 </Col>
-                            </Row>
-                        </Card>
-
-                        <Card title="Datos historicos de compras" style={{ height: "55%", marginTop: "2%" }}>
-                            <ClientPurchaseStatsFields />
-
-                            <Row gutter={16}>
-                                <Col xs={24} sm={8}>
+                                <Col xs={24} sm={16}>
                                     <Form.Item label="Direccion" name="address">
                                         <Input />
                                     </Form.Item>
                                 </Col>
                             </Row>
+                        </Card>
+
+                        <Card title="Datos historicos de compras" style={{ height: "50%", marginTop: "2%" }}>
+                            <ClientPurchaseStatsFields stats={purchaseStats} loading={isPurchaseStatsLoading} />
 
                             <Form.Item label="Notas internas" name="notes">
                                 <Input.TextArea rows={3} />
@@ -139,7 +137,7 @@ export const ClientsCreate = () => {
                     </Col>
 
                     <Col xs={24} lg={8}>
-                        <Card title="Origen y Estado" style={{ height: "35 %" }}>
+                        <Card title="Origen y Estado" style={{ height: "20%" }}>
                             <Row gutter={18}>
                                 <Col xs={24} sm={18}>
                                     <Form.Item label="Origen" name="origin" initialValue="online" rules={[{ required: true }]}>

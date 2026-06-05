@@ -6,11 +6,18 @@ use App\Http\Concerns\NormalizesOrderClientLinks;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\User;
+use App\Services\ClientOrderResolverService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
     use NormalizesOrderClientLinks;
+
+    public function __construct(
+        private readonly ClientOrderResolverService $clientOrderResolver,
+    ) {}
     /**
      * Display a listing of the resource.
      */
@@ -135,28 +142,36 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $this->normalizeOrderClientLinks(
-            $request->validate(Order::rules(), Order::messages()),
-        );
+        $validated = $request->validate(Order::rules(), Order::messages());
+        $clientPayload = $validated['client'] ?? null;
+        unset($validated['client']);
 
-        // Establecer la fecha de orden si no se proporciona
-        if (!isset($validated['order_date'])) {
-            $validated['order_date'] = now();
-        }
+        $validated = $this->normalizeOrderClientLinks($validated);
 
-        // Establecer pending_date según el estado
-        if ($validated['status'] === 'pending') {
-            $validated['pending_date'] = now();
-        }
+        $order = DB::transaction(function () use ($validated, $clientPayload) {
+            $client = $this->clientOrderResolver->resolveForOrder($validated, $clientPayload);
+            $validated['client_id'] = $client->id;
 
-        // Calcular el total si no se proporciona
-        if (!isset($validated['total'])) {
-            $validated['total'] = $validated['subtotal'] + ($validated['taxes'] ?? 0);
-        }
+            if ($client->user_id !== null) {
+                $validated['user_id'] = $client->user_id;
+            }
 
-        $order = Order::create($validated);
+            if (! isset($validated['order_date'])) {
+                $validated['order_date'] = now();
+            }
 
-        return response()->json($order, 201);
+            if ($validated['status'] === 'pending') {
+                $validated['pending_date'] = now();
+            }
+
+            if (! isset($validated['total'])) {
+                $validated['total'] = $validated['subtotal'] + ($validated['taxes'] ?? 0);
+            }
+
+            return Order::create($validated);
+        });
+
+        return response()->json($order->load(['user', 'client']), 201);
     }
 
     /**
@@ -208,10 +223,18 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        $validated = $this->normalizeOrderClientLinks(
-            $request->validate(Order::rules(true), Order::messages()),
-        );
+        $validated = $request->validate(Order::rules(true), Order::messages());
+        $clientPayload = $validated['client'] ?? null;
+        unset($validated['client']);
 
+        $validated['client_id'] = $validated['client_id'] ?? $order->client_id;
+        $validated['user_id'] = $validated['user_id'] ?? $order->user_id;
+
+        $this->ensureOrderClientReference($validated, $clientPayload);
+
+        $validated = $this->normalizeOrderClientLinks($validated);
+
+        $validated['client_id'] = $validated['client_id'] ?? $order->client_id;
         // Actualizar timestamps según el cambio de estado
         if (isset($validated['status']) && $validated['status'] !== $order->status) {
             switch ($validated['status']) {
@@ -243,7 +266,18 @@ class OrderController extends Controller
             $validated['total'] = $subtotal + $taxes;
         }
 
-        $order->update($validated);
+        $order = DB::transaction(function () use ($order, $validated, $clientPayload) {
+            $client = $this->clientOrderResolver->resolveForOrder($validated, $clientPayload);
+            $validated['client_id'] = $client->id;
+
+            if ($client->user_id !== null) {
+                $validated['user_id'] = $client->user_id;
+            }
+
+            $order->update($validated);
+
+            return $order->fresh(['user', 'client']);
+        });
 
         return response()->json($order, 200);
     }
@@ -256,5 +290,31 @@ class OrderController extends Controller
         $order->delete();
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     * @param  array<string, mixed>|null  $clientPayload
+     */
+    private function ensureOrderClientReference(array $validated, ?array $clientPayload): void
+    {
+        if (! empty($validated['client_id']) || ! empty($validated['user_id'])) {
+            return;
+        }
+
+        $hasClientPayload = $clientPayload !== null && (
+            ! empty($clientPayload['phone'])
+            || ! empty($clientPayload['email'])
+            || ! empty($clientPayload['identity_document'])
+            || (! empty($clientPayload['first_name']) && ! empty($clientPayload['last_name']))
+        );
+
+        if ($hasClientPayload) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'client_id' => 'Debe indicar un cliente existente o los datos del comprador.',
+        ]);
     }
 }

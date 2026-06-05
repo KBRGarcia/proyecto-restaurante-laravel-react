@@ -14,7 +14,9 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id()->comment('identificador de la orden');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->comment('identificador del usuario');
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete()->comment('usuario del sistema asociado a la orden');
+            $table->foreignId('client_id')->nullable()->constrained('clients')->nullOnDelete()->comment('cliente del restaurante (con o sin usuario del sistema)');
+            $table->foreignId('branch_id')->nullable()->constrained('branches')->nullOnDelete()->comment('sucursal que prepara o despacha la orden');
             $table->enum('status', ['pending', 'preparing', 'ready', 'on_the_way', 'delivered', 'canceled'])->default('pending')->comment('estado de la orden');
             $table->enum('service_type', ['delivery', 'pickup'])->comment('tipo de servicio');
             $table->decimal('subtotal', 10, 2)->comment('subtotal de la orden');
@@ -28,8 +30,7 @@ return new class extends Migration
             $table->json('national_payment_data')->nullable()->comment('datos de pago nacional');
             $table->timestamp('order_date')->useCurrent()->comment('fecha de la orden');
             $table->timestamp('estimated_delivery_date')->nullable()->comment('fecha de entrega estimada');
-            $table->foreignId('assigned_employee_id')->nullable()->constrained('users')->onDelete('set null')->comment('identificador del empleado asignado');
-            // Timestamps de seguimiento de estados
+            $table->foreignId('assigned_employee_id')->nullable()->constrained('users')->nullOnDelete()->comment('identificador del empleado asignado');
             $table->timestamp('pending_date')->nullable()->comment('fecha de creación de la orden');
             $table->timestamp('preparing_date')->nullable()->comment('fecha de inicio de la preparación');
             $table->timestamp('ready_date')->nullable()->comment('fecha de finalización de la preparación');
@@ -40,6 +41,8 @@ return new class extends Migration
 
             $table->index(['status', 'order_date'], 'orders_status_order_date_idx');
             $table->index(['user_id', 'order_date'], 'orders_user_order_date_idx');
+            $table->index(['client_id', 'order_date'], 'orders_client_order_date_idx');
+            $table->index(['branch_id', 'order_date'], 'orders_branch_order_date_idx');
             $table->index(['service_type', 'order_date'], 'orders_service_type_order_date_idx');
         });
     }

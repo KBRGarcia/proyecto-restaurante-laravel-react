@@ -24,15 +24,11 @@ return new class extends Migration
             $table->text('address')->nullable()->comment('direccion principal');
             $table->date('birth_date')->nullable()->comment('fecha de nacimiento');
             $table->enum('origin', ClientOrigin::values())->default(ClientOrigin::Online->value)->comment('origen del cliente');
-            $table->timestamp('first_purchase_at')->nullable()->comment('fecha de primera compra');
-            $table->timestamp('last_purchase_at')->nullable()->comment('fecha de ultima compra');
-            $table->unsignedInteger('total_orders')->default(0)->comment('cantidad historica de ordenes');
-            $table->decimal('total_spent', 12, 2)->default(0)->comment('monto historico comprado');
             $table->enum('status', PersonStatus::values())->default(PersonStatus::Active->value)->comment('estado del cliente');
             $table->text('notes')->nullable()->comment('notas internas');
             $table->timestamps();
 
-            $table->index(['status', 'last_purchase_at'], 'clients_status_last_purchase_idx');
+            $table->index(['status'], 'clients_status_idx');
             $table->index(['origin', 'status'], 'clients_origin_status_idx');
             $table->index(['first_name', 'last_name'], 'clients_name_idx');
         });

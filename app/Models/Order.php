@@ -328,8 +328,8 @@ class Order extends Model
     public static function rules(bool $isUpdate = false): array
     {
         return [
-            'user_id' => ['nullable', 'exists:users,id', 'required_without:client_id'],
-            'client_id' => ['nullable', 'exists:clients,id', 'required_without:user_id'],
+            'user_id' => ['nullable', 'exists:users,id'],
+            'client_id' => ['nullable', 'exists:clients,id'],
             'branch_id' => ['nullable', 'exists:branches,id'],
             'status' => ['required', 'string', 'in:pending,preparing,ready,on_the_way,delivered,canceled'],
             'service_type' => ['required', 'string', 'in:delivery,pickup'],
@@ -344,6 +344,13 @@ class Order extends Model
             'national_payment_data' => ['nullable', 'array'],
             'estimated_delivery_date' => ['nullable', 'date'],
             'assigned_employee_id' => ['nullable', 'exists:users,id'],
+            'client' => ['nullable', 'array'],
+            'client.first_name' => ['nullable', 'string', 'max:100'],
+            'client.last_name' => ['nullable', 'string', 'max:100'],
+            'client.identity_document' => ['nullable', 'string', 'max:30'],
+            'client.email' => ['nullable', 'email', 'max:100'],
+            'client.phone' => ['nullable', 'string', 'max:20'],
+            'client.address' => ['nullable', 'string'],
         ];
     }
 
@@ -355,9 +362,7 @@ class Order extends Model
     public static function messages(): array
     {
         return [
-            'user_id.required_without' => 'Debe indicar un cliente del sistema o un cliente del restaurante.',
             'user_id.exists' => 'El usuario seleccionado no existe.',
-            'client_id.required_without' => 'Debe indicar un cliente del sistema o un cliente del restaurante.',
             'client_id.exists' => 'El cliente seleccionado no existe.',
             'branch_id.exists' => 'La sucursal seleccionada no existe.',
             'status.required' => 'El estado es obligatorio.',

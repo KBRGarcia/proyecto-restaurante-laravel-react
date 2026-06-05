@@ -31,10 +31,6 @@ class Client extends Model
     protected $casts = [
         'birth_date' => 'date',
         'origin' => ClientOrigin::class,
-        'first_purchase_at' => 'datetime',
-        'last_purchase_at' => 'datetime',
-        'total_orders' => 'integer',
-        'total_spent' => 'decimal:2',
         'status' => PersonStatus::class,
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

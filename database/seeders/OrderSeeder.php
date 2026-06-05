@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Client;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -247,6 +248,12 @@ class OrderSeeder extends Seeder
         ];
 
         foreach ($orders as $order) {
+            if (! empty($order['user_id'])) {
+                $order['client_id'] = Client::query()
+                    ->where('user_id', $order['user_id'])
+                    ->value('id');
+            }
+
             Order::create($order);
         }
     }

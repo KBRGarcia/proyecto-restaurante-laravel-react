@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('email', 100)->unique()->comment('email del usuario');
             $table->timestamp('email_verified_at')->nullable()->comment('fecha de verificación del email');
             $table->string('password')->comment('contraseña del usuario');
+            $table->text('two_factor_secret')->nullable()->comment('secreto de autenticación de dos factores');
+            $table->text('two_factor_recovery_codes')->nullable()->comment('códigos de recuperación 2FA');
+            $table->timestamp('two_factor_confirmed_at')->nullable()->comment('fecha de confirmación 2FA');
             $table->string('phone_number', 20)->nullable()->comment('número de teléfono del usuario');
             $table->text('address')->nullable()->comment('dirección del usuario');
             $table->longText('profile_picture')->nullable()->comment('imagen de perfil del usuario en formato base64');

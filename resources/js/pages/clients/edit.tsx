@@ -1,12 +1,10 @@
 import { Edit, useForm, useSelect } from "@refinedev/antd";
 import { Button, Col, Form, Input, Row, Select, Card } from "antd";
 import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
-import { ClientPurchaseStatsFields } from "@/components/clients/ClientPurchaseStatsFields";
 import { useLinkedUserProfileFields } from "@/hooks/useLinkedUserProfileFields";
 
 export const ClientsEdit = () => {
-    const { formProps, saveButtonProps, query } = useForm();
-    const record = query?.data?.data;
+    const { formProps, saveButtonProps } = useForm();
 
     const { selectProps: userSelectProps } = useSelect({
         resource: "users",
@@ -25,13 +23,9 @@ export const ClientsEdit = () => {
         filterOption: userSelectProps.filterOption,
     };
 
-    const { isUserLinked, clearLinkedFields, purchaseStats, isPurchaseStatsLoading } = useLinkedUserProfileFields({
+    const { isUserLinked, clearLinkedFields } = useLinkedUserProfileFields({
         form: formProps.form,
-        withPurchaseStats: true,
     });
-
-    const displayPurchaseStats = isUserLinked ? purchaseStats : record;
-    const displayPurchaseStatsLoading = isUserLinked && isPurchaseStatsLoading;
 
     const handleUserIdChange = (value: number | null | undefined) => {
         formProps.form?.setFieldValue("user_id", value ?? undefined);
@@ -44,9 +38,9 @@ export const ClientsEdit = () => {
     return (
         <Edit saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
-                <Row gutter={[16, 16]} align="stretch">
-                    <Col xs={24} lg={16}>
-                        <Card title="Datos del cliente" style={{ height: "45%" }}>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={18}>
+                        <Card title="Datos del cliente">
                             <Row gutter={16}>
                                 <Col xs={24} sm={8}>
                                     <Form.Item label="Usuario asociado" name="user_id">
@@ -124,14 +118,7 @@ export const ClientsEdit = () => {
                                         <Input placeholder="+58 414 1234567" />
                                     </Form.Item>
                                 </Col>
-                            </Row>
-                        </Card>
-
-                        <Card title="Datos historicos de compras" style={{ height: "50%", marginTop: "2%" }}>
-                            <ClientPurchaseStatsFields stats={displayPurchaseStats} loading={displayPurchaseStatsLoading} />
-
-                            <Row gutter={16}>
-                                <Col xs={24} sm={8}>
+                                <Col xs={24} sm={16}>
                                     <Form.Item label="Direccion" name="address">
                                         <Input />
                                     </Form.Item>
@@ -139,16 +126,22 @@ export const ClientsEdit = () => {
                             </Row>
 
                             <Form.Item label="Notas internas" name="notes">
-                                <Input.TextArea rows={3} />
+                                <Input.TextArea
+                                    rows={3}
+                                    maxLength={2000}
+                                    showCount
+                                    autoSize={{ minRows: 3, maxRows: 6 }}
+                                    style={{ resize: "vertical" }}
+                                />
                             </Form.Item>
                         </Card>
                     </Col>
 
-                    <Col xs={24} lg={8}>
-                        <Card title="Origen y Estado" style={{ height: "35 %" }}>
-                            <Row gutter={18}>
-                                <Col xs={24} sm={18}>
-                                    <Form.Item label="Origen" name="origin" rules={[{ required: true }]}>
+                    <Col xs={24} lg={6}>
+                        <Card title="Origen y Estado">
+                            <Row gutter={16}>
+                                <Col xs={24} sm={16}>
+                                    <Form.Item label="Origen" name="origin" initialValue="online" rules={[{ required: true }]}>
                                         <Select
                                             options={[
                                                 { value: "online", label: "Online" },
@@ -158,7 +151,7 @@ export const ClientsEdit = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col xs={24} sm={6}>
+                                <Col xs={24} sm={8}>
                                     <StatusFormSwitch name={["status"]} />
                                 </Col>
                             </Row>

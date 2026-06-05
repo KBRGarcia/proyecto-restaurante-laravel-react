@@ -103,9 +103,7 @@ export interface Client {
     birth_date_formatted: string | null;
     origin: 'online' | 'physical' | 'mixed';
     origin_label: string;
-    first_purchase_at: string | null;
     first_purchase_at_formatted: string | null;
-    last_purchase_at: string | null;
     last_purchase_at_formatted: string | null;
     total_orders: number;
     total_spent: string | number;

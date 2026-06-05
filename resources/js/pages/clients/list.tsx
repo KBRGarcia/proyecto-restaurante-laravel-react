@@ -49,8 +49,6 @@ export const ClientsList = () => {
             birth_date: record.birth_date ?? null,
             user_id: record.user_id ?? null,
             origin: record.origin,
-            total_orders: record.total_orders,
-            total_spent: record.total_spent,
             notes: record.notes ?? null,
             status: checked ? "active" : "inactive",
         });

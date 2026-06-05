@@ -6,7 +6,6 @@ use App\Models\Client;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 
 class ClientPurchaseStatsService
 {
@@ -49,31 +48,6 @@ class ClientPurchaseStatsService
     }
 
     /**
-     * Calcula estadísticas desde orders por user_id (y perfil cliente si existe).
-     *
-     * @return array{
-     *     first_purchase_at: ?\Illuminate\Support\Carbon,
-     *     last_purchase_at: ?\Illuminate\Support\Carbon,
-     *     total_orders: int,
-     *     total_spent: string
-     * }
-     */
-    public function calculateForUserId(int $userId): array
-    {
-        $client = Client::query()->where('user_id', $userId)->first();
-
-        if ($client !== null) {
-            return $this->calculateForClient($client);
-        }
-
-        return $this->aggregateOrderStats(
-            Order::query()
-                ->where('user_id', $userId)
-                ->whereIn('status', self::COUNTABLE_STATUSES),
-        );
-    }
-
-    /**
      * @return array{
      *     first_purchase_at_formatted: string|null,
      *     last_purchase_at_formatted: string|null,
@@ -107,6 +81,26 @@ class ClientPurchaseStatsService
      *     first_purchase_at: ?\Illuminate\Support\Carbon,
      *     last_purchase_at: ?\Illuminate\Support\Carbon,
      *     total_orders: int,
+     *     total_spent: string,
+     *     first_purchase_at_formatted: string|null,
+     *     last_purchase_at_formatted: string|null
+     * }
+     */
+    public function resolveForClient(Client $client): array
+    {
+        $stats = $this->calculateForClient($client);
+
+        return [
+            ...$stats,
+            ...$this->formatForApi($stats),
+        ];
+    }
+
+    /**
+     * @return array{
+     *     first_purchase_at: ?\Illuminate\Support\Carbon,
+     *     last_purchase_at: ?\Illuminate\Support\Carbon,
+     *     total_orders: int,
      *     total_spent: string
      * }
      */
@@ -125,70 +119,5 @@ class ClientPurchaseStatsService
             'total_orders' => (int) ($stats?->total_orders ?? 0),
             'total_spent' => number_format((float) ($stats?->total_spent ?? 0), 2, '.', ''),
         ];
-    }
-
-    public function sync(Client $client): void
-    {
-        $stats = $this->calculateForClient($client);
-
-        Client::query()
-            ->whereKey($client->id)
-            ->update([
-                ...$stats,
-                'updated_at' => now(),
-            ]);
-
-        $client->refresh();
-    }
-
-    /**
-     * @param  Collection<int, int>|null  $previousClientIds
-     */
-    public function syncClientsAffectedByOrder(Order $order, ?Collection $previousClientIds = null): void
-    {
-        $clientIds = $this->resolveAffectedClientIds([
-            'client_id' => $order->client_id,
-            'user_id' => $order->user_id,
-        ]);
-
-        if ($previousClientIds !== null) {
-            $clientIds = $clientIds->merge($previousClientIds);
-        }
-
-        $clientIds
-            ->unique()
-            ->filter()
-            ->each(function (int $clientId) {
-                $client = Client::query()->find($clientId);
-
-                if ($client !== null) {
-                    $this->sync($client);
-                }
-            });
-    }
-
-    /**
-     * @param  array<string, mixed>  $snapshot
-     * @return Collection<int, int>
-     */
-    public function resolveAffectedClientIds(array $snapshot): Collection
-    {
-        $clientIds = collect();
-
-        if (! empty($snapshot['client_id'])) {
-            $clientIds->push((int) $snapshot['client_id']);
-        }
-
-        if (! empty($snapshot['user_id'])) {
-            $linkedClientId = Client::query()
-                ->where('user_id', $snapshot['user_id'])
-                ->value('id');
-
-            if ($linkedClientId !== null) {
-                $clientIds->push((int) $linkedClientId);
-            }
-        }
-
-        return $clientIds;
     }
 }

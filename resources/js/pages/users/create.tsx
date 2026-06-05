@@ -33,7 +33,7 @@ export const UserCreate = () => {
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={[16, 16]} align="stretch">
-                    <Col xs={24} lg={16}>
+                    <Col xs={24} lg={18}>
                         <Card title="Datos del usuario" style={{ height: "100%" }}>
                             <Row gutter={16}>
                                 <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -157,7 +157,7 @@ export const UserCreate = () => {
                         </Card>
                     </Col>
 
-                    <Col xs={24} lg={8}>
+                    <Col xs={24} lg={6}>
                         <Card title="Rol y Estado" style={{ height: "35 %" }}>
                             <Row gutter={18}>
                                 <Col xs={24} sm={18}>

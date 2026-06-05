@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Enums\ClientOrigin;
 use App\Enums\PersonStatus;
+use App\Services\ClientPurchaseStatsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,6 +17,8 @@ class ClientResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $purchaseStats = app(ClientPurchaseStatsService::class)->resolveForClient($this->resource);
+
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
@@ -36,12 +39,10 @@ class ClientResource extends JsonResource
             'birth_date_formatted' => $this->birth_date?->format('d/m/Y'),
             'origin' => $this->origin instanceof ClientOrigin ? $this->origin->value : $this->origin,
             'origin_label' => $this->origin instanceof ClientOrigin ? $this->origin->label() : ucfirst((string) $this->origin),
-            'first_purchase_at' => $this->first_purchase_at?->format('Y-m-d\TH:i'),
-            'first_purchase_at_formatted' => $this->first_purchase_at?->format('d/m/Y H:i'),
-            'last_purchase_at' => $this->last_purchase_at?->format('Y-m-d\TH:i'),
-            'last_purchase_at_formatted' => $this->last_purchase_at?->format('d/m/Y H:i'),
-            'total_orders' => $this->total_orders,
-            'total_spent' => $this->total_spent,
+            'first_purchase_at_formatted' => $purchaseStats['first_purchase_at_formatted'],
+            'last_purchase_at_formatted' => $purchaseStats['last_purchase_at_formatted'],
+            'total_orders' => $purchaseStats['total_orders'],
+            'total_spent' => $purchaseStats['total_spent'],
             'status' => $this->status instanceof PersonStatus ? $this->status->value : $this->status,
             'status_label' => $this->status instanceof PersonStatus ? $this->status->label() : ucfirst((string) $this->status),
             'notes' => $this->notes,
@@ -61,8 +62,8 @@ class ClientResource extends JsonResource
             ['key' => 'identity_document', 'label' => 'Documento', 'sortable' => true, 'visible' => true],
             ['key' => 'phone', 'label' => 'Telefono', 'sortable' => false, 'visible' => true],
             ['key' => 'origin_label', 'label' => 'Origen', 'sortable' => true, 'visible' => true],
-            ['key' => 'total_orders', 'label' => 'Ordenes', 'sortable' => true, 'visible' => true],
-            ['key' => 'total_spent', 'label' => 'Total Comprado', 'sortable' => true, 'visible' => true],
+            ['key' => 'total_orders', 'label' => 'Ordenes', 'sortable' => false, 'visible' => true],
+            ['key' => 'total_spent', 'label' => 'Total Comprado', 'sortable' => false, 'visible' => true],
             ['key' => 'status_label', 'label' => 'Estado', 'sortable' => true, 'visible' => true],
         ];
     }

@@ -7,16 +7,12 @@ use App\Http\Resources\UserResource;
 use App\Models\Client;
 use App\Models\Employee;
 use App\Models\User;
-use App\Services\ClientPurchaseStatsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function __construct(
-        private readonly ClientPurchaseStatsService $purchaseStatsService,
-    ) {}
     /**
      * Display a listing of the resource.
      */
@@ -127,10 +123,10 @@ class UserController extends Controller
         ];
 
         match ($user->role) {
-            'client' => tap(Client::create([
+            'client' => Client::create([
                 ...$profileData,
                 'origin' => ClientOrigin::Online->value,
-            ]), fn (Client $client) => $this->purchaseStatsService->sync($client)),
+            ]),
             'employee' => Employee::create([
                 ...$profileData,
                 'hire_date' => now()->toDateString(),
@@ -150,9 +146,6 @@ class UserController extends Controller
             ...$user->toArray(),
             'identity_document' => $user->client?->identity_document
                 ?? $user->employee?->identity_document,
-            'purchase_stats' => $this->purchaseStatsService->formatForApi(
-                $this->purchaseStatsService->calculateForUserId($user->id),
-            ),
         ]);
     }
 

@@ -1,6 +1,5 @@
 import { Create, useForm, useSelect } from "@refinedev/antd";
 import { Button, Col, Form, Input, Row, Select, Card } from "antd";
-import { ClientPurchaseStatsFields } from "@/components/clients/ClientPurchaseStatsFields";
 import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
 import { useLinkedUserProfileFields } from "@/hooks/useLinkedUserProfileFields";
 
@@ -23,9 +22,8 @@ export const ClientsCreate = () => {
         filterOption: userSelectProps.filterOption,
     };
 
-    const { isUserLinked, clearLinkedFields, purchaseStats, isPurchaseStatsLoading } = useLinkedUserProfileFields({
+    const { isUserLinked, clearLinkedFields } = useLinkedUserProfileFields({
         form: formProps.form,
-        withPurchaseStats: true,
     });
 
     const handleUserIdChange = (value: number | null | undefined) => {
@@ -39,9 +37,9 @@ export const ClientsCreate = () => {
     return (
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
-                <Row gutter={[16, 16]} align="stretch">
-                    <Col xs={24} lg={16}>
-                        <Card title="Datos del cliente" style={{ height: "40%" }}>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={18}>
+                        <Card title="Datos del cliente">
                             <Row gutter={16}>
                                 <Col xs={24} sm={8}>
                                     <Form.Item label="Usuario asociado" name="user_id">
@@ -125,21 +123,23 @@ export const ClientsCreate = () => {
                                     </Form.Item>
                                 </Col>
                             </Row>
-                        </Card>
-
-                        <Card title="Datos historicos de compras" style={{ height: "50%", marginTop: "2%" }}>
-                            <ClientPurchaseStatsFields stats={purchaseStats} loading={isPurchaseStatsLoading} />
 
                             <Form.Item label="Notas internas" name="notes">
-                                <Input.TextArea rows={3} />
+                                <Input.TextArea
+                                    rows={3}
+                                    maxLength={2000}
+                                    showCount
+                                    autoSize={{ minRows: 3, maxRows: 6 }}
+                                    style={{ resize: "vertical" }}
+                                />
                             </Form.Item>
                         </Card>
                     </Col>
 
-                    <Col xs={24} lg={8}>
-                        <Card title="Origen y Estado" style={{ height: "20%" }}>
-                            <Row gutter={18}>
-                                <Col xs={24} sm={18}>
+                    <Col xs={24} lg={6}>
+                        <Card title="Origen y Estado">
+                            <Row gutter={16}>
+                                <Col xs={24} sm={16}>
                                     <Form.Item label="Origen" name="origin" initialValue="online" rules={[{ required: true }]}>
                                         <Select
                                             options={[
@@ -150,7 +150,7 @@ export const ClientsCreate = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col xs={24} sm={6}>
+                                <Col xs={24} sm={8}>
                                     <StatusFormSwitch name={["status"]} />
                                 </Col>
                             </Row>

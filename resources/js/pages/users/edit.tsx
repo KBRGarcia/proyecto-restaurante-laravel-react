@@ -36,7 +36,7 @@ export const UserEdit = () => {
         <Edit saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={[16, 16]} align="stretch">
-                    <Col xs={24} lg={16}>
+                    <Col xs={24} lg={18}>
                         <Card title="Datos del usuario" style={{ height: "100%" }}>
                             <Row gutter={16}>
                                 <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -49,10 +49,10 @@ export const UserEdit = () => {
                                                 gap: "12px",
                                             }}
                                         >
-                                            <Avatar size={100} src={resolvedImageUrl} icon={<UserOutlined />} />
+                                            <Avatar size={100} src={imageUrl} icon={<UserOutlined />} />
                                             <Upload beforeUpload={handleBeforeUpload} showUploadList={false} maxCount={1}>
                                                 <Button icon={<UploadOutlined />} size="small">
-                                                    Cambiar Foto
+                                                    Subir Foto
                                                 </Button>
                                             </Upload>
                                         </div>
@@ -108,33 +108,19 @@ export const UserEdit = () => {
                             <Row gutter={16}>
                                 <Col xs={24} sm={12}>
                                     <Form.Item
-                                        label="Contraseña (Opcional)"
+                                        label="Contraseña"
                                         name={["password"]}
-                                        help="Déjalo en blanco si no deseas cambiar la contraseña."
                                         rules={[
+                                            { required: true, message: "La contraseña es obligatoria" },
+                                            { min: 8, message: "Mínimo 8 caracteres" },
+                                            { max: 16, message: "Máximo 16 caracteres" },
                                             {
-                                                validator: (_, value) => {
-                                                    if (!value) {
-                                                        return Promise.resolve();
-                                                    }
-                                                    if (value.length < 8 || value.length > 16) {
-                                                        return Promise.reject(
-                                                            new Error(
-                                                                "La contraseña debe tener entre 8 y 16 caracteres",
-                                                            ),
-                                                        );
-                                                    }
-                                                    if (!passwordPattern.test(value)) {
-                                                        return Promise.reject(
-                                                            new Error(
-                                                                "Debe incluir mayúscula, número y carácter especial (@$!%*?&#-_.)",
-                                                            ),
-                                                        );
-                                                    }
-                                                    return Promise.resolve();
-                                                },
+                                                pattern: passwordPattern,
+                                                message:
+                                                    "Debe incluir mayúscula, número y carácter especial (@$!%*?&#-_.)",
                                             },
                                         ]}
+                                        hasFeedback
                                     >
                                         <Input.Password />
                                     </Form.Item>
@@ -145,16 +131,10 @@ export const UserEdit = () => {
                                         name={["password_confirmation"]}
                                         dependencies={["password"]}
                                         rules={[
+                                            { required: true, message: "Confirma la contraseña" },
                                             ({ getFieldValue }) => ({
                                                 validator(_, value) {
-                                                    const password = getFieldValue("password");
-                                                    if (!password) {
-                                                        return Promise.resolve();
-                                                    }
-                                                    if (!value) {
-                                                        return Promise.reject(new Error("Confirma la contraseña"));
-                                                    }
-                                                    if (password === value) {
+                                                    if (!value || getFieldValue("password") === value) {
                                                         return Promise.resolve();
                                                     }
                                                     return Promise.reject(
@@ -163,6 +143,7 @@ export const UserEdit = () => {
                                                 },
                                             }),
                                         ]}
+                                        hasFeedback
                                     >
                                         <Input.Password />
                                     </Form.Item>
@@ -179,18 +160,29 @@ export const UserEdit = () => {
                         </Card>
                     </Col>
 
-                    <Col xs={24} lg={8}>
-                        <Card title="Rol y estado" style={{ height: "100%" }}>
-                            <Form.Item label="Rol" name={["role"]} rules={[{ required: true }]}>
-                                <Select
-                                    options={[
-                                        { value: "admin", label: "Administrador" },
-                                        { value: "employee", label: "Empleado" },
-                                        { value: "client", label: "Cliente" },
-                                    ]}
-                                />
-                            </Form.Item>
-                            <StatusFormSwitch name={["status"]} />
+                    <Col xs={24} lg={6}>
+                        <Card title="Rol y Estado" style={{ height: "35 %" }}>
+                            <Row gutter={18}>
+                                <Col xs={24} sm={18}>
+                                    <Form.Item
+                                        label="Rol"
+                                        name={["role"]}
+                                        rules={[{ required: true }]}
+                                        initialValue="client"
+                                    >
+                                        <Select
+                                            options={[
+                                                { value: "admin", label: "Administrador" },
+                                                { value: "employee", label: "Empleado" },
+                                                { value: "client", label: "Cliente" },
+                                            ]}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={6}>
+                                    <StatusFormSwitch name={["status"]} />
+                                </Col>
+                            </Row>
                         </Card>
                     </Col>
                 </Row>

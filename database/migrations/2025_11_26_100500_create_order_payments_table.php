@@ -1,7 +1,7 @@
 <?php
 
-use App\Enums\PaymentMethod;
 use App\Enums\PaymentCurrency;
+use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

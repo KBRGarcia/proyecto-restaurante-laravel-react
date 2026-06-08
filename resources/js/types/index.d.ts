@@ -257,14 +257,24 @@ export interface OrderDetail {
 
 export interface Evaluation {
     id: number;
-    user_id: number;
+    user_id: number | null;
     user_name: string | null;
+    client_id: number | null;
+    client_name: string | null;
+    evaluator_name: string | null;
     user?: {
         id: number;
         name: string;
         last_name: string;
         full_name: string;
         email: string;
+    };
+    client?: {
+        id: number;
+        first_name: string;
+        last_name: string;
+        full_name: string;
+        email: string | null;
     };
     order_id: number | null;
     order_number: number | null;

@@ -46,6 +46,11 @@ class Client extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function evaluations(): HasMany
+    {
+        return $this->hasMany(Evaluation::class);
+    }
+
     public function scopeSearch(Builder $query, string $search): Builder
     {
         return $query->where(function ($q) use ($search) {

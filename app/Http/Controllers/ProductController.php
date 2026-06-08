@@ -41,6 +41,26 @@ class ProductController extends Controller
             $query->where('is_special', $request->is_special);
         }
 
+        // Filtro por productos comprados por un usuario
+        if ($request->filled('user_id')) {
+            $query->whereIn('id', function ($subQuery) use ($request) {
+                $subQuery->select('order_details.product_id')
+                    ->from('order_details')
+                    ->join('orders', 'orders.id', '=', 'order_details.order_id')
+                    ->where('orders.user_id', $request->user_id);
+            });
+        }
+
+        // Filtro por productos comprados por un cliente
+        if ($request->filled('client_id')) {
+            $query->whereIn('id', function ($subQuery) use ($request) {
+                $subQuery->select('order_details.product_id')
+                    ->from('order_details')
+                    ->join('orders', 'orders.id', '=', 'order_details.order_id')
+                    ->where('orders.client_id', $request->client_id);
+            });
+        }
+
         // Ordenamiento
         $sortBy = $request->get('sort_by');
         $sortOrder = $request->get('sort_order');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\EvaluationResource;
 use App\Models\Evaluation;
 use App\Models\User;
+use App\Models\Client;
 use App\Models\Product;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,7 @@ class EvaluationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Evaluation::with(['user', 'order', 'product']);
+        $query = Evaluation::with(['user', 'client', 'order', 'product']);
 
         // Búsqueda
         if ($request->filled('search') || $request->filled('q')) {
@@ -27,6 +28,10 @@ class EvaluationController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                })
+                ->orWhereHas('client', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
                         ->orWhere('last_name', 'like', "%{$search}%");
                 })
                 ->orWhereHas('product', function ($q) use ($search) {
@@ -120,8 +125,8 @@ class EvaluationController extends Controller
             ], 422);
         }
 
-        $evaluation = Evaluation::create($validator->validated());
-        $evaluation->load(['user', 'order', 'product']);
+        $evaluation = Evaluation::create($this->normalizeEvaluatorData($validator->validated()));
+        $evaluation->load(['user', 'client', 'order', 'product']);
 
         return response()->json($evaluation, 201);
     }
@@ -131,7 +136,7 @@ class EvaluationController extends Controller
      */
     public function show(Evaluation $evaluation)
     {
-        $evaluation->load(['user', 'order', 'product']);
+        $evaluation->load(['user', 'client', 'order', 'product']);
 
         return response()->json($evaluation);
     }
@@ -141,7 +146,7 @@ class EvaluationController extends Controller
      */
     public function edit(Evaluation $evaluation)
     {
-        $evaluation->load(['user', 'order', 'product']);
+        $evaluation->load(['user', 'client', 'order', 'product']);
 
         $fields = EvaluationResource::formFields();
 
@@ -188,8 +193,8 @@ class EvaluationController extends Controller
             ], 422);
         }
 
-        $evaluation->update($validator->validated());
-        $evaluation->load(['user', 'order', 'product']);
+        $evaluation->update($this->normalizeEvaluatorData($validator->validated()));
+        $evaluation->load(['user', 'client', 'order', 'product']);
 
         return response()->json($evaluation, 200);
     }
@@ -211,7 +216,7 @@ class EvaluationController extends Controller
      */
     public function getByUser(int $userId): AnonymousResourceCollection
     {
-        $evaluations = Evaluation::with(['user', 'order', 'product'])
+        $evaluations = Evaluation::with(['user', 'client', 'order', 'product'])
             ->where('user_id', $userId)
             ->orderBy('evaluation_date', 'desc')
             ->get();
@@ -224,7 +229,7 @@ class EvaluationController extends Controller
      */
     public function getByOrder(int $orderId): AnonymousResourceCollection
     {
-        $evaluations = Evaluation::with(['user', 'order', 'product'])
+        $evaluations = Evaluation::with(['user', 'client', 'order', 'product'])
             ->where('order_id', $orderId)
             ->orderBy('evaluation_date', 'desc')
             ->get();
@@ -237,7 +242,7 @@ class EvaluationController extends Controller
      */
     public function getByProduct(int $productId): AnonymousResourceCollection
     {
-        $evaluations = Evaluation::with(['user', 'order', 'product'])
+        $evaluations = Evaluation::with(['user', 'client', 'order', 'product'])
             ->where('product_id', $productId)
             ->orderBy('evaluation_date', 'desc')
             ->get();
@@ -261,5 +266,20 @@ class EvaluationController extends Controller
             'average_rating' => round($average, 2),
             'total_evaluations' => $count,
         ], 200);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function normalizeEvaluatorData(array $data): array
+    {
+        if (! empty($data['user_id'])) {
+            $data['client_id'] = null;
+        } elseif (! empty($data['client_id'])) {
+            $data['user_id'] = null;
+        }
+
+        return $data;
     }
 }

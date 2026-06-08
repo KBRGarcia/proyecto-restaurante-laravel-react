@@ -18,6 +18,11 @@ class EvaluationResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'user_name' => $this->user ? $this->user->full_name : null,
+            'client_id' => $this->client_id,
+            'client_name' => $this->client ? $this->client->full_name : null,
+            'evaluator_name' => $this->user
+                ? $this->user->full_name
+                : ($this->client ? $this->client->full_name : null),
             'order_id' => $this->order_id,
             'order_number' => $this->order_id,
             'product_id' => $this->product_id,
@@ -31,6 +36,7 @@ class EvaluationResource extends JsonResource
             
             // Relaciones
             'user' => new UserResource($this->whenLoaded('user')),
+            'client' => new ClientResource($this->whenLoaded('client')),
             'order' => new OrderResource($this->whenLoaded('order')),
             'product' => new ProductResource($this->whenLoaded('product')),
         ];
@@ -52,7 +58,7 @@ class EvaluationResource extends JsonResource
             ],
             [
                 'key' => 'user_name',
-                'label' => 'Usuario',
+                'label' => 'Evaluador',
                 'sortable' => true,
                 'visible' => true,
             ],
@@ -102,8 +108,18 @@ class EvaluationResource extends JsonResource
                 'label' => 'Usuario',
                 'type' => 'select',
                 'placeholder' => 'Seleccione un usuario',
-                'required' => true,
-                'validation' => 'required|exists:users,id',
+                'required' => false,
+                'validation' => 'nullable|exists:users,id|required_without:client_id',
+                'options' => [], // Se llena dinámicamente
+                'grid_cols' => 6,
+            ],
+            [
+                'name' => 'client_id',
+                'label' => 'Cliente',
+                'type' => 'select',
+                'placeholder' => 'Seleccione un cliente',
+                'required' => false,
+                'validation' => 'nullable|exists:clients,id|required_without:user_id',
                 'options' => [], // Se llena dinámicamente
                 'grid_cols' => 6,
             ],

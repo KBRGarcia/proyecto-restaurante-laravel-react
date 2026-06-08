@@ -30,6 +30,23 @@ export const BranchLocationPicker = () => {
 
     return (
         <>
+            <div style={{ marginBottom: 24 }}>
+                <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                    <EnvironmentOutlined />
+                    <Text strong>Ubicación en el mapa</Text>
+                </div>
+                <Text type="secondary" style={{ display: "block", marginBottom: 12 }}>
+                    Haz clic en el mapa o arrastra el marcador para seleccionar la sucursal. También puedes
+                    introducir las coordenadas manualmente.
+                </Text>
+                <LazyBranchLocationMap
+                    latitude={displayLatitude}
+                    longitude={displayLongitude}
+                    onLocationChange={handleLocationChange}
+                />
+                <OpenGoogleMapsButton latitude={latitude} longitude={longitude} />
+            </div>
+
             <Row gutter={16}>
                 <Col xs={24} sm={12}>
                     <Form.Item
@@ -73,23 +90,6 @@ export const BranchLocationPicker = () => {
                     </Form.Item>
                 </Col>
             </Row>
-
-            <div style={{ marginBottom: 24 }}>
-                <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
-                    <EnvironmentOutlined />
-                    <Text strong>Ubicación en el mapa</Text>
-                </div>
-                <Text type="secondary" style={{ display: "block", marginBottom: 12 }}>
-                    Haz clic en el mapa o arrastra el marcador para seleccionar la sucursal. También puedes
-                    introducir las coordenadas manualmente.
-                </Text>
-                <LazyBranchLocationMap
-                    latitude={displayLatitude}
-                    longitude={displayLongitude}
-                    onLocationChange={handleLocationChange}
-                />
-                <OpenGoogleMapsButton latitude={latitude} longitude={longitude} />
-            </div>
         </>
     );
 };

@@ -21,9 +21,15 @@ export const EvaluationsShow = () => {
     const record = data?.data;
     const { token } = theme.useToken();
 
-    const userName = record?.user
+    const evaluatorName = record?.user
         ? `${record.user.name} ${record.user.last_name || ""}`.trim()
-        : `Usuario #${record?.user_id}`;
+        : record?.client
+          ? record.client.full_name || `${record.client.first_name ?? ""} ${record.client.last_name ?? ""}`.trim()
+          : record?.user_id
+            ? `Usuario #${record.user_id}`
+            : record?.client_id
+              ? `Cliente #${record.client_id}`
+              : "N/A";
 
     return (
         <Show isLoading={isLoading}>
@@ -36,7 +42,7 @@ export const EvaluationsShow = () => {
                         <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
                             {record?.rating && <Rate disabled defaultValue={record.rating} />}
                             <Tag icon={<UserOutlined />} color="processing" style={{ borderRadius: 4 }}>
-                                {userName}
+                                {evaluatorName}
                             </Tag>
                         </div>
                     </Col>

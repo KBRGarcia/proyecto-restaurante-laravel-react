@@ -22,8 +22,22 @@ export const EvaluationsList = () => {
                 <Table.Column dataIndex="id" title="ID" />
                 <Table.Column 
                     dataIndex={["user", "name"]} 
-                    title="Cliente" 
-                    render={(value, record: any) => record.user ? `${record.user.name} ${record.user.last_name || ""}` : `Usuario #${record.user_id}`}
+                    title="Evaluador" 
+                    render={(_, record: any) => {
+                        if (record.user) {
+                            return `${record.user.name} ${record.user.last_name || ""}`.trim();
+                        }
+
+                        if (record.client) {
+                            return record.client.full_name || `${record.client.first_name ?? ""} ${record.client.last_name ?? ""}`.trim();
+                        }
+
+                        if (record.user_id) {
+                            return `Usuario #${record.user_id}`;
+                        }
+
+                        return record.client_id ? `Cliente #${record.client_id}` : "N/A";
+                    }}
                 />
                 <Table.Column 
                     dataIndex="rating" 

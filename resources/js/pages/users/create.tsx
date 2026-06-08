@@ -1,8 +1,8 @@
-import { Create, useForm } from "@refinedev/antd";
-import { Form, Input, Select, Upload, Button, Avatar, Row, Col, Card } from "antd";
-import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { Create, useForm } from "@refinedev/antd";
+import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
+import { Form, Input, Select, Upload, Button, Avatar, Row, Col, Card } from "antd";
 
 const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/;
 

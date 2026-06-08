@@ -20,6 +20,9 @@ import {
     getSectionCardStyle,
     getStatWidgetStyle,
 } from "@/components/show/showPageStyles";
+import { LazyBranchLocationMap } from "@/components/map/LazyBranchLocationMap";
+import { OpenGoogleMapsButton } from "@/components/map/OpenGoogleMapsButton";
+import { formatCoordinate } from "@/lib/branch-location";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -88,6 +91,8 @@ export const BranchesShow = () => {
                             <Descriptions.Item label="Ciudad">{record?.city || "N/A"}</Descriptions.Item>
                             <Descriptions.Item label="Estado">{record?.state || "N/A"}</Descriptions.Item>
                             <Descriptions.Item label="Código Postal">{record?.postal_code || "N/A"}</Descriptions.Item>
+                            <Descriptions.Item label="Latitud">{formatCoordinate(record?.latitude)}</Descriptions.Item>
+                            <Descriptions.Item label="Longitud">{formatCoordinate(record?.longitude)}</Descriptions.Item>
                             <Descriptions.Item label="Teléfono">
                                 <Text>
                                     <PhoneOutlined style={{ marginRight: 8, color: token.colorTextDescription }} />
@@ -129,6 +134,20 @@ export const BranchesShow = () => {
                         <Paragraph type="secondary" style={{ marginTop: 20, marginBottom: 0, fontSize: 12, textAlign: "center" }}>
                             Resumen operativo de la sucursal en el sistema.
                         </Paragraph>
+                    </Card>
+                </Col>
+            </Row>
+
+            <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+                <Col xs={24}>
+                    <Card title={<span style={{ fontWeight: 600 }}>Mapa de Ubicación</span>} style={getSectionCardStyle(token)}>
+                        <LazyBranchLocationMap
+                            latitude={record?.latitude}
+                            longitude={record?.longitude}
+                            readOnly
+                            height={360}
+                        />
+                        <OpenGoogleMapsButton latitude={record?.latitude} longitude={record?.longitude} />
                     </Card>
                 </Col>
             </Row>

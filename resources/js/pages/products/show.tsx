@@ -2,6 +2,7 @@ import { Show } from "@refinedev/antd";
 import { Avatar, Card, Col, Descriptions, Row, Tag, Typography, theme } from "antd";
 import { CalendarOutlined, CheckCircleOutlined, ClockCircleOutlined, CoffeeOutlined, DollarOutlined, StarOutlined } from "@ant-design/icons";
 import { useShow } from "@refinedev/core";
+import { resolveImageSrc } from "@/lib/image-upload";
 import {
     formatDateLabel,
     getDescriptionsContentStyle,
@@ -40,10 +41,14 @@ export const ProductsShow = () => {
                     <Col xs={24} sm={16} style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
                         <Avatar
                             shape="square"
-                            size={64}
-                            src={record?.image || undefined}
+                            size={80}
+                            src={resolveImageSrc(record?.image)}
                             icon={<CoffeeOutlined />}
-                            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.1)", border: `2px solid ${token.colorBgContainer}` }}
+                            style={{
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                border: `2px solid ${token.colorBgContainer}`,
+                                flexShrink: 0,
+                            }}
                         />
                         <div>
                             <Title level={3} style={{ margin: 0, fontWeight: 700 }}>

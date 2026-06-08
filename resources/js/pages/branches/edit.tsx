@@ -1,5 +1,6 @@
 import { Edit, useForm } from "@refinedev/antd";
 import { Form, Input, Checkbox, Row, Col, InputNumber } from "antd";
+import { BranchLocationPicker } from "@/components/map/BranchLocationPicker";
 
 export const BranchesEdit = () => {
     const { formProps, saveButtonProps } = useForm();
@@ -81,6 +82,8 @@ export const BranchesEdit = () => {
                         </Form.Item>
                     </Col>
                 </Row>
+
+                <BranchLocationPicker />
 
                 <Row gutter={16} style={{ marginTop: "12px" }}>
                     <Col xs={12} sm={6}>

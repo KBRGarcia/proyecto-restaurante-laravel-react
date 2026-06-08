@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable()->comment('descripción del producto');
             $table->decimal('price', 10, 2)->comment('precio del producto');
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null')->comment('identificador de la categoría');
-            $table->string('image', 255)->nullable()->comment('ruta de la imagen del producto');
+            $table->longText('image')->nullable()->comment('imagen del producto en formato base64');
             $table->enum('status', ['active', 'inactive', 'out of stock'])->default('active')->comment('estado del producto');
             $table->integer('preparation_time')->default(15)->comment('tiempo de preparación en minutos');
             $table->text('ingredients')->nullable()->comment('ingredientes del producto');

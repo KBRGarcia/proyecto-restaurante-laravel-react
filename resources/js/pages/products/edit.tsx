@@ -1,33 +1,55 @@
-import { Edit, useForm, useSelect } from "@refinedev/antd";
-import { Form, Input, Select, InputNumber, Checkbox, Row, Col } from "antd";
-import { CoffeeOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { ImageUploadField } from "@/components/form/ImageUploadField";
+import { Edit, useForm, useSelect } from "@refinedev/antd";
+import { UploadOutlined, CoffeeOutlined } from "@ant-design/icons";
+import { Form, Input, Select, InputNumber, Checkbox, Row, Col, Upload, Button, Avatar } from "antd";
+import { createImageUploadHandler, resolveImageSrc } from "@/lib/image-upload";
 
 export const ProductsEdit = () => {
     const { formProps, saveButtonProps, query } = useForm();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const product = query?.data?.data;
-    const resolvedImageUrl = imageUrl ?? product?.image ?? null;
+    const resolvedImageUrl = imageUrl ?? resolveImageSrc(product?.image) ?? null;
 
     const { selectProps: categorySelectProps } = useSelect({
         resource: "categories",
         defaultValue: product?.category_id,
     });
 
+    const handleBeforeUpload = createImageUploadHandler({
+        form: formProps.form,
+        fieldName: "image",
+        onPreviewChange: setImageUrl,
+    });
+
     return (
         <Edit saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={16}>
-                    <ImageUploadField
-                        form={formProps.form}
-                        label="Imagen del Plato"
-                        previewUrl={resolvedImageUrl}
-                        onPreviewChange={setImageUrl}
-                        uploadLabel="Cambiar Imagen"
-                        icon={<CoffeeOutlined />}
-                    />
+                    <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
+                        <Form.Item name="image" label="Imagen del Plato">
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    gap: "12px",
+                                }}
+                            >
+                                <Avatar size={100} shape="square" src={resolvedImageUrl} icon={<CoffeeOutlined />} />
+                                <Upload
+                                    accept="image/jpeg,image/png,image/gif,image/webp"
+                                    beforeUpload={handleBeforeUpload}
+                                    showUploadList={false}
+                                    maxCount={1}
+                                >
+                                    <Button icon={<UploadOutlined />} size="small">
+                                        Cambiar Imagen
+                                    </Button>
+                                </Upload>
+                            </div>
+                        </Form.Item>
+                    </Col>
                     <Col xs={24} md={18}>
                         <Row gutter={16}>
                             <Col xs={24} sm={12}>
@@ -75,18 +97,12 @@ export const ProductsEdit = () => {
 
                 <Row gutter={16}>
                     <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Ingredientes"
-                            name={["ingredients"]}
-                        >
+                        <Form.Item label="Ingredientes" name={["ingredients"]}>
                             <Input.TextArea placeholder="Ingrediente 1, ingrediente 2..." rows={3} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Descripción"
-                            name={["description"]}
-                        >
+                        <Form.Item label="Descripción" name={["description"]}>
                             <Input.TextArea rows={3} />
                         </Form.Item>
                     </Col>
@@ -94,11 +110,7 @@ export const ProductsEdit = () => {
 
                 <Row gutter={16}>
                     <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Estado"
-                            name={["status"]}
-                            rules={[{ required: true }]}
-                        >
+                        <Form.Item label="Estado" name={["status"]} rules={[{ required: true }]}>
                             <Select
                                 options={[
                                     { value: "active", label: "Activo" },

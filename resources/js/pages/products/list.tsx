@@ -4,6 +4,7 @@ import { CoffeeOutlined, StarOutlined } from "@ant-design/icons";
 import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
 import { StatusSwitch } from "@/components/table/StatusSwitch";
 import { useInlineUpdate } from "@/hooks/useInlineUpdate";
+import { resolveImageSrc } from "@/lib/image-upload";
 
 const { Text } = Typography;
 
@@ -50,11 +51,12 @@ export const ProductsList = () => {
                     title="Imagen"
                     render={(value: string, record: ProductRow) => (
                         <Avatar
-                            src={value || undefined}
+                            src={resolveImageSrc(value)}
                             shape="square"
                             size={50}
                             icon={<CoffeeOutlined />}
                             alt={record.name}
+                            style={{ flexShrink: 0 }}
                         />
                     )}
                 />

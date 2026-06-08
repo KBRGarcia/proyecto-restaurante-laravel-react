@@ -3,6 +3,7 @@ import { Table, Space, Tag, Typography } from "antd";
 import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
 import { StatusSwitch } from "@/components/table/StatusSwitch";
 import { useInlineUpdate } from "@/hooks/useInlineUpdate";
+import { formatCoordinate } from "@/lib/branch-location";
 
 const { Text } = Typography;
 
@@ -91,6 +92,16 @@ export const BranchesList = () => {
                     render={(value, record: BranchRow) => `${value} - ${record.closing_time}`}
                 />
                 <Table.Column dataIndex="manager" title="Gerente" render={(value) => value || "N/A"} />
+                <Table.Column
+                    dataIndex="latitude"
+                    title="Latitud"
+                    render={(value: BranchRow["latitude"]) => formatCoordinate(value)}
+                />
+                <Table.Column
+                    dataIndex="longitude"
+                    title="Longitud"
+                    render={(value: BranchRow["longitude"]) => formatCoordinate(value)}
+                />
                 <Table.Column<BranchRow>
                     dataIndex="active"
                     title="Estado"

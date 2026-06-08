@@ -1,8 +1,8 @@
-import { Create, useForm, useSelect } from "@refinedev/antd";
-import { Form, Input, Select, InputNumber, Checkbox, Row, Col } from "antd";
-import { CoffeeOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { ImageUploadField } from "@/components/form/ImageUploadField";
+import { Create, useForm, useSelect } from "@refinedev/antd";
+import { UploadOutlined, CoffeeOutlined } from "@ant-design/icons";
+import { Form, Input, Select, InputNumber, Checkbox, Row, Col, Upload, Button, Avatar } from "antd";
+import { createImageUploadHandler } from "@/lib/image-upload";
 
 export const ProductsCreate = () => {
     const { formProps, saveButtonProps } = useForm();
@@ -12,17 +12,40 @@ export const ProductsCreate = () => {
         resource: "categories",
     });
 
+    const handleBeforeUpload = createImageUploadHandler({
+        form: formProps.form,
+        fieldName: "image",
+        onPreviewChange: setImageUrl,
+    });
+
     return (
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={16}>
-                    <ImageUploadField
-                        form={formProps.form}
-                        label="Imagen del Plato"
-                        previewUrl={imageUrl}
-                        onPreviewChange={setImageUrl}
-                        icon={<CoffeeOutlined />}
-                    />
+                    <Col xs={24} md={6} style={{ textAlign: "center", marginBottom: "20px" }}>
+                        <Form.Item name="image" label="Imagen del Plato">
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    gap: "12px",
+                                }}
+                            >
+                                <Avatar size={100} shape="square" src={imageUrl} icon={<CoffeeOutlined />} />
+                                <Upload
+                                    accept="image/jpeg,image/png,image/gif,image/webp"
+                                    beforeUpload={handleBeforeUpload}
+                                    showUploadList={false}
+                                    maxCount={1}
+                                >
+                                    <Button icon={<UploadOutlined />} size="small">
+                                        Subir Imagen
+                                    </Button>
+                                </Upload>
+                            </div>
+                        </Form.Item>
+                    </Col>
                     <Col xs={24} md={18}>
                         <Row gutter={16}>
                             <Col xs={24} sm={12}>
@@ -71,18 +94,12 @@ export const ProductsCreate = () => {
 
                 <Row gutter={16}>
                     <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Ingredientes"
-                            name={["ingredients"]}
-                        >
+                        <Form.Item label="Ingredientes" name={["ingredients"]}>
                             <Input.TextArea placeholder="Ingrediente 1, ingrediente 2..." rows={3} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={12}>
-                        <Form.Item
-                            label="Descripción"
-                            name={["description"]}
-                        >
+                        <Form.Item label="Descripción" name={["description"]}>
                             <Input.TextArea rows={3} />
                         </Form.Item>
                     </Col>

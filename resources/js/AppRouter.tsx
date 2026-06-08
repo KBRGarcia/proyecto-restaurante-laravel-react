@@ -28,6 +28,8 @@ import routerProvider, {
 } from '@refinedev/react-router';
 import dataProvider from '@refinedev/simple-rest';
 import axios from 'axios';
+import { lazy, Suspense } from 'react';
+import { Spin } from 'antd';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { CustomLogin } from './components/auth/CustomLogin';
 import { CustomRegister } from './components/auth/CustomRegister';
@@ -40,10 +42,23 @@ import { HomePage } from './pages/home';
 // Resources
 import { BanksList } from './pages/banks/list';
 import { BanksShow } from './pages/banks/show';
-import { BranchesCreate } from './pages/branches/create';
-import { BranchesEdit } from './pages/branches/edit';
 import { BranchesList } from './pages/branches/list';
-import { BranchesShow } from './pages/branches/show';
+
+const BranchesCreate = lazy(() =>
+    import('./pages/branches/create').then((module) => ({ default: module.BranchesCreate })),
+);
+const BranchesEdit = lazy(() =>
+    import('./pages/branches/edit').then((module) => ({ default: module.BranchesEdit })),
+);
+const BranchesShow = lazy(() =>
+    import('./pages/branches/show').then((module) => ({ default: module.BranchesShow })),
+);
+
+const BranchPageLoader = () => (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
+        <Spin size="large" />
+    </div>
+);
 import { CategoriesCreate } from './pages/categories/create';
 import { CategoriesEdit } from './pages/categories/edit';
 import { CategoriesList } from './pages/categories/list';
@@ -537,15 +552,27 @@ export default function AppRouter() {
                                 <Route index element={<BranchesList />} />
                                 <Route
                                     path="create"
-                                    element={<BranchesCreate />}
+                                    element={
+                                        <Suspense fallback={<BranchPageLoader />}>
+                                            <BranchesCreate />
+                                        </Suspense>
+                                    }
                                 />
                                 <Route
                                     path="edit/:id"
-                                    element={<BranchesEdit />}
+                                    element={
+                                        <Suspense fallback={<BranchPageLoader />}>
+                                            <BranchesEdit />
+                                        </Suspense>
+                                    }
                                 />
                                 <Route
                                     path="show/:id"
-                                    element={<BranchesShow />}
+                                    element={
+                                        <Suspense fallback={<BranchPageLoader />}>
+                                            <BranchesShow />
+                                        </Suspense>
+                                    }
                                 />
                             </Route>
                             <Route path="/categories">

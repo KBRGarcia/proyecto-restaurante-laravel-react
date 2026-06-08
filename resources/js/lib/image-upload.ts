@@ -33,6 +33,23 @@ type CreateImageUploadHandlerOptions = {
     onPreviewChange: (url: string) => void;
 };
 
+export const resolveImageSrc = (value?: string | null): string | undefined => {
+    if (!value) {
+        return undefined;
+    }
+
+    if (
+        value.startsWith("data:image") ||
+        value.startsWith("http://") ||
+        value.startsWith("https://") ||
+        value.startsWith("/")
+    ) {
+        return value;
+    }
+
+    return undefined;
+};
+
 export const createImageUploadHandler = ({
     form,
     fieldName = "image",

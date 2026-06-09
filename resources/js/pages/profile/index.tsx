@@ -17,6 +17,7 @@ import {
 } from "antd";
 import { UserOutlined, UploadOutlined, SaveOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { PhoneNumberField } from "@/components/form/PhoneNumberField";
 
 const { Title, Text, Paragraph } = Typography;
 const { useToken } = theme;
@@ -193,12 +194,7 @@ export const ProfilePage: React.FC = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col xs={24} sm={12}>
-                                    <Form.Item
-                                        name="phone_number"
-                                        label="Número de Teléfono"
-                                    >
-                                        <Input size="large" placeholder="+58 414 1234567" />
-                                    </Form.Item>
+                                    <PhoneNumberField name="phone_number" label="Número de Teléfono" />
                                 </Col>
                             </Row>
 

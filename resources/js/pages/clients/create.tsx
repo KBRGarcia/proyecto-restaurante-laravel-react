@@ -2,6 +2,7 @@ import { Create, useForm, useSelect } from "@refinedev/antd";
 import { Button, Col, Form, Input, Row, Select, Card } from "antd";
 import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
 import { useLinkedUserProfileFields } from "@/hooks/useLinkedUserProfileFields";
+import { PhoneNumberField } from "@/components/form/PhoneNumberField";
 
 export const ClientsCreate = () => {
     const { formProps, saveButtonProps } = useForm();
@@ -101,20 +102,18 @@ export const ClientsCreate = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col xs={24} sm={8}>
-                                    <Form.Item
-                                        label="Email"
-                                        name="email"
-                                        rules={[{ type: "email", message: "Introduce un email valido" }]}
-                                    >
-                                        <Input disabled={isUserLinked} />
-                                    </Form.Item>
+                                    <PhoneNumberField name="phone" label="Teléfono" disabled={isUserLinked} />
                                 </Col>
                             </Row>
 
                             <Row gutter={16}>
                                 <Col xs={24} sm={8}>
-                                    <Form.Item label="Telefono" name="phone">
-                                        <Input placeholder="+58 414 1234567" />
+                                    <Form.Item
+                                        label="Correo"
+                                        name="email"
+                                        rules={[{ type: "email", message: "Introduce un email valido" }]}
+                                    >
+                                        <Input disabled={isUserLinked} />
                                     </Form.Item>
                                 </Col>
                                 <Col xs={24} sm={16}>

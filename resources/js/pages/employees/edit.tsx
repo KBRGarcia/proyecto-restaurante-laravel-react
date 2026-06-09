@@ -1,23 +1,9 @@
 import { Edit, useForm, useSelect } from "@refinedev/antd";
-import { Button, Col, Form, Input, Row, Select, Card, Space } from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, Row, Select, Card } from "antd";
 import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
 import { useLinkedUserProfileFields } from "@/hooks/useLinkedUserProfileFields";
-
-const positionOptions = [
-    { value: "general_manager", label: "Gerente General" },
-    { value: "branch_manager", label: "Gerente de Sucursal" },
-    { value: "chef", label: "Chef" },
-    { value: "sous_chef", label: "Sous Chef" },
-    { value: "cook", label: "Cocinero" },
-    { value: "kitchen_assistant", label: "Ayudante de Cocina" },
-    { value: "waiter", label: "Mesero" },
-    { value: "cashier", label: "Cajero" },
-    { value: "delivery_driver", label: "Repartidor" },
-    { value: "host", label: "Anfitrion" },
-    { value: "cleaner", label: "Personal de Limpieza" },
-    { value: "inventory_manager", label: "Encargado de Inventario" },
-];
+import { PhoneNumberField } from "@/components/form/PhoneNumberField";
+import { EmployeeAssignmentsField } from "@/components/form/EmployeeAssignmentsField";
 
 export const EmployeesEdit = () => {
     const { formProps, saveButtonProps } = useForm();
@@ -27,11 +13,6 @@ export const EmployeesEdit = () => {
             const user = item as { email?: string; name?: string; last_name?: string };
             return `${user.email ?? ""} (${user.name ?? ""} ${user.last_name ?? ""})`.trim();
         },
-        optionValue: "id",
-    });
-    const { selectProps: branchSelectProps } = useSelect({
-        resource: "branches",
-        optionLabel: "name",
         optionValue: "id",
     });
 
@@ -59,8 +40,8 @@ export const EmployeesEdit = () => {
         <Edit saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={[16, 16]} align="stretch">
-                    <Col xs={24} lg={16}>
-                        <Card title="Datos del empleado" style={{ height: "38%" }}>
+                    <Col xs={24} lg={18}>
+                        <Card title="Datos del empleado" style={{ height: "32%" }}>
                             <Row gutter={16}>
                                 <Col xs={24} sm={8}>
                                     <Form.Item label="Usuario asociado" name="user_id">
@@ -122,20 +103,18 @@ export const EmployeesEdit = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col xs={24} sm={8}>
+                                    <PhoneNumberField name="phone" label="Telefono" disabled={isUserLinked} />
+                                </Col>
+                            </Row>
+
+                            <Row gutter={16}>
+                                <Col xs={24} sm={12}>
                                     <Form.Item
                                         label="Email laboral"
                                         name="email"
                                         rules={[{ type: "email", message: "Introduce un email valido" }]}
                                     >
                                         <Input disabled={isUserLinked} />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-
-                            <Row gutter={16}>
-                                <Col xs={24} sm={8}>
-                                    <Form.Item label="Telefono" name="phone">
-                                        <Input placeholder="+58 414 1234567" />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -165,56 +144,12 @@ export const EmployeesEdit = () => {
                         </Card>
 
                         <Card title="Sucursales y cargos" style={{ marginTop: "2%" }}>
-                            <Form.List name="assignments">
-                                {(fields, { add, remove }) => (
-                                    <>
-                                        <Space direction="vertical" style={{ width: "100%" }}>
-                                            {fields.map(({ key, name, ...restField }) => (
-                                                <Row gutter={16} key={key} align="middle">
-                                                    <Col xs={24} sm={8}>
-                                                        <Form.Item
-                                                            {...restField}
-                                                            label="Sucursal"
-                                                            name={[name, "branch_id"]}
-                                                            rules={[{ required: true }]}
-                                                        >
-                                                            <Select {...branchSelectProps} placeholder="Seleccione una sucursal" />
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col xs={24} sm={7}>
-                                                        <Form.Item
-                                                            {...restField}
-                                                            label="Cargo"
-                                                            name={[name, "position"]}
-                                                            rules={[{ required: true }]}
-                                                        >
-                                                            <Select options={positionOptions} placeholder="Seleccione un cargo" />
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col xs={24} sm={7}>
-                                                        <Form.Item {...restField} label="Inicio" name={[name, "start_date"]}>
-                                                            <Input type="date" />
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col xs={24} sm={2}>
-                                                        <Button danger icon={<MinusCircleOutlined />} onClick={() => remove(name)} />
-                                                    </Col>
-                                                </Row>
-                                            ))}
-                                        </Space>
-                                        <Form.Item>
-                                            <Button type="dashed" onClick={() => add({ active: true })} block icon={<PlusOutlined />}>
-                                                Agregar sucursal y cargo
-                                            </Button>
-                                        </Form.Item>
-                                    </>
-                                )}
-                            </Form.List>
+                            <EmployeeAssignmentsField form={formProps.form} />
                         </Card>
                     </Col>
 
-                    <Col xs={24} lg={8}>
-                        <Card title="Estado laboral" style={{ height: "35%" }}>
+                    <Col xs={24} lg={6}>
+                        <Card title="Estado laboral" style={{ height: "15%" }}>
                             <StatusFormSwitch name={["status"]} />
                         </Card>
                     </Col>

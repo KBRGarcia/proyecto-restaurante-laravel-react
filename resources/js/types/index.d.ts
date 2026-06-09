@@ -402,7 +402,6 @@ export interface Branch {
     active_label: string;
     opening_date: string | null;
     opening_date_formatted: string | null;
-    manager: string | null;
     full_address: string;
     creation_date: string;
     creation_date_formatted: string | null;

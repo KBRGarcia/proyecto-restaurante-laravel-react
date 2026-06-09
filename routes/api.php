@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('branches', BranchController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('clients', ClientController::class);
+    Route::post('employees/validate-assignment', [EmployeeController::class, 'validateAssignment']);
     Route::apiResource('employees', EmployeeController::class);
     Route::apiResource('evaluations', EvaluationController::class);
     Route::apiResource('order-details', OrderDetailController::class);

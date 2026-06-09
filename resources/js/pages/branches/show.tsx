@@ -162,7 +162,6 @@ export const BranchesShow = () => {
                             labelStyle={getDescriptionsLabelStyle(token)}
                             contentStyle={getDescriptionsContentStyle(token)}
                         >
-                            <Descriptions.Item label="Gerente">{record?.manager || "N/A"}</Descriptions.Item>
                             <Descriptions.Item label="Apertura">{record?.opening_date_formatted || formatDateLabel(record?.opening_date)}</Descriptions.Item>
                             <Descriptions.Item label="Delivery">
                                 <Tag color={record?.has_delivery ? "success" : "error"} style={{ borderRadius: 4 }}>

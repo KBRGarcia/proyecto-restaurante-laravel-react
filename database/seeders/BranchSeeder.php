@@ -21,7 +21,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Caracas',
                 'state' => 'Distrito Capital',
                 'postal_code' => '1010',
-                'phone' => '0212-555-1234',
+                'phone' => '04125551234',
                 'email' => 'centro@sabortradicion.com',
                 'opening_time' => '09:00:00',
                 'closing_time' => '23:00:00',
@@ -36,7 +36,6 @@ class BranchSeeder extends Seeder
                 'description' => 'Nuestra sucursal principal ubicada en el corazón de Caracas. Cuenta con amplios espacios, estacionamiento y servicio de delivery. Perfecta para reuniones familiares y eventos especiales.',
                 'active' => true,
                 'opening_date' => '2020-01-15',
-                'manager' => 'María Rodríguez',
             ],
 
             // Sucursal 2 - Las Mercedes
@@ -46,7 +45,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Caracas',
                 'state' => 'Distrito Capital',
                 'postal_code' => '1060',
-                'phone' => '0212-555-2345',
+                'phone' => '04145552345',
                 'email' => 'lasmercedes@sabortradicion.com',
                 'opening_time' => '11:00:00',
                 'closing_time' => '23:30:00',
@@ -61,7 +60,6 @@ class BranchSeeder extends Seeder
                 'description' => 'Ubicada en la exclusiva zona de Las Mercedes, esta sucursal ofrece un ambiente elegante y sofisticado. Ideal para cenas románticas y encuentros de negocios.',
                 'active' => true,
                 'opening_date' => '2021-03-20',
-                'manager' => 'Carlos Méndez',
             ],
 
             // Sucursal 3 - Altamira
@@ -71,7 +69,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Caracas',
                 'state' => 'Distrito Capital',
                 'postal_code' => '1062',
-                'phone' => '0212-555-3456',
+                'phone' => '04165553456',
                 'email' => 'altamira@sabortradicion.com',
                 'opening_time' => '10:00:00',
                 'closing_time' => '22:00:00',
@@ -86,7 +84,6 @@ class BranchSeeder extends Seeder
                 'description' => 'Nuestra sucursal boutique en Altamira combina tradición con modernidad. Ambiente acogedor perfecto para almuerzos de trabajo y reuniones casuales.',
                 'active' => true,
                 'opening_date' => '2021-07-10',
-                'manager' => 'Ana Fernández',
             ],
 
             // Sucursal 4 - Valencia
@@ -96,7 +93,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Valencia',
                 'state' => 'Carabobo',
                 'postal_code' => '2001',
-                'phone' => '0241-555-4567',
+                'phone' => '04245554567',
                 'email' => 'valencia@sabortradicion.com',
                 'opening_time' => '10:00:00',
                 'closing_time' => '22:00:00',
@@ -111,7 +108,6 @@ class BranchSeeder extends Seeder
                 'description' => 'Primera sucursal fuera de Caracas. Ubicada en el moderno Centro Comercial Metrópolis de Valencia, ofrece toda la tradición de nuestros sabores con amplias instalaciones.',
                 'active' => true,
                 'opening_date' => '2022-05-15',
-                'manager' => 'José Ramírez',
             ],
 
             // Sucursal 5 - Maracaibo
@@ -121,7 +117,7 @@ class BranchSeeder extends Seeder
                 'city' => 'Maracaibo',
                 'state' => 'Zulia',
                 'postal_code' => '4001',
-                'phone' => '0261-555-5678',
+                'phone' => '04265555678',
                 'email' => 'maracaibo@sabortradicion.com',
                 'opening_time' => '11:00:00',
                 'closing_time' => '23:00:00',
@@ -136,7 +132,6 @@ class BranchSeeder extends Seeder
                 'description' => 'Nuestra más reciente apertura en la ciudad del sol amado. Diseño moderno con toques tradicionales, ofreciendo las mejores vistas del Lago de Maracaibo.',
                 'active' => true,
                 'opening_date' => '2023-02-28',
-                'manager' => 'Luis Pérez',
             ],
         ];
 

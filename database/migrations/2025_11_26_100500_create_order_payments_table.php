@@ -26,7 +26,7 @@ return new class extends Migration
             $table->char('destination_bank_code', 4)->nullable()->comment('codigo SUDEBAN del banco destino');
             $table->string('reference_number', 100)->nullable()->comment('numero de referencia o comprobante');
             $table->string('payer_identification', 30)->nullable()->comment('cedula/RIF del pagador');
-            $table->string('payer_phone', 20)->nullable()->comment('telefono asociado al pago');
+            $table->string('payer_phone', 11)->nullable()->comment('telefono asociado al pago (código + 7 dígitos)');
             $table->string('payer_email')->nullable()->comment('correo asociado al pago internacional');
             $table->string('account_identifier', 100)->nullable()->comment('identificador de cuenta/billetera');
             $table->string('account_holder_name', 120)->nullable()->comment('titular reportado del pago');

@@ -337,7 +337,7 @@ class Order extends Model
             'taxes' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'total' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'delivery_address' => ['nullable', 'string', 'required_if:service_type,delivery'],
-            'contact_phone' => ['nullable', 'string', 'max:20'],
+            'contact_phone' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'special_notes' => ['nullable', 'string'],
             'payment_method' => ['nullable', 'string', 'max:50', Rule::in(PaymentMethod::values())],
             'currency' => ['required', 'string', Rule::in(PaymentCurrency::values())],
@@ -349,7 +349,7 @@ class Order extends Model
             'client.last_name' => ['nullable', 'string', 'max:100'],
             'client.identity_document' => ['nullable', 'string', 'max:30'],
             'client.email' => ['nullable', 'email', 'max:100'],
-            'client.phone' => ['nullable', 'string', 'max:20'],
+            'client.phone' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'client.address' => ['nullable', 'string'],
         ];
     }
@@ -383,7 +383,7 @@ class Order extends Model
             'delivery_address.string' => 'La dirección de entrega debe ser una cadena de texto.',
             'delivery_address.required_if' => 'La dirección de entrega es obligatoria para pedidos a domicilio.',
             'contact_phone.string' => 'El teléfono de contacto debe ser una cadena de texto.',
-            'contact_phone.max' => 'El teléfono de contacto no debe exceder los 20 caracteres.',
+            'contact_phone.regex' => 'El teléfono de contacto debe incluir un código válido y 7 dígitos.',
             'special_notes.string' => 'Las notas especiales deben ser una cadena de texto.',
             'payment_method.string' => 'El método de pago debe ser una cadena de texto.',
             'payment_method.max' => 'El método de pago no debe exceder los 50 caracteres.',

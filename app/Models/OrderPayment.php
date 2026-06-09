@@ -78,7 +78,7 @@ class OrderPayment extends Model
             'destination_bank_code' => [$fieldRequirement('destination_bank_code'), Rule::in(Banks::values())],
             'reference_number' => [$fieldRequirement('reference_number'), 'string', 'max:100'],
             'payer_identification' => [$fieldRequirement('payer_identification'), 'string', 'max:30'],
-            'payer_phone' => [$fieldRequirement('payer_phone'), 'string', 'max:20'],
+            'payer_phone' => [$fieldRequirement('payer_phone'), 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'payer_email' => [$fieldRequirement('payer_email'), 'email', 'max:255'],
             'account_identifier' => [$fieldRequirement('account_identifier'), 'string', 'max:100'],
             'account_holder_name' => [$fieldRequirement('account_holder_name'), 'string', 'max:120'],

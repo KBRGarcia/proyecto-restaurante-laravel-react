@@ -99,7 +99,7 @@ class User extends Authenticatable
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'phone_number' => ['nullable', 'string', 'max:20'],
+            'phone_number' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'address' => ['nullable', 'string'],
             'profile_picture' => ['nullable', 'string'],
             'role' => ['required', 'string', 'in:admin,employee,client'],
@@ -163,7 +163,7 @@ class User extends Authenticatable
             'password.regex' => 'La contraseña debe contener al menos una mayúscula, un número y un carácter especial (@$!%*?&#-_.).',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
             'phone_number.string' => 'El número de teléfono debe ser una cadena de texto.',
-            'phone_number.max' => 'El número de teléfono no debe exceder los 20 caracteres.',
+            'phone_number.regex' => 'El número de teléfono debe incluir un código válido y 7 dígitos.',
             'address.string' => 'La dirección debe ser una cadena de texto.',
             'profile_picture.string' => 'La foto de perfil debe ser una cadena de texto válida.',
             'role.required' => 'El rol es obligatorio.',

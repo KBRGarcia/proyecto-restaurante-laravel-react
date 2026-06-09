@@ -2,13 +2,14 @@ import { useOne } from "@refinedev/core";
 import { Form, type FormInstance } from "antd";
 import { useCallback, useEffect } from "react";
 
-const LINKED_USER_FIELDS = ["first_name", "last_name", "identity_document", "email"] as const;
+const LINKED_USER_FIELDS = ["first_name", "last_name", "identity_document", "email", "phone"] as const;
 
 type LinkedUser = {
     name?: string;
     last_name?: string;
     email?: string;
     identity_document?: string | null;
+    phone_number?: string | null;
 };
 
 type UseLinkedUserProfileFieldsOptions = {
@@ -37,6 +38,7 @@ export const useLinkedUserProfileFields = ({ form }: UseLinkedUserProfileFieldsO
             last_name: undefined,
             email: undefined,
             identity_document: undefined,
+            phone: undefined,
         });
     }, [form]);
 
@@ -50,6 +52,7 @@ export const useLinkedUserProfileFields = ({ form }: UseLinkedUserProfileFieldsO
             last_name: user.last_name ?? "",
             email: user.email ?? "",
             identity_document: user.identity_document ?? "",
+            phone: user.phone_number ?? undefined,
         });
     }, [isUserLinked, user, form]);
 

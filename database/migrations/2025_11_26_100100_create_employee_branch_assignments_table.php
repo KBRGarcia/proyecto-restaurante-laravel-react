@@ -25,6 +25,24 @@ return new class extends Migration
             $table->unique(['employee_id', 'branch_id', 'position'], 'employee_branch_position_unique');
             $table->index(['branch_id', 'position', 'active'], 'employee_branch_position_active_idx');
             $table->index(['employee_id', 'active'], 'employee_assignment_active_idx');
+
+            // Un solo gerente general activo por sucursal.
+            $table->unsignedBigInteger('active_general_manager_branch_id')
+                ->nullable()
+                ->storedAs("CASE WHEN `position` = 'general_manager' AND `active` = 1 THEN `branch_id` ELSE NULL END");
+            $table->unique('active_general_manager_branch_id', 'employee_branch_active_gm_unique');
+
+            // Un empleado solo puede ser gerente de sucursal activo en una sucursal.
+            $table->unsignedBigInteger('active_branch_manager_employee_id')
+                ->nullable()
+                ->storedAs("CASE WHEN `position` = 'branch_manager' AND `active` = 1 THEN `employee_id` ELSE NULL END");
+            $table->unique('active_branch_manager_employee_id', 'employee_branch_active_bm_employee_unique');
+
+            // Una sucursal solo puede tener un gerente de sucursal activo.
+            $table->unsignedBigInteger('active_branch_manager_branch_id')
+                ->nullable()
+                ->storedAs("CASE WHEN `position` = 'branch_manager' AND `active` = 1 THEN `branch_id` ELSE NULL END");
+            $table->unique('active_branch_manager_branch_id', 'employee_branch_active_bm_branch_unique');
         });
     }
 

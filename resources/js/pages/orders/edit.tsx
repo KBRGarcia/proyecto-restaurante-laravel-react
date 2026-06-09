@@ -1,5 +1,6 @@
 import { Edit, useForm, useSelect } from "@refinedev/antd";
 import { Form, Input, Select, InputNumber, Row, Col } from "antd";
+import { PhoneNumberField } from "@/components/form/PhoneNumberField";
 
 export const OrdersEdit = () => {
     const { formProps, saveButtonProps, query } = useForm();
@@ -107,9 +108,7 @@ export const OrdersEdit = () => {
 
                 <Row gutter={16}>
                     <Col xs={24} sm={12}>
-                        <Form.Item label="Teléfono de Contacto" name="contact_phone">
-                            <Input placeholder="+58 414 1234567" />
-                        </Form.Item>
+                        <PhoneNumberField name="contact_phone" label="Teléfono de Contacto" />
                     </Col>
                     <Col xs={24} sm={12}>
                         <Form.Item label="Dirección de Entrega" name="delivery_address">

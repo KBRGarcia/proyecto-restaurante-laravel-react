@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('two_factor_secret')->nullable()->comment('secreto de autenticación de dos factores');
             $table->text('two_factor_recovery_codes')->nullable()->comment('códigos de recuperación 2FA');
             $table->timestamp('two_factor_confirmed_at')->nullable()->comment('fecha de confirmación 2FA');
-            $table->string('phone_number', 20)->nullable()->comment('número de teléfono del usuario');
+            $table->string('phone_number', 11)->nullable()->comment('número de teléfono del usuario (código + 7 dígitos)');
             $table->text('address')->nullable()->comment('dirección del usuario');
             $table->longText('profile_picture')->nullable()->comment('imagen de perfil del usuario en formato base64');
             $table->enum('role', ['admin', 'employee', 'client'])->default('client')->comment('rol del usuario');

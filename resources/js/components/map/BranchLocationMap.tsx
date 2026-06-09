@@ -22,6 +22,11 @@ const defaultMarkerIcon = new L.Icon({
     shadowSize: [41, 41],
 });
 
+const OSM_TILE_ATTRIBUTION =
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+const OSM_TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+
 type BranchLocationMapProps = {
     latitude: unknown;
     longitude: unknown;
@@ -35,6 +40,18 @@ const MapViewUpdater = ({ center, zoom }: { center: [number, number]; zoom: numb
     const lastViewRef = useRef<{ center: [number, number]; zoom: number } | null>(null);
 
     useEffect(() => {
+        const currentCenter = map.getCenter();
+        const currentZoom = map.getZoom();
+        const isCurrentView =
+            Math.abs(currentCenter.lat - center[0]) < 0.000001 &&
+            Math.abs(currentCenter.lng - center[1]) < 0.000001 &&
+            currentZoom === zoom;
+
+        if (isCurrentView) {
+            lastViewRef.current = { center, zoom };
+            return;
+        }
+
         const lastView = lastViewRef.current;
         const sameCenter =
             lastView !== null &&
@@ -118,6 +135,13 @@ export const BranchLocationMap = memo(function BranchLocationMap({
                 preferCanvas
                 style={{ height: "100%", width: "100%" }}
             >
+                <TileLayer
+                    attribution={OSM_TILE_ATTRIBUTION}
+                    url={OSM_TILE_URL}
+                    maxZoom={19}
+                    detectRetina
+                    crossOrigin
+                />
                 <MapReadyHandler />
                 <MapViewUpdater center={center} zoom={zoom} />
                 {!readOnly && onLocationChange && <MapClickHandler onLocationChange={onLocationChange} />}

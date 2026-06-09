@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EmployeePosition;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -42,7 +43,6 @@ class Branch extends Model
         'description',
         'active',
         'opening_date',
-        'manager',
         'creation_date',
         'update_date',
     ];
@@ -142,8 +142,7 @@ class Branch extends Model
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
                 ->orWhere('city', 'like', "%{$search}%")
-                ->orWhere('address', 'like', "%{$search}%")
-                ->orWhere('manager', 'like', "%{$search}%");
+                ->orWhere('address', 'like', "%{$search}%");
         });
     }
 
@@ -181,6 +180,52 @@ class Branch extends Model
         return $this->belongsToMany(Employee::class, 'employee_branch_assignments')
             ->withPivot('position', 'start_date', 'end_date', 'active')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the active general manager assignment for this branch.
+     */
+    public function activeGeneralManagerAssignment(): ?EmployeeBranchAssignment
+    {
+        return $this->employeeAssignments()
+            ->where('position', EmployeePosition::GeneralManager)
+            ->where('active', true)
+            ->first();
+    }
+
+    /**
+     * Get the active branch manager assignment for this branch.
+     */
+    public function activeBranchManagerAssignment(): ?EmployeeBranchAssignment
+    {
+        return $this->employeeAssignments()
+            ->where('position', EmployeePosition::BranchManager)
+            ->where('active', true)
+            ->first();
+    }
+
+    /**
+     * Check if the branch already has an active general manager.
+     */
+    public function hasActiveGeneralManager(?int $exceptEmployeeId = null): bool
+    {
+        return $this->employeeAssignments()
+            ->where('position', EmployeePosition::GeneralManager)
+            ->where('active', true)
+            ->when($exceptEmployeeId, fn ($query) => $query->where('employee_id', '!=', $exceptEmployeeId))
+            ->exists();
+    }
+
+    /**
+     * Check if the branch already has an active branch manager.
+     */
+    public function hasActiveBranchManager(?int $exceptEmployeeId = null): bool
+    {
+        return $this->employeeAssignments()
+            ->where('position', EmployeePosition::BranchManager)
+            ->where('active', true)
+            ->when($exceptEmployeeId, fn ($query) => $query->where('employee_id', '!=', $exceptEmployeeId))
+            ->exists();
     }
 
     /**
@@ -244,7 +289,7 @@ class Branch extends Model
             'city' => ['required', 'string', 'max:100'],
             'state' => ['required', 'string', 'max:100'],
             'postal_code' => ['nullable', 'string', 'max:20'],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'email' => ['nullable', 'email', 'max:100'],
             'opening_time' => ['required', 'date_format:H:i:s'],
             'closing_time' => ['required', 'date_format:H:i:s', 'after:opening_time'],
@@ -259,7 +304,6 @@ class Branch extends Model
             'description' => ['nullable', 'string'],
             'active' => ['nullable', 'boolean'],
             'opening_date' => ['nullable', 'date'],
-            'manager' => ['nullable', 'string', 'max:100'],
         ];
     }
 
@@ -281,7 +325,7 @@ class Branch extends Model
             'state.max' => 'El estado/provincia no debe exceder los 100 caracteres.',
             'postal_code.max' => 'El código postal no debe exceder los 20 caracteres.',
             'phone.required' => 'El teléfono es obligatorio.',
-            'phone.max' => 'El teléfono no debe exceder los 20 caracteres.',
+            'phone.regex' => 'El teléfono debe incluir un código válido y 7 dígitos.',
             'email.email' => 'Debe proporcionar un correo electrónico válido.',
             'email.max' => 'El correo electrónico no debe exceder los 100 caracteres.',
             'opening_time.required' => 'La hora de apertura es obligatoria.',
@@ -302,7 +346,6 @@ class Branch extends Model
             'image.max' => 'La imagen no debe exceder los 255 caracteres.',
             'active.boolean' => 'El campo activo debe ser verdadero o falso.',
             'opening_date.date' => 'La fecha de apertura debe ser una fecha válida.',
-            'manager.max' => 'El gerente no debe exceder los 100 caracteres.',
         ];
     }
 }

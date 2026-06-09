@@ -54,6 +54,43 @@ class Employee extends Model
             ->withTimestamps();
     }
 
+    /**
+     * Get active assignments for a specific position.
+     */
+    public function activeAssignmentsForPosition(EmployeePosition $position): HasMany
+    {
+        return $this->assignments()
+            ->where('position', $position)
+            ->where('active', true);
+    }
+
+    /**
+     * Check if the employee is an active general manager in any branch.
+     */
+    public function isActiveGeneralManager(): bool
+    {
+        return $this->activeAssignmentsForPosition(EmployeePosition::GeneralManager)->exists();
+    }
+
+    /**
+     * Check if the employee is an active branch manager in any branch.
+     */
+    public function isActiveBranchManager(): bool
+    {
+        return $this->activeAssignmentsForPosition(EmployeePosition::BranchManager)->exists();
+    }
+
+    /**
+     * Get the branch where this employee is an active branch manager, if any.
+     */
+    public function activeBranchManagerBranch(): ?Branch
+    {
+        return $this->activeAssignmentsForPosition(EmployeePosition::BranchManager)
+            ->with('branch')
+            ->first()
+            ?->branch;
+    }
+
     public function scopeSearch(Builder $query, string $search): Builder
     {
         return $query->where(function ($q) use ($search) {
@@ -83,7 +120,7 @@ class Employee extends Model
             'last_name' => ['required', 'string', 'max:100'],
             'identity_document' => ['nullable', 'string', 'max:30', $uniqueEmployee('identity_document')],
             'email' => ['nullable', 'email', 'max:100', $uniqueEmployee('email')],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'address' => ['nullable', 'string'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'hire_date' => [$isUpdate ? 'sometimes' : 'required', 'date'],
@@ -115,6 +152,7 @@ class Employee extends Model
             'status.in' => 'El estado seleccionado no es valido.',
             'assignments.*.branch_id.exists' => 'Una de las sucursales seleccionadas no existe.',
             'assignments.*.position.in' => 'Uno de los cargos seleccionados no es valido.',
+            'phone.regex' => 'El teléfono debe incluir un código válido y 7 dígitos.',
         ];
     }
 }

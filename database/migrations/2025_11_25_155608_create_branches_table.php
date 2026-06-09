@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('city', 100)->comment('ciudad');
             $table->string('state', 100)->comment('estado/provincia');
             $table->string('postal_code', 20)->nullable()->comment('código postal');
-            $table->string('phone', 20)->comment('teléfono de contacto');
+            $table->string('phone', 11)->comment('teléfono de contacto (código + 7 dígitos)');
             $table->string('email', 100)->nullable()->comment('correo electrónico');
             $table->time('opening_time')->default('09:00:00')->comment('hora de apertura');
             $table->time('closing_time')->default('22:00:00')->comment('hora de cierre');
@@ -33,7 +33,6 @@ return new class extends Migration
             $table->text('description')->nullable()->comment('descripción de la sucursal');
             $table->boolean('active')->default(true)->comment('sucursal activa');
             $table->date('opening_date')->nullable()->comment('fecha de apertura');
-            $table->string('manager', 100)->nullable()->comment('gerente de la sucursal');
             $table->timestamp('creation_date')->useCurrent()->comment('fecha de creación');
             $table->timestamp('update_date')->useCurrent()->useCurrentOnUpdate()->comment('fecha de actualización');
             $table->timestamps();

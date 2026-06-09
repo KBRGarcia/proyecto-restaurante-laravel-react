@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\EmployeeResource;
+use App\Enums\EmployeePosition;
 use App\Models\Employee;
+use App\Services\EmployeeAssignmentValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
+    public function __construct(
+        private readonly EmployeeAssignmentValidator $assignmentValidator,
+    ) {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -68,6 +75,10 @@ class EmployeeController extends Controller
         $assignments = $validated['assignments'] ?? [];
         unset($validated['assignments']);
 
+        if ($assignments !== []) {
+            $this->assignmentValidator->validate(null, $assignments);
+        }
+
         $employee = DB::transaction(function () use ($validated, $assignments) {
             $employee = Employee::create($validated);
             $this->syncAssignments($employee, $assignments);
@@ -102,6 +113,10 @@ class EmployeeController extends Controller
         $validated = $request->validate(Employee::rules(true, $employee->id), Employee::messages());
         $assignments = $validated['assignments'] ?? null;
         unset($validated['assignments']);
+
+        if (is_array($assignments)) {
+            $this->assignmentValidator->validate($employee->id, $assignments);
+        }
 
         DB::transaction(function () use ($employee, $validated, $assignments) {
             $employee->update($validated);
@@ -141,6 +156,33 @@ class EmployeeController extends Controller
             'columns' => EmployeeResource::tableColumns(),
             'filters' => EmployeeResource::filterFields(),
         ]);
+    }
+
+    /**
+     * Validate a branch assignment against business rules.
+     */
+    public function validateAssignment(Request $request)
+    {
+        $validated = $request->validate([
+            'employee_id' => ['nullable', 'integer', 'exists:employees,id'],
+            'branch_id' => ['required', 'integer', 'exists:branches,id'],
+            'position' => ['required', 'string', Rule::in(EmployeePosition::values())],
+            'assignments' => ['nullable', 'array'],
+            'assignments.*.branch_id' => ['nullable', 'integer', 'exists:branches,id'],
+            'assignments.*.position' => ['nullable', 'string'],
+            'assignments.*.active' => ['nullable', 'boolean'],
+            'assignment_index' => ['nullable', 'integer', 'min:0'],
+        ]);
+
+        return response()->json(
+            $this->assignmentValidator->validateAssignment(
+                $validated['employee_id'] ?? null,
+                (int) $validated['branch_id'],
+                $validated['position'],
+                $validated['assignments'] ?? [],
+                $validated['assignment_index'] ?? null,
+            )
+        );
     }
 
     private function syncAssignments(Employee $employee, array $assignments): void

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Form, Input, Select, InputNumber, Row, Col } from "antd";
 import { useSelect } from "@refinedev/antd";
 import type { FormInstance } from "antd";
+import { PhoneNumberField } from "@/components/form/PhoneNumberField";
 
 type PaymentCurrency = "nacional" | "internacional";
 
@@ -189,9 +190,11 @@ export const OrderPaymentForm = ({ form, formProps }: OrderPaymentFormProps) => 
                 )}
                 {shouldShow("payer_phone") && (
                     <Col xs={24} md={8}>
-                        <Form.Item label="Telefono" name="payer_phone" rules={[{ required: isRequired("payer_phone") }]}>
-                            <Input placeholder="+58 414 1234567" />
-                        </Form.Item>
+                        <PhoneNumberField
+                            name="payer_phone"
+                            label="Telefono"
+                            required={isRequired("payer_phone")}
+                        />
                     </Col>
                 )}
                 {shouldShow("payer_email") && (

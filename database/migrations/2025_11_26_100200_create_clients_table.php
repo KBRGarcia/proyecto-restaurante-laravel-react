@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('last_name', 100)->comment('apellido del cliente');
             $table->string('identity_document', 30)->nullable()->unique()->comment('cedula/RIF o documento de identidad');
             $table->string('email', 100)->nullable()->unique()->comment('correo de contacto');
-            $table->string('phone', 20)->nullable()->comment('telefono de contacto');
+            $table->string('phone', 11)->nullable()->comment('telefono de contacto (código + 7 dígitos)');
             $table->text('address')->nullable()->comment('direccion principal');
             $table->date('birth_date')->nullable()->comment('fecha de nacimiento');
             $table->enum('origin', ClientOrigin::values())->default(ClientOrigin::Online->value)->comment('origen del cliente');

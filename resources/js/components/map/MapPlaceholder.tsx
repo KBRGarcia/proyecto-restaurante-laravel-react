@@ -1,4 +1,4 @@
-import { Spin } from "antd";
+import { Spin, Typography } from "antd";
 
 type MapPlaceholderProps = {
     height?: number;
@@ -15,10 +15,17 @@ export const MapPlaceholder = ({ height = 320, loading = false }: MapPlaceholder
             border: "1px solid #d9d9d9",
             background: "#f5f5f5",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            gap: 8,
         }}
     >
-        {loading ? <Spin tip="Cargando mapa..." /> : null}
+        {loading ? (
+            <>
+                <Spin size="large" />
+                <Typography.Text type="secondary">Cargando mapa...</Typography.Text>
+            </>
+        ) : null}
     </div>
 );

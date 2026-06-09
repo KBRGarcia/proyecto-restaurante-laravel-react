@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('taxes', 10, 2)->default(0)->comment('impuestos de la orden');
             $table->decimal('total', 10, 2)->comment('total de la orden');
             $table->text('delivery_address')->nullable()->comment('dirección de entrega');
-            $table->string('contact_phone', 20)->nullable()->comment('teléfono de contacto');
+            $table->string('contact_phone', 11)->nullable()->comment('teléfono de contacto (código + 7 dígitos)');
             $table->text('special_notes')->nullable()->comment('notas especiales');
             $table->string('payment_method', 50)->nullable()->comment('método de pago');
             $table->enum('currency', PaymentCurrency::values())->default(PaymentCurrency::International->value)->comment('moneda de la orden');

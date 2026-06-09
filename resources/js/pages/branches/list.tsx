@@ -27,7 +27,6 @@ type BranchRow = {
     capacity_people?: number | null;
     image?: string | null;
     description?: string | null;
-    manager?: string | null;
     active: boolean;
 };
 
@@ -58,7 +57,6 @@ export const BranchesList = () => {
             capacity_people: record.capacity_people ?? null,
             image: record.image ?? null,
             description: record.description ?? null,
-            manager: record.manager ?? null,
             active: checked,
         });
     };
@@ -91,7 +89,6 @@ export const BranchesList = () => {
                     title="Horario"
                     render={(value, record: BranchRow) => `${value} - ${record.closing_time}`}
                 />
-                <Table.Column dataIndex="manager" title="Gerente" render={(value) => value || "N/A"} />
                 <Table.Column
                     dataIndex="latitude"
                     title="Latitud"

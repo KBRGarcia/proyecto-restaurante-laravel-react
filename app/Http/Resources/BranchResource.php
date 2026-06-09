@@ -43,7 +43,6 @@ class BranchResource extends JsonResource
             'active_label' => $this->getActiveLabel(),
             'opening_date' => $this->opening_date,
             'opening_date_formatted' => $this->opening_date ? $this->opening_date->format('d/m/Y') : null,
-            'manager' => $this->manager,
             'full_address' => $this->getFullAddress(),
             'creation_date' => $this->creation_date,
             'creation_date_formatted' => $this->creation_date ? $this->creation_date->format('d/m/Y H:i') : null,
@@ -124,12 +123,6 @@ class BranchResource extends JsonResource
                 'key' => 'phone',
                 'label' => 'Teléfono',
                 'sortable' => false,
-                'visible' => true,
-            ],
-            [
-                'key' => 'manager',
-                'label' => 'Gerente',
-                'sortable' => true,
                 'visible' => true,
             ],
             [
@@ -237,16 +230,6 @@ class BranchResource extends JsonResource
                 'validation' => 'nullable|email|max:100',
                 'grid_cols' => 6,
                 'help_text' => 'Correo electrónico de la sucursal',
-            ],
-            [
-                'name' => 'manager',
-                'label' => 'Gerente',
-                'type' => 'text',
-                'placeholder' => 'Ej: Juan Pérez',
-                'required' => false,
-                'validation' => 'nullable|max:100',
-                'grid_cols' => 6,
-                'help_text' => 'Nombre del gerente responsable',
             ],
             [
                 'name' => 'address',

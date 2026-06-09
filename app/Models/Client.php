@@ -80,7 +80,7 @@ class Client extends Model
             'last_name' => ['required', 'string', 'max:100'],
             'identity_document' => ['nullable', 'string', 'max:30', $uniqueClient('identity_document')],
             'email' => ['nullable', 'email', 'max:100', $uniqueClient('email')],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'address' => ['nullable', 'string'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'origin' => ['required', Rule::in(ClientOrigin::values())],
@@ -105,6 +105,7 @@ class Client extends Model
             'origin.in' => 'El origen seleccionado no es valido.',
             'status.required' => 'El estado del cliente es obligatorio.',
             'status.in' => 'El estado seleccionado no es valido.',
+            'phone.regex' => 'El teléfono debe incluir un código válido y 7 dígitos.',
         ];
     }
 }

@@ -3,6 +3,7 @@ import { Form, Input, Select, Upload, Button, Avatar, Row, Col, Card } from "ant
 import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
+import { PhoneNumberField } from "@/components/form/PhoneNumberField";
 
 const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/;
 
@@ -97,9 +98,7 @@ export const UserEdit = () => {
                                             </Form.Item>
                                         </Col>
                                         <Col xs={24} sm={12}>
-                                            <Form.Item label="Número de Teléfono" name={["phone_number"]}>
-                                                <Input placeholder="+58 414 1234567" />
-                                            </Form.Item>
+                                            <PhoneNumberField name={["phone_number"]} label="Número de Teléfono" />
                                         </Col>
                                     </Row>
                                 </Col>

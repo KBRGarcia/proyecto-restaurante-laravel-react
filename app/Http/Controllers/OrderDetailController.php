@@ -192,8 +192,8 @@ class OrderDetailController extends Controller
         // Calcular el subtotal sumando todos los detalles
         $subtotal = OrderDetail::where('order_id', $orderId)->sum('subtotal');
 
-        // Calcular el total (subtotal + impuestos)
-        $total = $subtotal + ($order->taxes ?? 0);
+        // Calcular el total (subtotal + porcentaje de impuestos)
+        $total = Order::calculateTotal($subtotal, $order->taxes);
 
         // Actualizar la orden
         $order->update([

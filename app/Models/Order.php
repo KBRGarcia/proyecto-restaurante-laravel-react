@@ -320,6 +320,17 @@ class Order extends Model
     }
 
     /**
+     * Calculate order total from subtotal and tax percentage.
+     */
+    public static function calculateTotal(float|int|string $subtotal, float|int|string|null $taxPercentage = 0): float
+    {
+        $subtotalValue = (float) $subtotal;
+        $taxPercentageValue = (float) ($taxPercentage ?? 0);
+
+        return round($subtotalValue + ($subtotalValue * $taxPercentageValue / 100), 2);
+    }
+
+    /**
      * Get the validation rules for the Order model.
      *
      * @param bool $isUpdate Whether the validation is for an update operation
@@ -328,13 +339,23 @@ class Order extends Model
     public static function rules(bool $isUpdate = false): array
     {
         return [
-            'user_id' => ['nullable', 'exists:users,id'],
-            'client_id' => ['nullable', 'exists:clients,id'],
+            'user_id' => [
+                'nullable',
+                'exists:users,id',
+                'required_without:client_id',
+                Rule::prohibitedIf(fn () => request()->filled('client_id')),
+            ],
+            'client_id' => [
+                'nullable',
+                'exists:clients,id',
+                'required_without:user_id',
+                Rule::prohibitedIf(fn () => request()->filled('user_id')),
+            ],
             'branch_id' => ['nullable', 'exists:branches,id'],
             'status' => ['required', 'string', 'in:pending,preparing,ready,on_the_way,delivered,canceled'],
             'service_type' => ['required', 'string', 'in:delivery,pickup'],
             'subtotal' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'taxes' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'taxes' => ['nullable', 'numeric', 'min:0', 'max:100', 'regex:/^\d+(\.\d{1,2})?$/'],
             'total' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'delivery_address' => ['nullable', 'string', 'required_if:service_type,delivery'],
             'contact_phone' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
@@ -362,8 +383,12 @@ class Order extends Model
     public static function messages(): array
     {
         return [
+            'user_id.required_without' => 'Debe seleccionar un usuario o un cliente.',
             'user_id.exists' => 'El usuario seleccionado no existe.',
+            'user_id.prohibited' => 'No puede seleccionar usuario y cliente a la vez.',
+            'client_id.required_without' => 'Debe seleccionar un usuario o un cliente.',
             'client_id.exists' => 'El cliente seleccionado no existe.',
+            'client_id.prohibited' => 'No puede seleccionar usuario y cliente a la vez.',
             'branch_id.exists' => 'La sucursal seleccionada no existe.',
             'status.required' => 'El estado es obligatorio.',
             'status.in' => 'El estado seleccionado no es válido.',
@@ -375,6 +400,7 @@ class Order extends Model
             'subtotal.regex' => 'El subtotal debe tener como máximo 2 decimales.',
             'taxes.numeric' => 'Los impuestos deben ser un número.',
             'taxes.min' => 'Los impuestos deben ser mayor o igual a 0.',
+            'taxes.max' => 'El porcentaje de impuestos no debe exceder 100.',
             'taxes.regex' => 'Los impuestos deben tener como máximo 2 decimales.',
             'total.required' => 'El total es obligatorio.',
             'total.numeric' => 'El total debe ser un número.',

@@ -35,6 +35,26 @@ class EmployeeController extends Controller
             $query->whereHas('assignments', fn ($q) => $q->where('branch_id', $request->branch_id));
         }
 
+        if ($request->filled('position')) {
+            $query->whereHas('assignments', fn ($q) => $q
+                ->where('position', $request->position)
+                ->where('active', true));
+        }
+
+        if ($request->filled('positions')) {
+            $positions = array_filter(array_map('trim', explode(',', (string) $request->positions)));
+
+            if ($positions !== []) {
+                $query->whereHas('assignments', fn ($q) => $q
+                    ->whereIn('position', $positions)
+                    ->where('active', true));
+            }
+        }
+
+        if ($request->boolean('has_user')) {
+            $query->whereNotNull('user_id');
+        }
+
         $sortBy = $request->get('sort_by');
         $sortOrder = $request->get('sort_order');
         if (!$sortBy && $request->filled('_sort')) {

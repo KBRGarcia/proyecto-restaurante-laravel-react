@@ -165,7 +165,10 @@ class OrderController extends Controller
             }
 
             if (! isset($validated['total'])) {
-                $validated['total'] = $validated['subtotal'] + ($validated['taxes'] ?? 0);
+                $validated['total'] = Order::calculateTotal(
+                    $validated['subtotal'],
+                    $validated['taxes'] ?? 0,
+                );
             }
 
             return Order::create($validated);
@@ -263,7 +266,7 @@ class OrderController extends Controller
         if (isset($validated['subtotal']) || isset($validated['taxes'])) {
             $subtotal = $validated['subtotal'] ?? $order->subtotal;
             $taxes = $validated['taxes'] ?? $order->taxes;
-            $validated['total'] = $subtotal + $taxes;
+            $validated['total'] = Order::calculateTotal($subtotal, $taxes);
         }
 
         $order = DB::transaction(function () use ($order, $validated, $clientPayload) {
@@ -314,7 +317,7 @@ class OrderController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'client_id' => 'Debe indicar un cliente existente o los datos del comprador.',
+            'client_id' => 'Debe indicar un usuario, un cliente existente o los datos del comprador.',
         ]);
     }
 }

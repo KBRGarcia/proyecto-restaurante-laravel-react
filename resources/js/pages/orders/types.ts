@@ -30,7 +30,8 @@ export type OrderDetail = {
 
 export type OrderRecord = {
     id: number;
-    user_id: number;
+    user_id?: number | null;
+    client_id?: number | null;
     user?: OrderUser | null;
     branch?: OrderBranch | null;
     branch_id?: number | null;

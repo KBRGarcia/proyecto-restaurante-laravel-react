@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentCurrency;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Validation\Rule;
 
 class OrderDetail extends Model
 {
@@ -104,6 +106,52 @@ class OrderDetail extends Model
                 $orderDetail->subtotal = $orderDetail->quantity * $orderDetail->unit_price;
             }
         });
+    }
+
+    /**
+     * Get the validation rules for batch order detail operations.
+     *
+     * @return array<string, string|array>
+     */
+    public static function batchRules(): array
+    {
+        return [
+            'order_id' => ['required', 'exists:orders,id'],
+            'currency' => ['required', 'string', Rule::in(PaymentCurrency::values())],
+            'taxes' => ['nullable', 'numeric', 'min:0', 'max:100', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'delivery_address' => ['nullable', 'string'],
+            'subtotal' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'total' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.id' => ['nullable', 'integer', 'exists:order_details,id'],
+            'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
+            'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.unit_price' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'items.*.subtotal' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'items.*.product_notes' => ['nullable', 'string'],
+        ];
+    }
+
+    /**
+     * Get custom validation messages for batch operations.
+     *
+     * @return array<string, string>
+     */
+    public static function batchMessages(): array
+    {
+        return [
+            ...self::messages(),
+            'items.required' => 'Debe agregar al menos un producto.',
+            'items.min' => 'Debe agregar al menos un producto.',
+            'items.*.product_id.required' => 'El producto es obligatorio.',
+            'items.*.product_id.exists' => 'El producto seleccionado no existe.',
+            'items.*.quantity.required' => 'La cantidad es obligatoria.',
+            'items.*.quantity.min' => 'La cantidad debe ser al menos 1.',
+            'items.*.unit_price.required' => 'El precio unitario es obligatorio.',
+            'currency.required' => 'La moneda es obligatoria.',
+            'currency.in' => 'La moneda seleccionada no es válida.',
+            'taxes.max' => 'El porcentaje de impuestos no debe exceder 100.',
+        ];
     }
 
     /**

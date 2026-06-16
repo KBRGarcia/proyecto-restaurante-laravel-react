@@ -8,6 +8,8 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import { useShow } from "@refinedev/core";
+import { OrderInvoiceDownloadDropdown } from "@/components/buttons/OrderInvoiceDownloadDropdown";
+import { useOrderInvoiceImage } from "@/hooks/useOrderInvoiceImage";
 import {
     formatDateTimeLabel,
     getDescriptionsContentStyle,
@@ -50,6 +52,12 @@ export const OrdersShow = () => {
     const { data, isLoading } = query;
     const record = data?.data;
     const { token } = theme.useToken();
+    const {
+        contextHolder,
+        downloadInvoice,
+        exportingOrderId,
+        invoiceRenderer,
+    } = useOrderInvoiceImage();
 
     const currencySymbol = record?.currency === "nacional" ? "Bs." : "$";
     const formatMoney = (value?: number | string) => `${currencySymbol} ${Number(value || 0).toFixed(2)}`;
@@ -121,7 +129,24 @@ export const OrdersShow = () => {
     }
 
     return (
-        <Show isLoading={isLoading}>
+        <Show
+            isLoading={isLoading}
+            headerButtons={({ defaultButtons }) => (
+                <>
+                    {defaultButtons}
+                    {record?.id && (
+                        <OrderInvoiceDownloadDropdown
+                            orderId={record.id}
+                            loading={exportingOrderId === record.id}
+                            onDownload={downloadInvoice}
+                            shape="default"
+                        />
+                    )}
+                </>
+            )}
+        >
+            {contextHolder}
+            {invoiceRenderer}
             <Card style={getHeaderCardStyle("#fa541c", token)} bodyStyle={{ padding: "20px 24px" }}>
                 <Row gutter={[24, 16]} align="middle" justify="space-between">
                     <Col xs={24} md={12}>
@@ -203,7 +228,7 @@ export const OrdersShow = () => {
                                     <Descriptions.Item label="Método de Pago">{record?.payment_method || "No especificado"}</Descriptions.Item>
                                     <Descriptions.Item label="Moneda">{record?.currency_label || record?.currency || "N/A"}</Descriptions.Item>
                                     <Descriptions.Item label="Subtotal">{formatMoney(record?.subtotal)}</Descriptions.Item>
-                                    <Descriptions.Item label="Impuestos">{formatMoney(record?.taxes)}</Descriptions.Item>
+                                    <Descriptions.Item label="Impuestos">{Number(record?.taxes ?? 0).toFixed(2)}%</Descriptions.Item>
                                     <Descriptions.Item label="Total" span={2}>
                                         <Text strong style={{ fontSize: 16, color: "#52c41a" }}>{formatMoney(record?.total)}</Text>
                                     </Descriptions.Item>

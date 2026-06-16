@@ -1,22 +1,16 @@
 import { Create, useForm, useSelect } from "@refinedev/antd";
-import { Form, Input, Select, InputNumber, Row, Col, Card } from "antd";
+import { Form, Input, Select, Row, Col, Card } from "antd";
 import { useState } from "react";
 import { PhoneNumberField } from "@/components/form/PhoneNumberField";
-import { type CustomerType, getAssignedEmployeeLabel, getEmployeePositionFilters, useOrderTotalCalculation } from "./utils";
+import { type CustomerType, getAssignedEmployeeLabel, getEmployeeSelectFilters, useOrderContactPhone } from "./utils";
 
-// Componente para crear una orden
 export const OrdersCreate = () => {
-    // Hook para crear una orden
     const { formProps, saveButtonProps } = useForm();
-    // Estado para el tipo de cliente
     const [customerType, setCustomerType] = useState<CustomerType>("user");
-    // Estado para el tipo de servicio
     const serviceType = Form.useWatch("service_type", formProps.form) ?? "pickup";
 
-    // hook para calcular el total de la orden
-    useOrderTotalCalculation(formProps.form);
+    useOrderContactPhone(formProps.form, customerType);
 
-    // Select para seleccionar un usuario
     const { selectProps: userSelectProps } = useSelect({
         resource: "users",
         optionLabel: (item) => {
@@ -30,7 +24,6 @@ export const OrdersCreate = () => {
         ],
     });
 
-    // Select para seleccionar un cliente
     const { selectProps: clientSelectProps } = useSelect({
         resource: "clients",
         optionLabel: (item) => {
@@ -42,7 +35,6 @@ export const OrdersCreate = () => {
         optionValue: "id",
     });
 
-    // Select para seleccionar un empleado
     const { selectProps: employeeSelectProps } = useSelect({
         resource: "employees",
         optionLabel: (item) => {
@@ -51,42 +43,38 @@ export const OrdersCreate = () => {
             const summary = employee.branches_summary ? ` — ${employee.branches_summary}` : "";
             return `${name}${summary}`;
         },
-        optionValue: "user_id",
-        filters: [
-            ...getEmployeePositionFilters(serviceType),
-            { field: "has_user", operator: "eq", value: "1" },
-            { field: "status", operator: "eq", value: "active" },
-        ],
+        optionValue: "id",
+        filters: getEmployeeSelectFilters(serviceType),
+        pagination: {
+            mode: "off",
+        },
+        queryOptions: {
+            queryKey: ["order-assigned-employee", serviceType],
+        },
     });
 
-    // Funcion para cambiar el tipo de cliente
     const handleCustomerTypeChange = (value: CustomerType) => {
         setCustomerType(value);
         formProps.form?.setFieldsValue({
             user_id: undefined,
             client_id: undefined,
+            contact_phone: undefined,
         });
     };
 
-    // Funcion para cambiar el tipo de servicio
     const handleServiceTypeChange = (value: string) => {
         formProps.form?.setFieldsValue({
             service_type: value,
             assigned_employee_id: undefined,
-            ...(value === "pickup" ? { delivery_address: undefined } : {}),
         });
     };
 
-    // Verifica si el servicio es pickup
-    const isPickup = serviceType === "pickup";
-
-    // Renderiza el componente
     return (
         <Create saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
                 <Row gutter={[16, 16]} align="stretch">
                     <Col xs={24} lg={14}>
-                        <Card title="Datos de la orden" style={{ height: "70%" }}>
+                        <Card title="Datos de la orden">
                             <Row gutter={16}>
                                 <Col xs={24} sm={8}>
                                     <Form.Item label="Tipo de cliente" required>
@@ -180,58 +168,14 @@ export const OrdersCreate = () => {
                         </Card>
                     </Col>
 
-                    <Col xs={24} lg={10}>
-                        <Card title="Detalles de la orden" style={{ height: "100%"}}>
-                            <Row gutter={16}>
-                                <Col xs={24} sm={6}>
-                                    <Form.Item label="Moneda" name="currency" rules={[{ required: true }]} initialValue="internacional">
-                                        <Select
-                                            options={[
-                                                { value: "internacional", label: "Dólares ($)" },
-                                                { value: "nacional", label: "Bolívares (Bs.)" },
-                                            ]}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={24} sm={6}>
-                                    <Form.Item label="Subtotal" name="subtotal" rules={[{ required: true, message: "El subtotal es obligatorio" }]}>
-                                        <InputNumber min={0} step={0.01} style={{ width: "100%" }} />
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={24} sm={6}>
-                                    <Form.Item label="Impuestos (%)" name="taxes" initialValue={0}>
-                                        <InputNumber min={0} max={100} step={0.01} style={{ width: "100%" }} />
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={24} sm={6}>
-                                    <Form.Item label="Total" name="total" rules={[{ required: true, message: "El total es obligatorio" }]}>
-                                        <InputNumber min={0} step={0.01} style={{ width: "100%" }} readOnly />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-
-                            <Row gutter={16}>
-                                <Col xs={24} sm={24}>
-                                    <Form.Item
-                                        label="Dirección de Entrega"
-                                        name="delivery_address"
-                                        rules={
-                                            isPickup
-                                                ? []
-                                                : [{ required: true, message: "La dirección de entrega es obligatoria para delivery" }]
-                                        }>
-                                        <Input placeholder="Requerido si es Delivery" disabled={isPickup} />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-
-                            <Row gutter={16}>
-                                <Col xs={24} sm={24}>
-                                    <Form.Item label="Notas Especiales" name="special_notes">
-                                        <Input.TextArea placeholder="Sin cebolla, extra salsa..." rows={2} />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
+                    <Col xs={24} lg={10} style={{ alignSelf: "flex-start" }}>
+                        <Card title="Notas">
+                            <Form.Item label="Notas Especiales" name="special_notes">
+                                <Input.TextArea
+                                    placeholder="Sin cebolla, extra salsa..."
+                                    autoSize={{ minRows: 2 }}
+                                />
+                            </Form.Item>
                         </Card>
                     </Col>
                 </Row>

@@ -39,15 +39,17 @@ export const useOrderInvoiceImage = () => {
     );
 
     const downloadInvoice = async (
-        record: OrderRecord,
+        orderOrId: OrderRecord | number,
         format: InvoiceImageFormat,
     ) => {
+        const orderId = typeof orderOrId === 'number' ? orderOrId : orderOrId.id;
+
         try {
-            setExportingOrderId(record.id);
+            setExportingOrderId(orderId);
 
             const { data } = await getDataProvider().getOne<OrderRecord>({
                 resource: 'orders',
-                id: record.id,
+                id: orderId,
             });
 
             setInvoiceOrder(data);
@@ -72,9 +74,9 @@ export const useOrderInvoiceImage = () => {
                           quality: 0.95,
                       });
 
-            downloadDataUrl(dataUrl, record.id, format);
+            downloadDataUrl(dataUrl, orderId, format);
             messageApi.success(
-                `Factura #${record.id} descargada en ${format.toUpperCase()}.`,
+                `Factura #${orderId} descargada en ${format.toUpperCase()}.`,
             );
         } catch (error) {
             const description =

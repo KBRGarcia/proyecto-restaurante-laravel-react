@@ -2,73 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OrderDetailResource;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class OrderDetailController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource grouped by order.
      */
     public function index(Request $request)
     {
-        $query = OrderDetail::with(['order.user', 'product.category']);
+        $query = Order::query()
+            ->with(['user', 'orderDetails'])
+            ->whereHas('orderDetails');
 
-        // Búsqueda general
         if ($request->filled('search') || $request->filled('q')) {
             $search = $request->get('search', $request->get('q'));
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%{$search}%")
-                    ->orWhere('product_notes', 'like', "%{$search}%")
-                    ->orWhereHas('product', function ($productQuery) use ($search) {
-                        $productQuery->where('name', 'like', "%{$search}%");
+                    ->orWhere('delivery_address', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('order', function ($orderQuery) use ($search) {
-                        $orderQuery->where('id', 'like', "%{$search}%");
+                    ->orWhereHas('orderDetails.product', function ($productQuery) use ($search) {
+                        $productQuery->where('name', 'like', "%{$search}%");
                     });
             });
         }
 
-        // Filtro por orden
         if ($request->filled('order_id')) {
-            $query->where('order_id', $request->order_id);
+            $query->where('id', $request->order_id);
         }
 
-        // Filtro por producto
-        if ($request->filled('product_id')) {
-            $query->where('product_id', $request->product_id);
-        }
-
-        // Ordenamiento
         $sortBy = $request->get('sort_by');
         $sortOrder = $request->get('sort_order');
-        if (!$sortBy && $request->filled('_sort')) {
+        if (! $sortBy && $request->filled('_sort')) {
             $sortBy = $request->get('_sort');
             $sortOrder = $request->get('_order', 'asc');
         }
         $sortBy = $sortBy ?: 'id';
         $sortOrder = $sortOrder ?: 'desc';
-        if (str_contains($sortBy, ',')) {
-            $sortFields = explode(',', $sortBy);
-            $sortOrders = explode(',', (string) $sortOrder);
-            foreach ($sortFields as $index => $field) {
-                $order = $sortOrders[$index] ?? $sortOrders[0] ?? 'asc';
-                $query->orderBy($field, $order);
-            }
-        } else {
-            $query->orderBy($sortBy, $sortOrder);
+
+        if (! in_array($sortBy, ['id', 'order_date', 'total', 'subtotal', 'created_at'], true)) {
+            $sortBy = 'id';
         }
 
-        // Paginación
-        // Paginación para Refine
+        $query->orderBy($sortBy, $sortOrder);
+
         $start = $request->get('_start', 0);
         $end = $request->get('_end', 10);
         $total = $query->count();
-        $orderDetails = $query->offset($start)->limit($end - $start)->get();
+        $orders = $query->offset($start)->limit($end - $start)->get();
 
-        return response()->json($orderDetails)->header('x-total-count', $total);
+        $data = $orders->map(fn (Order $order) => $this->formatOrderSummary($order));
+
+        return response()->json($data)->header('x-total-count', $total);
     }
 
     /**
@@ -80,125 +73,243 @@ class OrderDetailController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store order details for an order in a single request.
      */
     public function store(Request $request)
     {
-        // Validación
         $validated = $request->validate(
-            OrderDetail::rules(),
-            OrderDetail::messages()
+            OrderDetail::batchRules(),
+            OrderDetail::batchMessages(),
         );
 
-        // El subtotal se calcula automáticamente en el modelo
-        // pero si viene en la petición, lo respetamos
-        if (!isset($validated['subtotal']) && isset($validated['quantity']) && isset($validated['unit_price'])) {
-            $validated['subtotal'] = $validated['quantity'] * $validated['unit_price'];
+        $this->validateDeliveryAddress($validated);
+
+        $order = Order::findOrFail($validated['order_id']);
+
+        if ($order->orderDetails()->exists()) {
+            throw ValidationException::withMessages([
+                'order_id' => 'La orden seleccionada ya tiene detalles registrados. Utilice editar en su lugar.',
+            ]);
         }
 
-        // Crear el detalle de orden
-        $orderDetail = OrderDetail::create($validated);
+        DB::transaction(function () use ($order, $validated) {
+            $this->syncItems($order, $validated['items']);
+            $this->updateOrderFinancials($order, $validated);
+        });
 
-        // Actualizar los totales de la orden
-        $this->updateOrderTotals($orderDetail->order_id);
-
-        return response()->json($orderDetail, 201);
+        return response()->json($this->formatOrderDetails($order->fresh(['user', 'orderDetails.product'])), 201);
     }
 
     /**
-     * Display the specified resource.
+     * Display all details for the given order.
      */
-    public function show(OrderDetail $orderDetail)
+    public function show(int $order_detail)
     {
-        $orderDetail->load(['order.user', 'product.category']);
+        $order = Order::with(['user', 'orderDetails.product'])->findOrFail($order_detail);
 
-        return response()->json($orderDetail);
+        if ($order->orderDetails->isEmpty()) {
+            abort(404);
+        }
+
+        return response()->json($this->formatOrderDetails($order));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(OrderDetail $orderDetail)
+    public function edit(int $order_detail)
     {
-        $orderDetail->load(['order', 'product']);
-
         return response()->json(['message' => 'Not used in API']);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update all order details for the given order.
      */
-    public function update(Request $request, OrderDetail $orderDetail)
+    public function update(Request $request, int $order_detail)
     {
-        // Validación
+        $order = Order::with('orderDetails')->findOrFail($order_detail);
+
         $validated = $request->validate(
-            OrderDetail::rules(true),
-            OrderDetail::messages()
+            OrderDetail::batchRules(),
+            OrderDetail::batchMessages(),
         );
 
-        // El subtotal se calcula automáticamente en el modelo
-        // pero si viene en la petición, lo respetamos
-        if (!isset($validated['subtotal']) && isset($validated['quantity']) && isset($validated['unit_price'])) {
-            $validated['subtotal'] = $validated['quantity'] * $validated['unit_price'];
+        if ((int) $validated['order_id'] !== $order->id) {
+            throw ValidationException::withMessages([
+                'order_id' => 'No se puede cambiar la orden de un detalle existente.',
+            ]);
         }
 
-        // Guardar el order_id anterior por si cambia
-        $previousOrderId = $orderDetail->order_id;
+        $this->validateDeliveryAddress($validated, $order);
 
-        // Actualizar el detalle de orden
-        $orderDetail->update($validated);
+        DB::transaction(function () use ($order, $validated) {
+            $this->syncItems($order, $validated['items']);
+            $this->updateOrderFinancials($order, $validated);
+        });
 
-        // Actualizar los totales de la orden actual
-        $this->updateOrderTotals($orderDetail->order_id);
-
-        // Si cambió la orden, actualizar también la anterior
-        if ($previousOrderId !== $orderDetail->order_id) {
-            $this->updateOrderTotals($previousOrderId);
-        }
-
-        return response()->json($orderDetail, 200);
+        return response()->json($this->formatOrderDetails($order->fresh(['user', 'orderDetails.product'])));
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove all order details for the given order.
      */
-    public function destroy(OrderDetail $orderDetail)
+    public function destroy(int $order_detail)
     {
-        $orderId = $orderDetail->order_id;
+        $order = Order::with('orderDetails')->findOrFail($order_detail);
 
-        // Eliminar el detalle
-        $orderDetail->delete();
-
-        // Actualizar los totales de la orden
-        $this->updateOrderTotals($orderId);
+        DB::transaction(function () use ($order) {
+            $order->orderDetails()->delete();
+            $order->update([
+                'subtotal' => 0,
+                'total' => 0,
+                'taxes' => 0,
+                'delivery_address' => $order->isPickup() ? null : $order->delivery_address,
+            ]);
+        });
 
         return response()->json(null, 204);
     }
 
     /**
-     * Update the totals of an order based on its details.
-     *
-     * @param int $orderId
-     * @return void
+     * @param  array<string, mixed>  $validated
      */
-    private function updateOrderTotals(int $orderId): void
+    private function validateDeliveryAddress(array $validated, ?Order $order = null): void
     {
-        $order = Order::find($orderId);
+        $serviceType = $order?->service_type;
 
-        if (!$order) {
-            return;
+        if ($serviceType === null && isset($validated['order_id'])) {
+            $serviceType = Order::query()->whereKey($validated['order_id'])->value('service_type');
         }
 
-        // Calcular el subtotal sumando todos los detalles
-        $subtotal = OrderDetail::where('order_id', $orderId)->sum('subtotal');
+        if ($serviceType === Order::SERVICE_TYPE_DELIVERY && empty($validated['delivery_address'])) {
+            throw ValidationException::withMessages([
+                'delivery_address' => 'La dirección de entrega es obligatoria para pedidos a domicilio.',
+            ]);
+        }
+    }
 
-        // Calcular el total (subtotal + porcentaje de impuestos)
-        $total = Order::calculateTotal($subtotal, $order->taxes);
+    /**
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    private function syncItems(Order $order, array $items): void
+    {
+        $existingIds = $order->orderDetails()->pluck('id')->all();
+        $keptIds = [];
 
-        // Actualizar la orden
+        foreach ($items as $item) {
+            $payload = [
+                'product_id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'unit_price' => $item['unit_price'],
+                'subtotal' => $item['subtotal'] ?? ($item['quantity'] * $item['unit_price']),
+                'product_notes' => $item['product_notes'] ?? null,
+            ];
+
+            if (! empty($item['id'])) {
+                $detail = $order->orderDetails()->whereKey($item['id'])->first();
+
+                if ($detail) {
+                    $detail->update($payload);
+                    $keptIds[] = $detail->id;
+
+                    continue;
+                }
+            }
+
+            $created = $order->orderDetails()->create($payload);
+            $keptIds[] = $created->id;
+        }
+
+        $idsToDelete = array_diff($existingIds, $keptIds);
+
+        if ($idsToDelete !== []) {
+            OrderDetail::query()->whereIn('id', $idsToDelete)->delete();
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function updateOrderFinancials(Order $order, array $validated): void
+    {
+        $subtotal = OrderDetail::query()
+            ->where('order_id', $order->id)
+            ->sum('subtotal');
+
+        $taxes = (float) ($validated['taxes'] ?? $order->taxes ?? 0);
+        $total = Order::calculateTotal($subtotal, $taxes);
+
         $order->update([
+            'currency' => $validated['currency'],
+            'taxes' => $taxes,
             'subtotal' => $subtotal,
             'total' => $total,
+            'delivery_address' => $order->service_type === Order::SERVICE_TYPE_DELIVERY
+                ? ($validated['delivery_address'] ?? null)
+                : null,
         ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function formatOrderSummary(Order $order): array
+    {
+        return [
+            'id' => $order->id,
+            'order_id' => $order->id,
+            'service_type' => $order->service_type,
+            'currency' => $order->currency,
+            'subtotal' => $order->subtotal,
+            'taxes' => $order->taxes,
+            'total' => $order->total,
+            'delivery_address' => $order->delivery_address,
+            'items_count' => $order->orderDetails->count(),
+            'user' => $order->user ? [
+                'id' => $order->user->id,
+                'name' => $order->user->name,
+                'last_name' => $order->user->last_name,
+            ] : null,
+            'created_at' => $order->created_at,
+            'updated_at' => $order->updated_at,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function formatOrderDetails(Order $order): array
+    {
+        return [
+            'id' => $order->id,
+            'order_id' => $order->id,
+            'service_type' => $order->service_type,
+            'currency' => $order->currency,
+            'taxes' => $order->taxes,
+            'subtotal' => $order->subtotal,
+            'total' => $order->total,
+            'delivery_address' => $order->delivery_address,
+            'items' => $order->orderDetails->map(fn (OrderDetail $detail) => [
+                'id' => $detail->id,
+                'product_id' => $detail->product_id,
+                'quantity' => $detail->quantity,
+                'unit_price' => $detail->unit_price,
+                'subtotal' => $detail->subtotal,
+                'product_notes' => $detail->product_notes,
+                'product' => $detail->relationLoaded('product') && $detail->product ? [
+                    'id' => $detail->product->id,
+                    'name' => $detail->product->name,
+                    'description' => $detail->product->description,
+                    'price' => $detail->product->price,
+                ] : null,
+            ])->values()->all(),
+            'user' => $order->user ? [
+                'id' => $order->user->id,
+                'name' => $order->user->name,
+                'last_name' => $order->user->last_name,
+            ] : null,
+            'created_at' => $order->created_at,
+            'updated_at' => $order->updated_at,
+        ];
     }
 }

@@ -132,7 +132,7 @@ class Order extends Model
      */
     public function assignedEmployee(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_employee_id');
+        return $this->belongsTo(Employee::class, 'assigned_employee_id');
     }
 
     /**
@@ -354,17 +354,17 @@ class Order extends Model
             'branch_id' => ['nullable', 'exists:branches,id'],
             'status' => ['required', 'string', 'in:pending,preparing,ready,on_the_way,delivered,canceled'],
             'service_type' => ['required', 'string', 'in:delivery,pickup'],
-            'subtotal' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'subtotal' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'taxes' => ['nullable', 'numeric', 'min:0', 'max:100', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'total' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'delivery_address' => ['nullable', 'string', 'required_if:service_type,delivery'],
+            'total' => ['nullable', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'delivery_address' => ['nullable', 'string'],
             'contact_phone' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'special_notes' => ['nullable', 'string'],
             'payment_method' => ['nullable', 'string', 'max:50', Rule::in(PaymentMethod::values())],
-            'currency' => ['required', 'string', Rule::in(PaymentCurrency::values())],
+            'currency' => ['nullable', 'string', Rule::in(PaymentCurrency::values())],
             'national_payment_data' => ['nullable', 'array'],
             'estimated_delivery_date' => ['nullable', 'date'],
-            'assigned_employee_id' => ['nullable', 'exists:users,id'],
+            'assigned_employee_id' => ['nullable', 'exists:employees,id'],
             'client' => ['nullable', 'array'],
             'client.first_name' => ['nullable', 'string', 'max:100'],
             'client.last_name' => ['nullable', 'string', 'max:100'],

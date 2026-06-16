@@ -59,13 +59,13 @@ class OrderResource extends JsonResource
             'estimated_delivery_date' => $this->estimated_delivery_date,
             'estimated_delivery_date_formatted' => $this->estimated_delivery_date ? $this->estimated_delivery_date->format('d/m/Y H:i') : null,
             'assigned_employee_id' => $this->assigned_employee_id,
-            'assigned_employee_name' => $this->assignedEmployee?->full_name ?? $this->assignedEmployee?->name . ' ' . $this->assignedEmployee?->last_name ?? null,
+            'assigned_employee_name' => $this->assignedEmployee?->full_name,
             'assigned_employee' => $this->whenLoaded('assignedEmployee', function () {
                 return [
                     'id' => $this->assignedEmployee->id,
-                    'name' => $this->assignedEmployee->name,
+                    'name' => $this->assignedEmployee->first_name,
                     'last_name' => $this->assignedEmployee->last_name,
-                    'full_name' => $this->assignedEmployee->name . ' ' . $this->assignedEmployee->last_name,
+                    'full_name' => $this->assignedEmployee->full_name,
                     'email' => $this->assignedEmployee->email,
                 ];
             }),

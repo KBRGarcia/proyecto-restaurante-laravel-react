@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->comment('identificador del producto');
             $table->integer('quantity')->comment('cantidad del producto');
             $table->decimal('unit_price', 10, 2)->comment('precio unitario del producto');
-            $table->decimal('subtotal', 10, 2)->comment('subtotal del detalle');
+            $table->decimal('subtotal', 10, 2)->comment('subtotal del detalle (cantidad x precio unitario)');
             $table->text('product_notes')->nullable()->comment('notas del producto');
             $table->timestamps();
         });

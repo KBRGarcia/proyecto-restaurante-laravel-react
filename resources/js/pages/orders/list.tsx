@@ -3,11 +3,11 @@ import {
     CustomEditButton,
     CustomShowButton,
 } from '@/components/buttons/CustomActionButtons';
+import { OrderInvoiceDownloadDropdown } from '@/components/buttons/OrderInvoiceDownloadDropdown';
 import { useOrderInvoiceImage } from '@/hooks/useOrderInvoiceImage';
-import { DownloadOutlined } from '@ant-design/icons';
 import { DateField, List, useTable } from '@refinedev/antd';
-import { Button, Dropdown, Space, Table, Tag, Typography } from 'antd';
-import type { InvoiceImageFormat, OrderRecord } from './types';
+import { Space, Table, Tag, Typography } from 'antd';
+import type { OrderRecord } from './types';
 
 const { Text } = Typography;
 
@@ -70,16 +70,6 @@ export const OrdersList = () => {
                             : `Usuario #${record.user_id}`
                     }
                 />
-                <Table.Column<OrderRecord>
-                    dataIndex="total"
-                    title="Total"
-                    render={(value, record) => (
-                        <Text strong>
-                            {record.currency === 'nacional' ? 'Bs.' : '$'}{' '}
-                            {Number(value).toFixed(2)}
-                        </Text>
-                    )}
-                />
                 <Table.Column
                     dataIndex="service_type"
                     title="Tipo de Servicio"
@@ -105,34 +95,11 @@ export const OrdersList = () => {
                         <Space>
                             <CustomShowButton recordItemId={record.id} />
                             <CustomEditButton recordItemId={record.id} />
-                            <Dropdown
-                                menu={{
-                                    items: [
-                                        {
-                                            key: 'png',
-                                            label: 'Descargar factura PNG',
-                                        },
-                                        {
-                                            key: 'jpg',
-                                            label: 'Descargar factura JPG',
-                                        },
-                                    ],
-                                    onClick: ({ key }) =>
-                                        downloadInvoice(
-                                            record,
-                                            key as InvoiceImageFormat,
-                                        ),
-                                }}
-                                trigger={['click']}
-                            >
-                                <Button
-                                    type="primary"
-                                    shape="circle"
-                                    icon={<DownloadOutlined />}
-                                    loading={exportingOrderId === record.id}
-                                    aria-label={`Descargar factura de la orden ${record.id}`}
-                                />
-                            </Dropdown>
+                            <OrderInvoiceDownloadDropdown
+                                orderId={record.id}
+                                loading={exportingOrderId === record.id}
+                                onDownload={downloadInvoice}
+                            />
                             <CustomDeleteButton recordItemId={record.id} />
                         </Space>
                     )}

@@ -19,9 +19,9 @@ return new class extends Migration
             $table->foreignId('branch_id')->nullable()->constrained('branches')->nullOnDelete()->comment('sucursal que prepara o despacha la orden');
             $table->enum('status', ['pending', 'preparing', 'ready', 'on_the_way', 'delivered', 'canceled'])->default('pending')->comment('estado de la orden');
             $table->enum('service_type', ['delivery', 'pickup'])->comment('tipo de servicio');
-            $table->decimal('subtotal', 10, 2)->comment('subtotal de la orden');
-            $table->decimal('taxes', 10, 2)->default(0)->comment('impuestos de la orden');
-            $table->decimal('total', 10, 2)->comment('total de la orden');
+            $table->decimal('subtotal', 10, 2)->default(0)->comment('subtotal de la orden (calculado desde los detalles)');
+            $table->decimal('taxes', 10, 2)->default(0)->comment('porcentaje de impuestos de la orden');
+            $table->decimal('total', 10, 2)->default(0)->comment('total de la orden (calculado desde los detalles)');
             $table->text('delivery_address')->nullable()->comment('dirección de entrega');
             $table->string('contact_phone', 11)->nullable()->comment('teléfono de contacto (código + 7 dígitos)');
             $table->text('special_notes')->nullable()->comment('notas especiales');
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->json('national_payment_data')->nullable()->comment('datos de pago nacional');
             $table->timestamp('order_date')->useCurrent()->comment('fecha de la orden');
             $table->timestamp('estimated_delivery_date')->nullable()->comment('fecha de entrega estimada');
-            $table->foreignId('assigned_employee_id')->nullable()->constrained('users')->nullOnDelete()->comment('identificador del empleado asignado');
+            $table->foreignId('assigned_employee_id')->nullable()->constrained('employees')->nullOnDelete()->comment('identificador del empleado asignado');
             $table->timestamp('pending_date')->nullable()->comment('fecha de creación de la orden');
             $table->timestamp('preparing_date')->nullable()->comment('fecha de inicio de la preparación');
             $table->timestamp('ready_date')->nullable()->comment('fecha de finalización de la preparación');

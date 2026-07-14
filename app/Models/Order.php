@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Enums\PaymentMethod;
 use App\Enums\PaymentCurrency;
+use App\Enums\PaymentStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,9 +58,7 @@ class Order extends Model
         'delivery_address',
         'contact_phone',
         'special_notes',
-        'payment_method',
         'currency',
-        'national_payment_data',
         'order_date',
         'estimated_delivery_date',
         'assigned_employee_id',
@@ -90,7 +88,6 @@ class Order extends Model
         'subtotal' => 'decimal:2',
         'taxes' => 'decimal:2',
         'total' => 'decimal:2',
-        'national_payment_data' => 'array',
         'order_date' => 'datetime',
         'estimated_delivery_date' => 'datetime',
         'pending_date' => 'datetime',
@@ -102,6 +99,36 @@ class Order extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * Método de pago principal derivado de order_payments (fuente de verdad).
+     */
+    public function getPaymentMethodAttribute(): ?string
+    {
+        $payment = $this->relationLoaded('orderPayments')
+            ? $this->orderPayments
+                ->filter(fn (OrderPayment $payment) => in_array(
+                    $payment->status instanceof PaymentStatus
+                        ? $payment->status->value
+                        : (string) $payment->status,
+                    [PaymentStatus::Pending->value, PaymentStatus::Confirmed->value],
+                    true
+                ))
+                ->sortByDesc('id')
+                ->first()
+            : $this->orderPayments()
+                ->whereIn('status', [PaymentStatus::Pending->value, PaymentStatus::Confirmed->value])
+                ->latest('id')
+                ->first();
+
+        if ($payment === null) {
+            return null;
+        }
+
+        return $payment->method instanceof \BackedEnum
+            ? $payment->method->value
+            : (string) $payment->method;
+    }
 
     /**
      * Get the user (customer) that owns the order.
@@ -360,9 +387,7 @@ class Order extends Model
             'delivery_address' => ['nullable', 'string'],
             'contact_phone' => ['nullable', 'string', 'regex:' . \App\Enums\PhoneAreaCode::validationPattern()],
             'special_notes' => ['nullable', 'string'],
-            'payment_method' => ['nullable', 'string', 'max:50', Rule::in(PaymentMethod::values())],
             'currency' => ['nullable', 'string', Rule::in(PaymentCurrency::values())],
-            'national_payment_data' => ['nullable', 'array'],
             'estimated_delivery_date' => ['nullable', 'date'],
             'assigned_employee_id' => ['nullable', 'exists:employees,id'],
             'client' => ['nullable', 'array'],
@@ -411,12 +436,8 @@ class Order extends Model
             'contact_phone.string' => 'El teléfono de contacto debe ser una cadena de texto.',
             'contact_phone.regex' => 'El teléfono de contacto debe incluir un código válido y 7 dígitos.',
             'special_notes.string' => 'Las notas especiales deben ser una cadena de texto.',
-            'payment_method.string' => 'El método de pago debe ser una cadena de texto.',
-            'payment_method.max' => 'El método de pago no debe exceder los 50 caracteres.',
-            'payment_method.in' => 'El método de pago seleccionado no es válido.',
             'currency.required' => 'La moneda es obligatoria.',
             'currency.in' => 'La moneda seleccionada no es válida.',
-            'national_payment_data.array' => 'Los datos de pago nacional deben ser un arreglo.',
             'estimated_delivery_date.date' => 'La fecha de entrega estimada debe ser una fecha válida.',
             'assigned_employee_id.exists' => 'El empleado asignado seleccionado no existe.',
         ];

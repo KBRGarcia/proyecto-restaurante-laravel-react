@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\OrderPaymentController::index
-* @see app/Http/Controllers/OrderPaymentController.php:17
+* @see app/Http/Controllers/OrderPaymentController.php:23
 * @route '/api/order-payments'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::index
-* @see app/Http/Controllers/OrderPaymentController.php:17
+* @see app/Http/Controllers/OrderPaymentController.php:23
 * @route '/api/order-payments'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::index
-* @see app/Http/Controllers/OrderPaymentController.php:17
+* @see app/Http/Controllers/OrderPaymentController.php:23
 * @route '/api/order-payments'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::index
-* @see app/Http/Controllers/OrderPaymentController.php:17
+* @see app/Http/Controllers/OrderPaymentController.php:23
 * @route '/api/order-payments'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::index
-* @see app/Http/Controllers/OrderPaymentController.php:17
+* @see app/Http/Controllers/OrderPaymentController.php:23
 * @route '/api/order-payments'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::index
-* @see app/Http/Controllers/OrderPaymentController.php:17
+* @see app/Http/Controllers/OrderPaymentController.php:23
 * @route '/api/order-payments'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::index
-* @see app/Http/Controllers/OrderPaymentController.php:17
+* @see app/Http/Controllers/OrderPaymentController.php:23
 * @route '/api/order-payments'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::store
-* @see app/Http/Controllers/OrderPaymentController.php:71
+* @see app/Http/Controllers/OrderPaymentController.php:77
 * @route '/api/order-payments'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +97,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::store
-* @see app/Http/Controllers/OrderPaymentController.php:71
+* @see app/Http/Controllers/OrderPaymentController.php:77
 * @route '/api/order-payments'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::store
-* @see app/Http/Controllers/OrderPaymentController.php:71
+* @see app/Http/Controllers/OrderPaymentController.php:77
 * @route '/api/order-payments'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +116,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::store
-* @see app/Http/Controllers/OrderPaymentController.php:71
+* @see app/Http/Controllers/OrderPaymentController.php:77
 * @route '/api/order-payments'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +126,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::store
-* @see app/Http/Controllers/OrderPaymentController.php:71
+* @see app/Http/Controllers/OrderPaymentController.php:77
 * @route '/api/order-payments'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,7 +138,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::show
-* @see app/Http/Controllers/OrderPaymentController.php:83
+* @see app/Http/Controllers/OrderPaymentController.php:92
 * @route '/api/order-payments/{order_payment}'
 */
 export const show = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -153,7 +153,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::show
-* @see app/Http/Controllers/OrderPaymentController.php:83
+* @see app/Http/Controllers/OrderPaymentController.php:92
 * @route '/api/order-payments/{order_payment}'
 */
 show.url = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -186,7 +186,7 @@ show.url = (args: { order_payment: number | { id: number } } | [order_payment: n
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::show
-* @see app/Http/Controllers/OrderPaymentController.php:83
+* @see app/Http/Controllers/OrderPaymentController.php:92
 * @route '/api/order-payments/{order_payment}'
 */
 show.get = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -196,7 +196,7 @@ show.get = (args: { order_payment: number | { id: number } } | [order_payment: n
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::show
-* @see app/Http/Controllers/OrderPaymentController.php:83
+* @see app/Http/Controllers/OrderPaymentController.php:92
 * @route '/api/order-payments/{order_payment}'
 */
 show.head = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -206,7 +206,7 @@ show.head = (args: { order_payment: number | { id: number } } | [order_payment: 
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::show
-* @see app/Http/Controllers/OrderPaymentController.php:83
+* @see app/Http/Controllers/OrderPaymentController.php:92
 * @route '/api/order-payments/{order_payment}'
 */
 const showForm = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -216,7 +216,7 @@ const showForm = (args: { order_payment: number | { id: number } } | [order_paym
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::show
-* @see app/Http/Controllers/OrderPaymentController.php:83
+* @see app/Http/Controllers/OrderPaymentController.php:92
 * @route '/api/order-payments/{order_payment}'
 */
 showForm.get = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -226,7 +226,7 @@ showForm.get = (args: { order_payment: number | { id: number } } | [order_paymen
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::show
-* @see app/Http/Controllers/OrderPaymentController.php:83
+* @see app/Http/Controllers/OrderPaymentController.php:92
 * @route '/api/order-payments/{order_payment}'
 */
 showForm.head = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -243,7 +243,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::update
-* @see app/Http/Controllers/OrderPaymentController.php:91
+* @see app/Http/Controllers/OrderPaymentController.php:100
 * @route '/api/order-payments/{order_payment}'
 */
 export const update = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -258,7 +258,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::update
-* @see app/Http/Controllers/OrderPaymentController.php:91
+* @see app/Http/Controllers/OrderPaymentController.php:100
 * @route '/api/order-payments/{order_payment}'
 */
 update.url = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -291,7 +291,7 @@ update.url = (args: { order_payment: number | { id: number } } | [order_payment:
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::update
-* @see app/Http/Controllers/OrderPaymentController.php:91
+* @see app/Http/Controllers/OrderPaymentController.php:100
 * @route '/api/order-payments/{order_payment}'
 */
 update.put = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -301,7 +301,7 @@ update.put = (args: { order_payment: number | { id: number } } | [order_payment:
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::update
-* @see app/Http/Controllers/OrderPaymentController.php:91
+* @see app/Http/Controllers/OrderPaymentController.php:100
 * @route '/api/order-payments/{order_payment}'
 */
 update.patch = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -311,7 +311,7 @@ update.patch = (args: { order_payment: number | { id: number } } | [order_paymen
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::update
-* @see app/Http/Controllers/OrderPaymentController.php:91
+* @see app/Http/Controllers/OrderPaymentController.php:100
 * @route '/api/order-payments/{order_payment}'
 */
 const updateForm = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -326,7 +326,7 @@ const updateForm = (args: { order_payment: number | { id: number } } | [order_pa
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::update
-* @see app/Http/Controllers/OrderPaymentController.php:91
+* @see app/Http/Controllers/OrderPaymentController.php:100
 * @route '/api/order-payments/{order_payment}'
 */
 updateForm.put = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -341,7 +341,7 @@ updateForm.put = (args: { order_payment: number | { id: number } } | [order_paym
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::update
-* @see app/Http/Controllers/OrderPaymentController.php:91
+* @see app/Http/Controllers/OrderPaymentController.php:100
 * @route '/api/order-payments/{order_payment}'
 */
 updateForm.patch = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -358,7 +358,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::destroy
-* @see app/Http/Controllers/OrderPaymentController.php:103
+* @see app/Http/Controllers/OrderPaymentController.php:123
 * @route '/api/order-payments/{order_payment}'
 */
 export const destroy = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -373,7 +373,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::destroy
-* @see app/Http/Controllers/OrderPaymentController.php:103
+* @see app/Http/Controllers/OrderPaymentController.php:123
 * @route '/api/order-payments/{order_payment}'
 */
 destroy.url = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -406,7 +406,7 @@ destroy.url = (args: { order_payment: number | { id: number } } | [order_payment
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::destroy
-* @see app/Http/Controllers/OrderPaymentController.php:103
+* @see app/Http/Controllers/OrderPaymentController.php:123
 * @route '/api/order-payments/{order_payment}'
 */
 destroy.delete = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -416,7 +416,7 @@ destroy.delete = (args: { order_payment: number | { id: number } } | [order_paym
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::destroy
-* @see app/Http/Controllers/OrderPaymentController.php:103
+* @see app/Http/Controllers/OrderPaymentController.php:123
 * @route '/api/order-payments/{order_payment}'
 */
 const destroyForm = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -431,7 +431,7 @@ const destroyForm = (args: { order_payment: number | { id: number } } | [order_p
 
 /**
 * @see \App\Http\Controllers\OrderPaymentController::destroy
-* @see app/Http/Controllers/OrderPaymentController.php:103
+* @see app/Http/Controllers/OrderPaymentController.php:123
 * @route '/api/order-payments/{order_payment}'
 */
 destroyForm.delete = (args: { order_payment: number | { id: number } } | [order_payment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

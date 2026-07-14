@@ -101,7 +101,8 @@ Tiendas
   └── evaluations    (Evaluaciones)
 Productos
   ├── products       (Productos)
-  └── categories     (Categorías)
+  ├── categories     (Categorías)
+  └── product-branches (Productos por Sucursal)
 Pagos
   ├── orders         (Órdenes)
   ├── order-details  (Detalles de Órdenes)
@@ -120,6 +121,7 @@ Pagos
 | `branches` | `/branches` | `/api/branches` | `BranchController` | `Branch` | CRUD completo |
 | `evaluations` | `/evaluations` | `/api/evaluations` | `EvaluationController` | `Evaluation` | CRUD completo |
 | `products` | `/products` | `/api/products` | `ProductController` | `Product` | CRUD completo |
+| `product-branches` | `/product-branches` | `/api/product-branches` | `ProductBranchController` | `ProductBranch` | CRUD completo |
 | `categories` | `/categories` | `/api/categories` | `CategoryController` | `Category` | CRUD completo |
 | `orders` | `/orders` | `/api/orders` | `OrderController` | `Order` | CRUD completo |
 | `order-details` | `/order-details` | `/api/order-details` | `OrderDetailController` | `OrderDetail` | CRUD completo |

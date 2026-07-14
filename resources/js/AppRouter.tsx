@@ -9,6 +9,7 @@ import {
     GoldOutlined,
     IdcardOutlined,
     InboxOutlined,
+    LinkOutlined,
     ProductOutlined,
     ShopOutlined,
     StarOutlined,
@@ -21,7 +22,7 @@ import {
     useNotificationProvider,
 } from '@refinedev/antd';
 import '@refinedev/antd/dist/reset.css';
-import { AuthProvider, Link, Refine } from '@refinedev/core';
+import { AccessControlProvider, AuthProvider, Link, Refine } from '@refinedev/core';
 import routerProvider, {
     DocumentTitleHandler,
     UnsavedChangesNotifier,
@@ -89,6 +90,10 @@ import { OrdersList } from './pages/orders/list';
 import { OrdersShow } from './pages/orders/show';
 import { PaymentMethodsList } from './pages/payment-methods/list';
 import { PaymentMethodsShow } from './pages/payment-methods/show';
+import { ProductBranchesCreate } from './pages/product-branches/create';
+import { ProductBranchesEdit } from './pages/product-branches/edit';
+import { ProductBranchesList } from './pages/product-branches/list';
+import { ProductBranchesShow } from './pages/product-branches/show';
 import { ProductsCreate } from './pages/products/create';
 import { ProductsEdit } from './pages/products/edit';
 import { ProductsList } from './pages/products/list';
@@ -98,6 +103,24 @@ import { UserCreate } from './pages/users/create';
 import { UserEdit } from './pages/users/edit';
 import { UserList } from './pages/users/list';
 import { UserShow } from './pages/users/show';
+
+type AuthUser = {
+    id?: number;
+    role?: string;
+    name?: string;
+    email?: string;
+};
+
+const getStoredUser = (): AuthUser | null => {
+    try {
+        const raw = localStorage.getItem('user');
+        return raw ? (JSON.parse(raw) as AuthUser) : null;
+    } catch {
+        return null;
+    }
+};
+
+const canAccessAdmin = (role?: string) => role === 'admin' || role === 'employee';
 
 // Proveedor de datos apuntando a la API de Laravel
 const API_URL = '/api';
@@ -112,6 +135,34 @@ axiosInstance.interceptors.request.use((request) => {
     return request;
 });
 
+const accessControlProvider: AccessControlProvider = {
+    can: async ({ resource, action }) => {
+        const user = getStoredUser();
+        const role = user?.role;
+
+        if (!canAccessAdmin(role)) {
+            return { can: false, reason: 'Sin acceso al panel' };
+        }
+
+        if (role === 'admin') {
+            return { can: true };
+        }
+
+        // Empleado: sin gestión completa de usuarios
+        if (resource === 'users') {
+            if (action === 'list' || action === 'show') {
+                return { can: true };
+            }
+            if (action === 'edit') {
+                return { can: true };
+            }
+            return { can: false, reason: 'Solo administradores pueden gestionar usuarios' };
+        }
+
+        return { can: true };
+    },
+};
+
 // Implementación del Auth Provider usando Sanctum
 const authProvider: AuthProvider = {
     login: async ({ email, password }: Record<string, string>) => {
@@ -122,22 +173,41 @@ const authProvider: AuthProvider = {
             });
 
             if (response.data?.token) {
+                const user = response.data.user as AuthUser;
+                if (!canAccessAdmin(user?.role)) {
+                    return {
+                        success: false,
+                        error: {
+                            name: 'Acceso denegado',
+                            message: 'Esta cuenta no tiene acceso al panel administrativo.',
+                        },
+                    };
+                }
+
                 localStorage.setItem('auth_token', response.data.token);
-                localStorage.setItem(
-                    'user',
-                    JSON.stringify(response.data.user),
-                );
+                localStorage.setItem('user', JSON.stringify(user));
+                if (response.data.permissions) {
+                    localStorage.setItem(
+                        'permissions',
+                        JSON.stringify(response.data.permissions),
+                    );
+                }
                 return {
                     success: true,
                     redirectTo: '/dashboard',
                 };
             }
-        } catch {
+        } catch (error: unknown) {
+            const message = axios.isAxiosError<{ message?: string; errors?: { email?: string[] } }>(error)
+                ? error.response?.data?.errors?.email?.[0] ||
+                  error.response?.data?.message
+                : undefined;
+
             return {
                 success: false,
                 error: {
                     name: 'Error',
-                    message: 'Credenciales inválidas',
+                    message: message || 'Credenciales inválidas',
                 },
             };
         }
@@ -163,17 +233,11 @@ const authProvider: AuthProvider = {
                 password,
             });
 
-            if (response.data?.token) {
-                localStorage.setItem('auth_token', response.data.token);
-                localStorage.setItem(
-                    'user',
-                    JSON.stringify(response.data.user),
-                );
-                return {
-                    success: true,
-                    redirectTo: '/dashboard',
-                };
-            }
+            // Registro público crea cliente sin acceso al panel
+            return {
+                success: true,
+                redirectTo: '/login',
+            };
         } catch (error: unknown) {
             const message = axios.isAxiosError<{ message?: string }>(error)
                 ? error.response?.data?.message
@@ -187,13 +251,6 @@ const authProvider: AuthProvider = {
                 },
             };
         }
-        return {
-            success: false,
-            error: {
-                message: 'Error de registro',
-                name: 'Falló el registro',
-            },
-        };
     },
     logout: async () => {
         try {
@@ -203,6 +260,7 @@ const authProvider: AuthProvider = {
         }
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user');
+        localStorage.removeItem('permissions');
         return {
             success: true,
             redirectTo: '/',
@@ -210,7 +268,8 @@ const authProvider: AuthProvider = {
     },
     check: async () => {
         const token = localStorage.getItem('auth_token');
-        if (token) {
+        const user = getStoredUser();
+        if (token && canAccessAdmin(user?.role)) {
             return {
                 authenticated: true,
             };
@@ -222,7 +281,10 @@ const authProvider: AuthProvider = {
             redirectTo: '/login',
         };
     },
-    getPermissions: async () => null,
+    getPermissions: async () => {
+        const user = getStoredUser();
+        return user?.role ?? null;
+    },
     getIdentity: async () => {
         const token = localStorage.getItem('auth_token');
         if (token) {
@@ -248,6 +310,11 @@ const authProvider: AuthProvider = {
         if (err.response?.status === 401) {
             return {
                 logout: true,
+            };
+        }
+        if (err.response?.status === 403) {
+            return {
+                error: new Error('No tiene permisos para realizar esta acción.'),
             };
         }
         return { error: new Error(err?.message || 'Unknown error') };
@@ -293,6 +360,7 @@ export default function AppRouter() {
                     dataProvider={dataProvider(API_URL, axiosInstance)}
                     routerProvider={routerProvider}
                     authProvider={authProvider}
+                    accessControlProvider={accessControlProvider}
                     notificationProvider={useNotificationProvider}
                     resources={[
                         // Dashboard de la pagina principal
@@ -430,6 +498,19 @@ export default function AppRouter() {
                                 parent: 'productos',
                                 canDelete: true,
                                 icon: <ProductOutlined />,
+                            },
+                        },
+                        {
+                            name: 'product-branches',
+                            list: '/product-branches',
+                            create: '/product-branches/create',
+                            edit: '/product-branches/edit/:id',
+                            show: '/product-branches/show/:id',
+                            meta: {
+                                label: 'Productos por Sucursal',
+                                parent: 'productos',
+                                canDelete: true,
+                                icon: <LinkOutlined />,
                             },
                         },
 
@@ -700,6 +781,21 @@ export default function AppRouter() {
                                 <Route
                                     path="show/:id"
                                     element={<ProductsShow />}
+                                />
+                            </Route>
+                            <Route path="/product-branches">
+                                <Route index element={<ProductBranchesList />} />
+                                <Route
+                                    path="create"
+                                    element={<ProductBranchesCreate />}
+                                />
+                                <Route
+                                    path="edit/:id"
+                                    element={<ProductBranchesEdit />}
+                                />
+                                <Route
+                                    path="show/:id"
+                                    element={<ProductBranchesShow />}
                                 />
                             </Route>
                             <Route path="/banks">

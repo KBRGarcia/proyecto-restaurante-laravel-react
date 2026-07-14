@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use App\Enums\PaymentCurrency;
 use App\Enums\PaymentMethod;
 use App\Http\Resources\OrderPaymentResource;
+use App\Models\Order;
 use App\Models\OrderPayment;
+use App\Services\OrderPaymentBalanceService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class OrderPaymentController extends Controller
 {
+    public function __construct(
+        private readonly OrderPaymentBalanceService $balanceService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -38,7 +44,7 @@ class OrderPaymentController extends Controller
 
         $sortBy = $request->get('sort_by');
         $sortOrder = $request->get('sort_order');
-        if (!$sortBy && $request->filled('_sort')) {
+        if (! $sortBy && $request->filled('_sort')) {
             $sortBy = $request->get('_sort');
             $sortOrder = $request->get('_order', 'asc');
         }
@@ -72,6 +78,9 @@ class OrderPaymentController extends Controller
     {
         $validated = $this->validatedPaymentData($request);
 
+        $order = Order::query()->findOrFail($validated['order_id']);
+        $this->balanceService->assertAmountFits($order, (float) $validated['amount']);
+
         $payment = OrderPayment::create($validated);
 
         return response()->json((new OrderPaymentResource($payment->load('order.user')))->resolve(), 201);
@@ -91,6 +100,17 @@ class OrderPaymentController extends Controller
     public function update(Request $request, OrderPayment $orderPayment)
     {
         $validated = $this->validatedPaymentData($request, true);
+
+        $orderId = $validated['order_id'] ?? $orderPayment->order_id;
+        $amount = (float) ($validated['amount'] ?? $orderPayment->amount);
+        $status = $validated['status'] ?? $orderPayment->status?->value ?? $orderPayment->status;
+
+        $order = Order::query()->findOrFail($orderId);
+
+        // Solo validar saldo si el pago sigue contando contra el total
+        if (in_array((string) $status, $this->balanceService->countableStatuses(), true)) {
+            $this->balanceService->assertAmountFits($order, $amount, $orderPayment->id);
+        }
 
         $orderPayment->update($validated);
 

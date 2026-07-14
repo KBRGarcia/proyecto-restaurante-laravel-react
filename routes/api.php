@@ -11,25 +11,26 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\OrderPaymentController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ProductBranchController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Rutas públicas de autenticación
 Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/register', [ApiAuthController::class, 'register']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [ApiAuthController::class, 'logout']);
-    Route::get('/me', [ApiAuthController::class, 'me']);
+Route::middleware(['auth:sanctum', 'role.permission'])->group(function () {
+    Route::post('/logout', [ApiAuthController::class, 'logout'])->name('logout');
+    Route::get('/me', [ApiAuthController::class, 'me'])->name('me');
 
     // Rutas de recursos CRUD (Para que Refine las consuma vía JSON)
     Route::apiResource('users', UserController::class);
     Route::apiResource('branches', BranchController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('clients', ClientController::class);
-    Route::post('employees/validate-assignment', [EmployeeController::class, 'validateAssignment']);
+    Route::post('employees/validate-assignment', [EmployeeController::class, 'validateAssignment'])
+        ->name('employees.validate-assignment');
     Route::apiResource('employees', EmployeeController::class);
     Route::apiResource('evaluations', EvaluationController::class);
     Route::apiResource('order-details', OrderDetailController::class);
@@ -37,5 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('order-payments', OrderPaymentController::class);
     Route::apiResource('payment-methods', PaymentMethodController::class);
     Route::apiResource('products', ProductController::class);
+    Route::apiResource('product-branches', ProductBranchController::class);
     Route::apiResource('banks', BankController::class);
 });

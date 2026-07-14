@@ -225,7 +225,12 @@ export const OrdersShow = () => {
                                     labelStyle={getDescriptionsLabelStyle(token)}
                                     contentStyle={getDescriptionsContentStyle(token)}
                                 >
-                                    <Descriptions.Item label="Método de Pago">{record?.payment_method || "No especificado"}</Descriptions.Item>
+                                    <Descriptions.Item label="Método de Pago">
+                                        {record?.payment_method
+                                            || record?.order_payments?.[0]?.method
+                                            || record?.orderPayments?.[0]?.method
+                                            || "No especificado (ver Pagos de Órdenes)"}
+                                    </Descriptions.Item>
                                     <Descriptions.Item label="Moneda">{record?.currency_label || record?.currency || "N/A"}</Descriptions.Item>
                                     <Descriptions.Item label="Subtotal">{formatMoney(record?.subtotal)}</Descriptions.Item>
                                     <Descriptions.Item label="Impuestos">{Number(record?.taxes ?? 0).toFixed(2)}%</Descriptions.Item>

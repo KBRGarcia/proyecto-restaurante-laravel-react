@@ -1,7 +1,10 @@
 import { List, useTable, DateField } from "@refinedev/antd";
 import { Table, Space, Avatar, Typography } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
-import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
+import { CustomShowButton,
+        CustomEditButton,
+        CustomDeleteButton,
+        CustomCreateButton } from "@/components/buttons/CustomActionButtons";
 import { StatusSwitch } from "@/components/table/StatusSwitch";
 import { useInlineUpdate } from "@/hooks/useInlineUpdate";
 

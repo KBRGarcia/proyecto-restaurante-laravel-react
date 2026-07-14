@@ -1,5 +1,61 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
+* @see \App\Http\Controllers\EmployeeController::validateAssignment
+* @see app/Http/Controllers/EmployeeController.php:184
+* @route '/api/employees/validate-assignment'
+*/
+export const validateAssignment = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: validateAssignment.url(options),
+    method: 'post',
+})
+
+validateAssignment.definition = {
+    methods: ["post"],
+    url: '/api/employees/validate-assignment',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\EmployeeController::validateAssignment
+* @see app/Http/Controllers/EmployeeController.php:184
+* @route '/api/employees/validate-assignment'
+*/
+validateAssignment.url = (options?: RouteQueryOptions) => {
+    return validateAssignment.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\EmployeeController::validateAssignment
+* @see app/Http/Controllers/EmployeeController.php:184
+* @route '/api/employees/validate-assignment'
+*/
+validateAssignment.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: validateAssignment.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\EmployeeController::validateAssignment
+* @see app/Http/Controllers/EmployeeController.php:184
+* @route '/api/employees/validate-assignment'
+*/
+const validateAssignmentForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: validateAssignment.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\EmployeeController::validateAssignment
+* @see app/Http/Controllers/EmployeeController.php:184
+* @route '/api/employees/validate-assignment'
+*/
+validateAssignmentForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: validateAssignment.url(options),
+    method: 'post',
+})
+
+validateAssignment.form = validateAssignmentForm
+
+/**
 * @see \App\Http\Controllers\EmployeeController::index
 * @see app/Http/Controllers/EmployeeController.php:22
 * @route '/api/employees'
@@ -447,6 +503,7 @@ destroyForm.delete = (args: { employee: number | { id: number } } | [employee: n
 destroy.form = destroyForm
 
 const employees = {
+    validateAssignment: Object.assign(validateAssignment, validateAssignment),
     index: Object.assign(index, index),
     store: Object.assign(store, store),
     show: Object.assign(show, show),

@@ -50,10 +50,12 @@ class OrderResource extends JsonResource
             'delivery_address' => $this->delivery_address,
             'contact_phone' => $this->contact_phone,
             'special_notes' => $this->special_notes,
-            'payment_method' => $this->payment_method,
+            'payment_method' => $this->when(
+                $this->relationLoaded('orderPayments'),
+                fn () => $this->payment_method
+            ),
             'currency' => $this->currency,
             'currency_label' => $this->getCurrencyLabel(),
-            'national_payment_data' => $this->national_payment_data,
             'order_date' => $this->order_date,
             'order_date_formatted' => $this->order_date ? $this->order_date->format('d/m/Y H:i') : null,
             'estimated_delivery_date' => $this->estimated_delivery_date,

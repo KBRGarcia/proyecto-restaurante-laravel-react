@@ -39,7 +39,6 @@ class Product extends Model
         'preparation_time',
         'ingredients',
         'is_special',
-        'creation_date',
     ];
 
     /**
@@ -60,7 +59,6 @@ class Product extends Model
         'price' => 'decimal:2',
         'preparation_time' => 'integer',
         'is_special' => 'boolean',
-        'creation_date' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

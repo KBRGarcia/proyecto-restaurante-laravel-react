@@ -27,7 +27,6 @@ class ProductResource extends JsonResource
             'preparation_time' => $this->preparation_time,
             'ingredients' => $this->ingredients,
             'is_special' => $this->is_special,
-            'creation_date' => $this->creation_date?->format('Y-m-d H:i:s'),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];

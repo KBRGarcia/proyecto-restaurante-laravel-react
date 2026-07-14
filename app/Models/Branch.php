@@ -43,8 +43,6 @@ class Branch extends Model
         'description',
         'active',
         'opening_date',
-        'creation_date',
-        'update_date',
     ];
 
     /**
@@ -72,8 +70,6 @@ class Branch extends Model
         'capacity_people' => 'integer',
         'active' => 'boolean',
         'opening_date' => 'date',
-        'creation_date' => 'datetime',
-        'update_date' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

@@ -10,6 +10,7 @@ import OrderController from './OrderController'
 import OrderPaymentController from './OrderPaymentController'
 import PaymentMethodController from './PaymentMethodController'
 import ProductController from './ProductController'
+import ProductBranchController from './ProductBranchController'
 import BankController from './BankController'
 
 const Controllers = {
@@ -25,6 +26,7 @@ const Controllers = {
     OrderPaymentController: Object.assign(OrderPaymentController, OrderPaymentController),
     PaymentMethodController: Object.assign(PaymentMethodController, PaymentMethodController),
     ProductController: Object.assign(ProductController, ProductController),
+    ProductBranchController: Object.assign(ProductBranchController, ProductBranchController),
     BankController: Object.assign(BankController, BankController),
 }
 

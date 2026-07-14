@@ -160,9 +160,8 @@ class OrderController extends Controller
                 $validated['order_date'] = now();
             }
 
-            if ($validated['status'] === 'pending') {
-                $validated['pending_date'] = now();
-            }
+            // pending_date solo se marca al TRANSICIONAR a pending (no en creación: usa order_date)
+            unset($validated['pending_date']);
 
             $validated['subtotal'] = $validated['subtotal'] ?? 0;
             $validated['taxes'] = $validated['taxes'] ?? 0;
@@ -181,6 +180,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->load(['user', 'client', 'branch', 'assignedEmployee', 'orderPayments', 'orderDetails.product']);
+        $order->append('payment_method');
 
         return response()->json($order);
     }
@@ -236,10 +236,11 @@ class OrderController extends Controller
         $validated = $this->normalizeOrderClientLinks($validated);
 
         $validated['client_id'] = $validated['client_id'] ?? $order->client_id;
-        // Actualizar timestamps según el cambio de estado
+        // Timestamps de estado: solo al cambiar de estado (pending_date no se usa en creación)
         if (isset($validated['status']) && $validated['status'] !== $order->status) {
             switch ($validated['status']) {
                 case 'pending':
+                    // Solo si vuelve a pending desde otro estado
                     $validated['pending_date'] = now();
                     break;
                 case 'preparing':

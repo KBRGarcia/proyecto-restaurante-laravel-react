@@ -112,14 +112,6 @@ class BranchController extends Controller
         $validated['has_parking'] = filter_var($validated['has_parking'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $validated['active'] = filter_var($validated['active'] ?? true, FILTER_VALIDATE_BOOLEAN);
 
-        // Establecer creation_date si no se proporciona
-        if (!isset($validated['creation_date'])) {
-            $validated['creation_date'] = now();
-        }
-
-        // Establecer update_date
-        $validated['update_date'] = now();
-
         $branch = Branch::create($validated);
 
         return response()->json($branch, 201);
@@ -163,9 +155,6 @@ class BranchController extends Controller
         $validated['has_delivery'] = filter_var($validated['has_delivery'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $validated['has_parking'] = filter_var($validated['has_parking'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $validated['active'] = filter_var($validated['active'] ?? true, FILTER_VALIDATE_BOOLEAN);
-
-        // Actualizar update_date
-        $validated['update_date'] = now();
 
         $branch->update($validated);
 

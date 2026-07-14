@@ -2,6 +2,7 @@ import {
     CustomDeleteButton,
     CustomEditButton,
     CustomShowButton,
+    CustomCreateButton
 } from '@/components/buttons/CustomActionButtons';
 import { OrderInvoiceDownloadDropdown } from '@/components/buttons/OrderInvoiceDownloadDropdown';
 import { useOrderInvoiceImage } from '@/hooks/useOrderInvoiceImage';
@@ -52,9 +53,7 @@ export const OrdersList = () => {
     };
 
     return (
-        <List>
-            {contextHolder}
-            {invoiceRenderer}
+        <List headerButtons={() => <CustomCreateButton />}>
             <Table {...tableProps} rowKey="id">
                 <Table.Column
                     dataIndex="id"

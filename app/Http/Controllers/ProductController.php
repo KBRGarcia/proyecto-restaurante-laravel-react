@@ -150,9 +150,6 @@ class ProductController extends Controller
             $validated['image'] = $request->image;
         }
 
-        // Establecer fecha de creación del producto
-        $validated['creation_date'] = now();
-
         // Manejar checkbox is_special
         $validated['is_special'] = $request->has('is_special') ? (bool) $request->is_special : false;
 

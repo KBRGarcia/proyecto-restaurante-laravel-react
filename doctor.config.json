@@ -1,0 +1,11 @@
+{
+  "$schema": "https://www.react.doctor/schema/doctor.config.json",
+  "ignore": {
+    "files": [
+      "resources/js/actions/**",
+      "resources/js/wayfinder/**",
+      "resources/js/routes/index.ts",
+      "resources/js/routes/**/index.ts"
+    ]
+  }
+}

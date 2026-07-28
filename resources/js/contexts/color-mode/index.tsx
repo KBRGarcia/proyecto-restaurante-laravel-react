@@ -1,36 +1,9 @@
-import { RefineThemes } from "@refinedev/antd";
 import { ConfigProvider, theme } from "antd";
-import { PropsWithChildren, createContext, useEffect, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import { ColorModeContext } from "./context";
+import { customRedTheme } from "./theme";
 
-type ColorModeContextType = {
-    mode: string;
-    setMode: (mode: string) => void;
-};
-
-export const ColorModeContext = createContext<ColorModeContextType>({} as ColorModeContextType);
-
-// Configuración personalizada para colores Rojos en vez de los temas por defecto de Refine
-const customRedTheme = {
-    ...RefineThemes.Blue, // Heredamos algunas variables de estructura de Refine
-    token: {
-        ...RefineThemes.Blue.token,
-        colorPrimary: '#ef4444', // Rojo
-        colorInfo: '#ef4444', 
-    },
-
-    components: {
-        Button: {
-            colorPrimary: '#1677ff', // Los botones primary son azules por defecto.
-            colorPrimaryHover: '#4096ff', // El color azul mas claro para el hover.
-            colorPrimaryActive: '#0958d9', // El color azul oscuro al hacer click.
-            borderRadius: 6, // Botones redondeados
-        }
-    },
-};
-
-export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
-    children,
-}) => {
+export function ColorModeContextProvider({ children }: PropsWithChildren) {
     const colorModeFromLocalStorage = localStorage.getItem("colorMode");
     const isSystemPreferenceDark = window?.matchMedia(
         "(prefers-color-scheme: dark)",
@@ -50,23 +23,22 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
         }
     }, [mode]);
 
-    const setColorMode = () => {
-        if (mode === "light") {
-            setMode("dark");
-        } else {
-            setMode("light");
-        }
-    };
+    const setColorMode = useCallback(() => {
+        setMode((current) => (current === "light" ? "dark" : "light"));
+    }, []);
+
+    const contextValue = useMemo(
+        () => ({
+            setMode: setColorMode,
+            mode,
+        }),
+        [mode, setColorMode],
+    );
 
     const { darkAlgorithm, defaultAlgorithm } = theme;
 
     return (
-        <ColorModeContext.Provider
-            value={{
-                setMode: setColorMode,
-                mode,
-            }}
-        >
+        <ColorModeContext.Provider value={contextValue}>
             <ConfigProvider
                 theme={{
                     ...customRedTheme,
@@ -77,4 +49,4 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
             </ConfigProvider>
         </ColorModeContext.Provider>
     );
-};
+}

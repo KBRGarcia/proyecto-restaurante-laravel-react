@@ -2,7 +2,7 @@ import { useRegister } from "@refinedev/core";
 import { Button, Card, Col, Form, Input, Layout, Row, Typography, theme } from "antd";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { ColorModeContext } from "../../contexts/color-mode";
+import { ColorModeContext } from "../../contexts/color-mode/context";
 
 const { Title } = Typography;
 
@@ -22,7 +22,7 @@ export const CustomRegister: React.FC = () => {
         background: isDarkMode
             ? "radial-gradient(circle at 10% 20%, rgb(40, 10, 10) 0%, rgb(10, 10, 10) 90.2%)"
             : "radial-gradient(circle at 10% 20%, rgb(255, 245, 245) 0%, rgb(253, 230, 230) 90.2%)",
-        transition: "all 0.3s ease",
+        transition: "background 0.3s ease",
     };
 
     return (

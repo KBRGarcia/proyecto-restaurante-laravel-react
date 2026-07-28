@@ -49,14 +49,15 @@ export const CustomDeleteButton: React.FC<DeleteButtonProps> = (props) => {
     );
 };
 
-export const CustomCreateButton: React.FC<CreateButtonProps> = (props) => {
+export const CustomCreateButton: React.FC<CreateButtonProps> = ({ style, children, ...props }) => {
     return (
         <CreateButton
             icon={<PlusOutlined />}
             size="large"
-            style={{ backgroundColor: '#1677ff', borderColor: '#1677ff', color: 'white', ...props.style }}
-            children=""
+            style={{ backgroundColor: '#1677ff', borderColor: '#1677ff', color: 'white', ...style }}
             {...props}
-        />
+        >
+            {children ?? ""}
+        </CreateButton>
     );
 };

@@ -1,18 +1,18 @@
 import { Edit, useForm, useSelect } from "@refinedev/antd";
 import { Form, Input, Select, Row, Col, Card } from "antd";
+import { useDataProvider } from "@refinedev/core";
 import { useState } from "react";
 import { PhoneNumberField } from "@/components/form/PhoneNumberField";
-import { type CustomerType, getAssignedEmployeeLabel, getEmployeeSelectFilters, useOrderContactPhone } from "./utils";
+import { type CustomerType, getAssignedEmployeeLabel, getEmployeeSelectFilters, handleOrderContactPhoneValuesChange } from "./utils";
 
 export const OrdersEdit = () => {
     const { formProps, saveButtonProps, query } = useForm();
+    const dataProvider = useDataProvider();
     const order = query?.data?.data;
     const [manualCustomerType, setManualCustomerType] = useState<CustomerType | null>(null);
     const customerType =
         manualCustomerType ?? (order?.client_id && !order?.user_id ? "client" : "user");
     const serviceType = Form.useWatch("service_type", formProps.form) ?? order?.service_type ?? "pickup";
-
-    useOrderContactPhone(formProps.form, customerType, { enabled: query ? !query.isLoading : false });
 
     const { selectProps: userSelectProps } = useSelect({
         resource: "users",
@@ -90,9 +90,19 @@ export const OrdersEdit = () => {
         });
     };
 
+    const handleValuesChange = (changedValues: Record<string, unknown>, allValues: Record<string, unknown>) => {
+        void handleOrderContactPhoneValuesChange(
+            formProps.form,
+            customerType,
+            changedValues as Partial<{ user_id?: number | null; client_id?: number | null }>,
+            dataProvider(),
+        );
+        formProps.onValuesChange?.(changedValues, allValues);
+    };
+
     return (
         <Edit saveButtonProps={saveButtonProps}>
-            <Form {...formProps} layout="vertical">
+            <Form {...formProps} layout="vertical" onValuesChange={handleValuesChange}>
                 <Row gutter={[16, 16]} align="stretch">
                     <Col xs={24} lg={14}>
                         <Card title="Datos de la orden">

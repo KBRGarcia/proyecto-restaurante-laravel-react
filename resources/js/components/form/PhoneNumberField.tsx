@@ -1,7 +1,7 @@
 import { Input, Select, Space } from "antd";
 import type { FormItemProps } from "antd";
 import { Form } from "antd";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import {
     PHONE_AREA_CODE_OPTIONS,
     PHONE_AREA_CODES,
@@ -21,21 +21,20 @@ const PhoneNumberInput = ({ value, onChange, disabled = false }: PhoneNumberInpu
     const parsed = parsePhoneNumber(value);
     const [code, setCode] = useState<PhoneAreaCode>(parsed?.code ?? PHONE_AREA_CODES[0]);
     const [line, setLine] = useState(parsed?.line ?? "");
+    const [prevValue, setPrevValue] = useState(value);
 
-    useEffect(() => {
+    if (value !== prevValue) {
+        setPrevValue(value);
         const next = parsePhoneNumber(value);
 
         if (next) {
             setCode(next.code);
             setLine(next.line);
-            return;
-        }
-
-        if (!value) {
+        } else if (!value) {
             setCode(PHONE_AREA_CODES[0]);
             setLine("");
         }
-    }, [value]);
+    }
 
     const emitValue = (nextCode: string, nextLine: string) => {
         if (nextLine.length === 7) {

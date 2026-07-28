@@ -2,6 +2,7 @@ import axios from "axios";
 import type { FormInstance } from "antd";
 import { useCallback } from "react";
 import { useParams } from "react-router";
+import { axiosInstance, API_URL } from "@/lib/api-client";
 
 export type EmployeeAssignmentFormValue = {
     branch_id?: number;
@@ -15,8 +16,6 @@ type ValidateAssignmentResponse = {
     message?: string;
 };
 
-const API_URL = "/api";
-
 export const useEmployeeAssignmentValidation = () => {
     const { id } = useParams();
 
@@ -29,10 +28,8 @@ export const useEmployeeAssignmentValidation = () => {
             assignments: EmployeeAssignmentFormValue[],
             assignmentIndex: number,
         ): Promise<string | undefined> => {
-            const token = localStorage.getItem("auth_token");
-
             try {
-                const response = await axios.post<ValidateAssignmentResponse>(
+                const response = await axiosInstance.post<ValidateAssignmentResponse>(
                     `${API_URL}/employees/validate-assignment`,
                     {
                         employee_id: employeeId,
@@ -40,9 +37,6 @@ export const useEmployeeAssignmentValidation = () => {
                         position,
                         assignments,
                         assignment_index: assignmentIndex,
-                    },
-                    {
-                        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
                     },
                 );
 

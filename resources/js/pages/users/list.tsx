@@ -20,6 +20,19 @@ type UserTableRecord = {
     created_at?: string;
 };
 
+const getRoleTag = (role: string) => {
+    switch (role) {
+        case "admin":
+            return <Tag color="red">Administrador</Tag>;
+        case "employee":
+            return <Tag color="blue">Empleado</Tag>;
+        case "client":
+            return <Tag color="green">Cliente</Tag>;
+        default:
+            return <Tag>{role}</Tag>;
+    }
+};
+
 export const UserList = () => {
     const { tableProps } = useTable<UserTableRecord>({
         syncWithLocation: true,
@@ -27,19 +40,6 @@ export const UserList = () => {
 
     const { mutate, mutation } = useUpdate();
     const [updatingId, setUpdatingId] = useState<number | null>(null);
-
-    const getRoleTag = (role: string) => {
-        switch (role) {
-            case "admin":
-                return <Tag color="red">Administrador</Tag>;
-            case "employee":
-                return <Tag color="blue">Empleado</Tag>;
-            case "client":
-                return <Tag color="green">Cliente</Tag>;
-            default:
-                return <Tag>{role}</Tag>;
-        }
-    };
 
     const handleStatusChange = (checked: boolean, record: UserTableRecord) => {
         setUpdatingId(record.id);

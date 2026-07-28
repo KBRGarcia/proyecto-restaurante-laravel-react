@@ -1,6 +1,5 @@
 import { Form } from "antd";
 import type { FormInstance } from "antd";
-import { useEffect } from "react";
 
 export type OrderDetailItem = {
     id?: number;
@@ -37,19 +36,13 @@ export function calculateOrderTotal(subtotal: number, taxPercentage: number): nu
     return Number((safeSubtotal + safeSubtotal * (safeTaxPercentage / 100)).toFixed(2));
 }
 
-export function useOrderDetailsTotalCalculation(form?: FormInstance): void {
-    const items = Form.useWatch("items", form) as OrderDetailItem[] | undefined;
-    const taxes = Form.useWatch("taxes", form) ?? 0;
+export function syncOrderDetailsTotals(form: FormInstance, values: Record<string, unknown>): void {
+    const items = values.items as OrderDetailItem[] | undefined;
+    const taxes = Number(values.taxes ?? 0);
+    const subtotal = calculateOrderSubtotal(items);
 
-    useEffect(() => {
-        if (!form) {
-            return;
-        }
-
-        const subtotal = calculateOrderSubtotal(items);
-        form.setFieldsValue({
-            subtotal,
-            total: calculateOrderTotal(subtotal, Number(taxes)),
-        });
-    }, [form, items, taxes]);
+    form.setFieldsValue({
+        subtotal,
+        total: calculateOrderTotal(subtotal, taxes),
+    });
 }

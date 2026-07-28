@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\User;
 use App\Services\RoleAuthorizationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -17,7 +18,7 @@ class ApiAuthController extends Controller
     ) {}
 
     /**
-     * Handle an authentication attempt.
+     * Handle an authentication attempt using a stateful web session (Sanctum SPA).
      */
     public function login(Request $request)
     {
@@ -47,11 +48,11 @@ class ApiAuthController extends Controller
             ]);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        Auth::guard('web')->login($user);
+        $request->session()->regenerate();
 
         return response()->json([
             'user' => $user,
-            'token' => $token,
             'permissions' => $this->roleAuthorization->permissionsFor($user),
         ]);
     }
@@ -101,7 +102,10 @@ class ApiAuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json(['message' => 'Sesión cerrada correctamente']);
     }

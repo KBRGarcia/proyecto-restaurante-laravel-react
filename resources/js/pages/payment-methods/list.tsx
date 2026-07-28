@@ -15,20 +15,19 @@ type PaymentMethodRow = {
     created_at?: string | null;
 };
 
+const getCurrencyTypeTag = (type: string) =>
+    type === "nacional" ? (
+        <Tag color="blue">Bolívares (Bs.)</Tag>
+    ) : (
+        <Tag color="green">Dólares ($)</Tag>
+    );
+
 export const PaymentMethodsList = () => {
     const { tableProps } = useTable<PaymentMethodRow>({
         syncWithLocation: true,
     });
 
     const { update, isUpdating } = useInlineUpdate();
-
-    const getCurrencyTypeTag = (type: string) => {
-        return type === "nacional" ? (
-            <Tag color="blue">Bolívares (Bs.)</Tag>
-        ) : (
-            <Tag color="green">Dólares ($)</Tag>
-        );
-    };
 
     const handleActiveChange = (checked: boolean, record: PaymentMethodRow) => {
         update("payment-methods", record.id, {

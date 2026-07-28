@@ -12,6 +12,7 @@ import {
     getSectionCardStyle,
     getStatWidgetStyle,
 } from "@/components/show/showPageStyles";
+import { getOrderServiceTypeTag } from "@/lib/order-list-tags";
 
 const { Title, Text } = Typography;
 
@@ -39,18 +40,6 @@ export const OrderDetailsShow = () => {
 
     const currencySymbol = record?.currency === "nacional" ? "Bs." : "$";
     const formatMoney = (value?: number | string) => `${currencySymbol} ${Number(value || 0).toFixed(2)}`;
-
-    const getServiceTypeTag = (type?: string) => {
-        return type === "delivery" ? (
-            <Tag color="purple" style={{ borderRadius: 4 }}>
-                Delivery
-            </Tag>
-        ) : (
-            <Tag color="magenta" style={{ borderRadius: 4 }}>
-                Retiro en local
-            </Tag>
-        );
-    };
 
     return (
         <Show
@@ -83,7 +72,7 @@ export const OrderDetailsShow = () => {
                                     Ver orden completa
                                 </Link>
                             </Tag>
-                            {record?.service_type && getServiceTypeTag(record.service_type)}
+                            {record?.service_type && getOrderServiceTypeTag(record.service_type)}
                         </div>
                     </Col>
                     <Col xs={24} md={12}>

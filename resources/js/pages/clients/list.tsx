@@ -25,18 +25,18 @@ type ClientRow = {
     notes?: string | null;
 };
 
+const getOriginTag = (origin: string, label: string) => {
+    const color = origin === "online" ? "blue" : origin === "physical" ? "gold" : "purple";
+
+    return <Tag color={color}>{label}</Tag>;
+};
+
 export const ClientsList = () => {
     const { tableProps } = useTable<ClientRow>({
         syncWithLocation: true,
     });
 
     const { update, isUpdating } = useInlineUpdate();
-
-    const getOriginTag = (origin: string, label: string) => {
-        const color = origin === "online" ? "blue" : origin === "physical" ? "gold" : "purple";
-
-        return <Tag color={color}>{label}</Tag>;
-    };
 
     const handleStatusChange = (checked: boolean, record: ClientRow) => {
         update("clients", record.id, {

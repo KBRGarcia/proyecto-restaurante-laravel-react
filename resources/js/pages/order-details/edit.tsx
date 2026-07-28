@@ -1,14 +1,12 @@
 import { Edit, useForm, useSelect } from "@refinedev/antd";
 import { Card, Col, Form, Input, InputNumber, Row, Select } from "antd";
 import { OrderItemsField } from "@/components/form/OrderItemsField";
-import { useOrderDetailsTotalCalculation } from "./utils";
+import { syncOrderDetailsTotals } from "./utils";
 
 export const OrderDetailsEdit = () => {
     const { formProps, saveButtonProps, query } = useForm();
     const orderDetails = query?.data?.data;
     const serviceType = Form.useWatch("service_type", formProps.form) ?? orderDetails?.service_type ?? "pickup";
-
-    useOrderDetailsTotalCalculation(formProps.form);
 
     const { selectProps: orderSelectProps } = useSelect({
         resource: "orders",
@@ -19,9 +17,17 @@ export const OrderDetailsEdit = () => {
 
     const isPickup = serviceType === "pickup";
 
+    const handleValuesChange = (_changedValues: unknown, allValues: Record<string, unknown>) => {
+        if (formProps.form) {
+            syncOrderDetailsTotals(formProps.form, allValues);
+        }
+
+        formProps.onValuesChange?.(_changedValues, allValues);
+    };
+
     return (
         <Edit saveButtonProps={saveButtonProps}>
-            <Form {...formProps} layout="vertical">
+            <Form {...formProps} layout="vertical" onValuesChange={handleValuesChange}>
                 <Form.Item name="service_type" hidden>
                     <Input />
                 </Form.Item>

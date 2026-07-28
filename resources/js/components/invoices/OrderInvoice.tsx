@@ -61,6 +61,11 @@ const invoiceStyles = {
     },
 } satisfies Record<string, CSSProperties>;
 
+const dateTimeFormatter = new Intl.DateTimeFormat('es-VE', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+});
+
 const formatCurrency = (
     value: string | number | null | undefined,
     currency: OrderRecord['currency'],
@@ -75,10 +80,7 @@ const formatDate = (value?: string | null) => {
         return 'Sin fecha';
     }
 
-    return new Intl.DateTimeFormat('es-VE', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-    }).format(new Date(value));
+    return dateTimeFormatter.format(new Date(value));
 };
 
 const getCustomerName = (order: OrderRecord) => {

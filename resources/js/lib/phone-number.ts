@@ -11,8 +11,6 @@ export const PHONE_AREA_CODE_OPTIONS = PHONE_AREA_CODES.map((code) => ({
 
 export const PHONE_NUMBER_PATTERN = /^(0412|0414|0416|0422|0424|0426)\d{7}$/;
 
-export const PHONE_LINE_PATTERN = /^\d{7}$/;
-
 export const parsePhoneNumber = (
     value?: string | null,
 ): { code: PhoneAreaCode; line: string } | null => {

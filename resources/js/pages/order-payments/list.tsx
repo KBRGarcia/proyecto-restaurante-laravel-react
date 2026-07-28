@@ -5,30 +5,29 @@ import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateBut
 
 const { Text } = Typography;
 
+const getCurrencyTag = (currency: string) =>
+    currency === "nacional" ? <Tag color="blue">Nacional</Tag> : <Tag color="green">Internacional</Tag>;
+
+const getStatusTag = (status: string) => {
+    switch (status) {
+        case "confirmed":
+            return <Tag color="success">Confirmado</Tag>;
+        case "pending":
+            return <Tag color="orange">Pendiente</Tag>;
+        case "rejected":
+            return <Tag color="error">Rechazado</Tag>;
+        case "refunded":
+            return <Tag color="purple">Reembolsado</Tag>;
+        default:
+            return <Tag>{status}</Tag>;
+    }
+};
+
 export const OrderPaymentsList = () => {
     const { tableProps } = useTable({
         syncWithLocation: true,
         sorters: { initial: [{ field: "created_at", order: "desc" }] },
     });
-
-    const getCurrencyTag = (currency: string) => (
-        currency === "nacional" ? <Tag color="blue">Nacional</Tag> : <Tag color="green">Internacional</Tag>
-    );
-
-    const getStatusTag = (status: string) => {
-        switch (status) {
-            case "confirmed":
-                return <Tag color="success">Confirmado</Tag>;
-            case "pending":
-                return <Tag color="orange">Pendiente</Tag>;
-            case "rejected":
-                return <Tag color="error">Rechazado</Tag>;
-            case "refunded":
-                return <Tag color="purple">Reembolsado</Tag>;
-            default:
-                return <Tag>{status}</Tag>;
-        }
-    };
 
     return (
         <List headerButtons={() => <CustomCreateButton />}>

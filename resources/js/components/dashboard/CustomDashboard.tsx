@@ -27,6 +27,40 @@ import { Link } from "react-router-dom";
 const { Title, Text, Paragraph } = Typography;
 const { useToken } = theme;
 
+const getStatusTagColor = (status: string) => {
+    switch (status) {
+        case "pending":
+            return "orange";
+        case "preparing":
+            return "blue";
+        case "ready":
+            return "green";
+        case "delivered":
+            return "cyan";
+        case "canceled":
+            return "red";
+        default:
+            return "default";
+    }
+};
+
+const getStatusLabel = (status: string) => {
+    switch (status) {
+        case "pending":
+            return "Pendiente";
+        case "preparing":
+            return "En Cocina";
+        case "ready":
+            return "Listo";
+        case "delivered":
+            return "Entregado";
+        case "canceled":
+            return "Cancelado";
+        default:
+            return status;
+    }
+};
+
 export const CustomDashboard: React.FC = () => {
     const { token } = useToken();
 
@@ -58,42 +92,9 @@ export const CustomDashboard: React.FC = () => {
         sorters: [{ field: "id", order: "desc" }],
     });
 
-    const getStatusTagColor = (status: string) => {
-        switch (status) {
-            case "pending":
-                return "orange";
-            case "preparing":
-                return "blue";
-            case "ready":
-                return "green";
-            case "delivered":
-                return "cyan";
-            case "canceled":
-                return "red";
-            default:
-                return "default";
-        }
-    };
-
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case "pending":
-                return "Pendiente";
-            case "preparing":
-                return "En Cocina";
-            case "ready":
-                return "Listo";
-            case "delivered":
-                return "Entregado";
-            case "canceled":
-                return "Cancelado";
-            default:
-                return status;
-        }
-    };
-
     const stats = [
         {
+            key: "users",
             title: "Usuarios Totales",
             value: usersResult?.total ?? 0,
             icon: <UserOutlined style={{ fontSize: "24px", color: "#3f8600" }} />,
@@ -102,6 +103,7 @@ export const CustomDashboard: React.FC = () => {
             border: "1px solid rgba(63, 134, 0, 0.15)",
         },
         {
+            key: "branches",
             title: "Sucursales",
             value: branchesResult?.total ?? 0,
             icon: <ShopOutlined style={{ fontSize: "24px", color: "#1890ff" }} />,
@@ -110,6 +112,7 @@ export const CustomDashboard: React.FC = () => {
             border: "1px solid rgba(24, 144, 255, 0.15)",
         },
         {
+            key: "products",
             title: "Platos en Menú",
             value: productsResult?.total ?? 0,
             icon: <CoffeeOutlined style={{ fontSize: "24px", color: "#faad14" }} />,
@@ -118,6 +121,7 @@ export const CustomDashboard: React.FC = () => {
             border: "1px solid rgba(250, 173, 20, 0.15)",
         },
         {
+            key: "orders",
             title: "Pedidos del Mes",
             value: ordersResult?.total ?? 0,
             icon: <ShoppingCartOutlined style={{ fontSize: "24px", color: "#cf1322" }} />,
@@ -173,8 +177,8 @@ export const CustomDashboard: React.FC = () => {
 
             {/* Fila de Estadísticas */}
             <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
-                {stats.map((item, index) => (
-                    <Col xs={24} sm={12} lg={6} key={index}>
+                {stats.map((item) => (
+                    <Col xs={24} sm={12} lg={6} key={item.key}>
                         <Card
                             bordered={true}
                             style={{

@@ -16,8 +16,10 @@ import {
     theme,
 } from "antd";
 import { UserOutlined, UploadOutlined, SaveOutlined } from "@ant-design/icons";
-import axios from "axios";
 import { PhoneNumberField } from "@/components/form/PhoneNumberField";
+import { axiosInstance, API_URL } from "@/lib/api-client";
+import { setStoredUser } from "@/lib/auth-storage";
+import { readFileAsBase64 } from "@/lib/file";
 
 const { Title, Text, Paragraph } = Typography;
 const { useToken } = theme;
@@ -42,14 +44,6 @@ export const ProfilePage: React.FC = () => {
         }
     }, [user, form]);
 
-    const getBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-
     const handleBeforeUpload = async (file: File) => {
         const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif";
         if (!isJpgOrPng) {
@@ -63,7 +57,7 @@ export const ProfilePage: React.FC = () => {
         }
 
         try {
-            const base64Url = await getBase64(file);
+            const base64Url = await readFileAsBase64(file);
             setImageUrl(base64Url);
         } catch (err) {
             message.error("Error al procesar la imagen.");
@@ -76,7 +70,6 @@ export const ProfilePage: React.FC = () => {
         setLoading(true);
 
         try {
-            const tokenStr = localStorage.getItem("auth_token");
             const payload = {
                 ...values,
                 role: user.role,
@@ -84,15 +77,11 @@ export const ProfilePage: React.FC = () => {
                 profile_picture: resolvedImageUrl,
             };
 
-            const response = await axios.put(`/api/users/${user.id}`, payload, {
-                headers: {
-                    Authorization: `Bearer ${tokenStr}`,
-                },
-            });
+            const response = await axiosInstance.put(`${API_URL}/users/${user.id}`, payload);
 
             if (response.data) {
                 // Actualizar local storage
-                localStorage.setItem("user", JSON.stringify(response.data));
+                setStoredUser(response.data);
                 message.success("Perfil actualizado correctamente!");
                 await refetch();
             }

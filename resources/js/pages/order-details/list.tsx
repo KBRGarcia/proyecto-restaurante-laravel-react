@@ -1,5 +1,5 @@
 import { List, useTable } from "@refinedev/antd";
-import { Space, Table, Tag, Typography } from "antd";
+import { Space, Table, Typography } from "antd";
 import { Link } from "react-router-dom";
 import {
     CustomShowButton,
@@ -9,6 +9,7 @@ import {
 } from "@/components/buttons/CustomActionButtons";
 import { OrderInvoiceDownloadDropdown } from "@/components/buttons/OrderInvoiceDownloadDropdown";
 import { useOrderInvoiceImage } from "@/hooks/useOrderInvoiceImage";
+import { getOrderServiceTypeTag } from "@/lib/order-list-tags";
 
 const { Text } = Typography;
 
@@ -36,14 +37,6 @@ export const OrderDetailsList = () => {
         exportingOrderId,
         invoiceRenderer,
     } = useOrderInvoiceImage();
-
-    const getServiceTypeTag = (type?: string) => {
-        return type === "delivery" ? (
-            <Tag color="purple">Delivery</Tag>
-        ) : (
-            <Tag color="magenta">Retiro en local</Tag>
-        );
-    };
 
     return (
         <List
@@ -77,7 +70,7 @@ export const OrderDetailsList = () => {
                 <Table.Column
                     dataIndex="service_type"
                     title="Tipo de Servicio"
-                    render={(value: string) => getServiceTypeTag(value)}
+                    render={(value: string) => getOrderServiceTypeTag(value)}
                 />
                 <Table.Column<OrderDetailsListRecord>
                     dataIndex="total"

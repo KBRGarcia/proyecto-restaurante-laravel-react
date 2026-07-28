@@ -2,13 +2,11 @@ import { Create, useForm, useSelect } from "@refinedev/antd";
 import { Card, Col, Form, Input, InputNumber, Row, Select } from "antd";
 import { useOne } from "@refinedev/core";
 import { OrderItemsField } from "@/components/form/OrderItemsField";
-import { useOrderDetailsTotalCalculation } from "./utils";
+import { syncOrderDetailsTotals } from "./utils";
 
 export const OrderDetailsCreate = () => {
     const { formProps, saveButtonProps } = useForm();
     const selectedOrderId = Form.useWatch("order_id", formProps.form);
-
-    useOrderDetailsTotalCalculation(formProps.form);
 
     const { selectProps: orderSelectProps } = useSelect({
         resource: "orders",
@@ -27,9 +25,22 @@ export const OrderDetailsCreate = () => {
     const serviceType = orderQuery?.data?.data?.service_type ?? "pickup";
     const isPickup = serviceType === "pickup";
 
+    const handleValuesChange = (_changedValues: unknown, allValues: Record<string, unknown>) => {
+        if (formProps.form) {
+            syncOrderDetailsTotals(formProps.form, allValues);
+        }
+
+        formProps.onValuesChange?.(_changedValues, allValues);
+    };
+
     return (
         <Create saveButtonProps={saveButtonProps}>
-            <Form {...formProps} layout="vertical" initialValues={{ items: [{ quantity: 1 }], taxes: 0, currency: "internacional" }}>
+            <Form
+                {...formProps}
+                layout="vertical"
+                onValuesChange={handleValuesChange}
+                initialValues={{ items: [{ quantity: 1 }], taxes: 0, currency: "internacional" }}
+            >
                 <Row gutter={[16, 16]}>
                     <Col xs={24} lg={14}>
                         <Card title="Orden y productos">

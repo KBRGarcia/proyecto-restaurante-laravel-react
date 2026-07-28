@@ -184,7 +184,13 @@ export const EmployeesShow = () => {
                                     <div style={{ fontSize: 11, color: token.colorTextDescription }}>Sucursales</div>
                                     <div style={{ fontSize: 13, fontWeight: "bold", marginTop: 6, color: token.colorText }}>
                                         {assignments.length > 0
-                                            ? new Set(assignments.map((a) => a.branch_name).filter(Boolean)).size
+                                            ? new Set(
+                                                  assignments.flatMap((assignment) =>
+                                                      assignment.branch_name
+                                                          ? [assignment.branch_name]
+                                                          : [],
+                                                  ),
+                                              ).size
                                             : 0}
                                     </div>
                                 </Card>

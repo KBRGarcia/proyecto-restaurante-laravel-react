@@ -12,7 +12,7 @@ import {
 } from "antd";
 import React, { useContext } from "react";
 import { MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { ColorModeContext } from "../../contexts/color-mode";
+import { ColorModeContext } from "../../contexts/color-mode/context";
 import { useNavigate } from "react-router-dom";
 
 const { Text } = Typography;

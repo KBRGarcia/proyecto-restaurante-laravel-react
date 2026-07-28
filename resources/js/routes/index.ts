@@ -57,7 +57,7 @@ logout.form = logoutForm
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:102
+* @see app/Http/Controllers/ApiAuthController.php:103
 * @route '/api/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -72,7 +72,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:102
+* @see app/Http/Controllers/ApiAuthController.php:103
 * @route '/api/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -81,7 +81,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:102
+* @see app/Http/Controllers/ApiAuthController.php:103
 * @route '/api/logout'
 */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -91,7 +91,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:102
+* @see app/Http/Controllers/ApiAuthController.php:103
 * @route '/api/logout'
 */
 const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -101,7 +101,7 @@ const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =>
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::logout
-* @see app/Http/Controllers/ApiAuthController.php:102
+* @see app/Http/Controllers/ApiAuthController.php:103
 * @route '/api/logout'
 */
 logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -113,7 +113,7 @@ logout.form = logoutForm
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:112
+* @see app/Http/Controllers/ApiAuthController.php:116
 * @route '/api/me'
 */
 export const me = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -128,7 +128,7 @@ me.definition = {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:112
+* @see app/Http/Controllers/ApiAuthController.php:116
 * @route '/api/me'
 */
 me.url = (options?: RouteQueryOptions) => {
@@ -137,7 +137,7 @@ me.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:112
+* @see app/Http/Controllers/ApiAuthController.php:116
 * @route '/api/me'
 */
 me.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -147,7 +147,7 @@ me.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:112
+* @see app/Http/Controllers/ApiAuthController.php:116
 * @route '/api/me'
 */
 me.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -157,7 +157,7 @@ me.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:112
+* @see app/Http/Controllers/ApiAuthController.php:116
 * @route '/api/me'
 */
 const meForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -167,7 +167,7 @@ const meForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:112
+* @see app/Http/Controllers/ApiAuthController.php:116
 * @route '/api/me'
 */
 meForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -177,7 +177,7 @@ meForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ApiAuthController::me
-* @see app/Http/Controllers/ApiAuthController.php:112
+* @see app/Http/Controllers/ApiAuthController.php:116
 * @route '/api/me'
 */
 meForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

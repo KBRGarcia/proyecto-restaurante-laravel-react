@@ -4,6 +4,7 @@ import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { StatusFormSwitch } from "@/components/form/StatusFormSwitch";
 import { PhoneNumberField } from "@/components/form/PhoneNumberField";
 import { Form, Input, Select, Upload, Button, Avatar, Row, Col, Card } from "antd";
+import { readFileAsBase64 } from "@/lib/file";
 
 const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#\-_.])[A-Za-z\d@$!%*?&#\-_.]+$/;
 
@@ -11,17 +12,9 @@ export const UserCreate = () => {
     const { formProps, saveButtonProps } = useForm();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-    const getBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-
     const handleBeforeUpload = async (file: File) => {
         try {
-            const base64Url = await getBase64(file);
+            const base64Url = await readFileAsBase64(file);
             setImageUrl(base64Url);
             formProps.form?.setFieldsValue({ profile_picture: base64Url });
         } catch (err) {

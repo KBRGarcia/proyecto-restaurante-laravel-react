@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Card, Layout, Space, Switch, Typography, theme } from 'antd';
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { ColorModeContext } from '../../contexts/color-mode/context';
 
 const { Paragraph, Text, Title } = Typography;

@@ -2,7 +2,7 @@ import { Show } from "@refinedev/antd";
 import { Card, Col, Descriptions, Row, Tag, Typography, theme } from "antd";
 import { CheckCircleOutlined, CreditCardOutlined, DollarOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useShow } from "@refinedev/core";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import {
     formatDateTimeLabel,
     getDescriptionsContentStyle,

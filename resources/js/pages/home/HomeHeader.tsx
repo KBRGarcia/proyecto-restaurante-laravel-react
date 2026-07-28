@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Col, Row, Space, Switch, Typography } from "antd";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ColorModeContext } from "@/contexts/color-mode/context";
 
 const { Text } = Typography;

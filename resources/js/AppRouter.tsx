@@ -6,14 +6,14 @@ import routerProvider, {
     UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 import dataProvider from "@refinedev/simple-rest";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 import { AppSystemShell } from "@/components/layout/AppSystemShell";
 import { refineResources } from "@/config/refine-resources";
 import { ColorModeContextProvider } from "@/contexts/color-mode";
 import { API_URL, axiosInstance } from "@/lib/api-client";
 import { accessControlProvider } from "@/providers/access-control-provider";
 import { authProvider } from "@/providers/auth-provider";
-import { AppRoutes } from "@/routes/app-routes";
+import { AppRoutes } from "@/router/app-routes";
 
 export default function AppRouter() {
     return (

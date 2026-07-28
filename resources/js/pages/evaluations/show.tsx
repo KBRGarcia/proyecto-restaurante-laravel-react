@@ -2,7 +2,7 @@ import { Show } from "@refinedev/antd";
 import { Card, Col, Descriptions, Rate, Row, Tag, Typography, theme } from "antd";
 import { CalendarOutlined, CommentOutlined, ShoppingOutlined, StarOutlined, UserOutlined } from "@ant-design/icons";
 import { useShow } from "@refinedev/core";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import {
     formatDateLabel,
     getDescriptionsContentStyle,

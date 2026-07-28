@@ -2,7 +2,7 @@ import { Show } from "@refinedev/antd";
 import { Card, Col, Descriptions, Row, Table, Tag, Typography, theme } from "antd";
 import { DollarOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useShow } from "@refinedev/core";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { OrderInvoiceDownloadDropdown } from "@/components/buttons/OrderInvoiceDownloadDropdown";
 import { useOrderInvoiceImage } from "@/hooks/useOrderInvoiceImage";
 import {

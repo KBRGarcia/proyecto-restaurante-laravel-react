@@ -22,7 +22,7 @@ import {
     ShoppingCartOutlined,
     StarOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const { Title, Text, Paragraph } = Typography;
 const { useToken } = theme;

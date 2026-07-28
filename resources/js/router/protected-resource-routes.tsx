@@ -1,8 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Spin } from "antd";
-import { Route } from "react-router-dom";
-import { CustomLogin } from "@/components/auth/CustomLogin";
-import { CustomRegister } from "@/components/auth/CustomRegister";
+import { Route } from "react-router";
 import { CustomDashboard } from "@/components/dashboard/CustomDashboard";
 import { ProtectedAppLayout } from "@/components/layout/ProtectedAppLayout";
 import { BanksList } from "@/pages/banks/list";
@@ -68,8 +66,7 @@ const BranchPageLoader = () => (
     </div>
 );
 
-export function ProtectedResourceRoutes() {
-    return (
+export const protectedResourceRoutes = (
         <Route element={<ProtectedAppLayout />}>
             <Route path="/dashboard" element={<CustomDashboard />} />
 
@@ -183,5 +180,4 @@ export function ProtectedResourceRoutes() {
 
             <Route path="/profile" element={<ProfilePage />} />
         </Route>
-    );
-}
+);

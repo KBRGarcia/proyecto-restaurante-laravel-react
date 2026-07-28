@@ -1,6 +1,6 @@
 import { List, useTable } from "@refinedev/antd";
 import { Space, Table, Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import {
     CustomShowButton,
     CustomEditButton,

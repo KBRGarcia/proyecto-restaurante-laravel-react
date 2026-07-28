@@ -1,5 +1,5 @@
 import { ThemedLayout, ThemedSider } from "@refinedev/antd";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import { Header } from "@/components/header";
 import { SidebarTitle } from "@/components/layout/SidebarTitle";
 

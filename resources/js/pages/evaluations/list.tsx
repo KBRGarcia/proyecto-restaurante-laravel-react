@@ -1,6 +1,6 @@
 import { List, useTable, DateField } from "@refinedev/antd";
 import { Table, Space, Rate, Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { CustomShowButton, CustomEditButton, CustomDeleteButton, CustomCreateButton } from "@/components/buttons/CustomActionButtons";
 
 const { Text } = Typography;

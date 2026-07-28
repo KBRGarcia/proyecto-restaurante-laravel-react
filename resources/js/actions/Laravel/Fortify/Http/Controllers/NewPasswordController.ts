@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::store
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::store
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::store
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +35,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::store
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -45,7 +45,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::store
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -1,7 +1,7 @@
 import { useLogin } from "@refinedev/core";
 import { Button, Card, Col, Form, Input, Layout, Row, Typography, Alert, theme } from "antd";
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { ColorModeContext } from "../../contexts/color-mode/context";
 import { SafetyCertificateOutlined } from "@ant-design/icons";
 

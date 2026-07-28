@@ -1,7 +1,7 @@
 import { CoffeeOutlined } from "@ant-design/icons";
 import { Layout, Row, theme } from "antd";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ColorModeContext } from "@/contexts/color-mode/context";
 import { HomeHeader } from "./HomeHeader";
 import { HomeHeroSection } from "./HomeHeroSection";

@@ -1,9 +1,9 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router";
 import { CustomLogin } from "@/components/auth/CustomLogin";
 import { CustomRegister } from "@/components/auth/CustomRegister";
 import { ComingSoonPage } from "@/pages/coming-soon";
 import { HomePage } from "@/pages/home";
-import { ProtectedResourceRoutes } from "@/routes/protected-resource-routes";
+import { protectedResourceRoutes } from "@/router/protected-resource-routes";
 
 export function AppRoutes() {
     return (
@@ -12,7 +12,7 @@ export function AppRoutes() {
             <Route path="/proximamente" element={<ComingSoonPage />} />
             <Route path="/login" element={<CustomLogin />} />
             <Route path="/register" element={<CustomRegister />} />
-            <ProtectedResourceRoutes />
+            {protectedResourceRoutes}
             <Route path="*" element={<ComingSoonPage />} />
         </Routes>
     );

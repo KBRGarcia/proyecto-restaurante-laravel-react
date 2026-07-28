@@ -58,7 +58,7 @@ email.form = emailForm
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::update
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -73,7 +73,7 @@ update.definition = {
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::update
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 update.url = (options?: RouteQueryOptions) => {
@@ -82,7 +82,7 @@ update.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::update
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -92,7 +92,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::update
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -102,7 +102,7 @@ const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =>
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\NewPasswordController::update
-* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:55
+* @see vendor/laravel/fortify/src/Http/Controllers/NewPasswordController.php:56
 * @route '/reset-password'
 */
 updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
